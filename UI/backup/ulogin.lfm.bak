@@ -1,0 +1,99 @@
+object frmLogin: TfrmLogin
+  Left = 896
+  Height = 434
+  Top = 120
+  Width = 304
+  BorderStyle = bsDialog
+  Caption = 'Giriş'
+  ClientHeight = 434
+  ClientWidth = 304
+  Color = 6430219
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.6.4.0'
+  object Label1: TLabel
+    Left = 72
+    Height = 15
+    Top = 224
+    Width = 98
+    Caption = 'İstifadəçi adı'
+    Color = 6430219
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -13
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+    Transparent = False
+  end
+  object edLogin: TEdit
+    Left = 72
+    Height = 23
+    Top = 248
+    Width = 184
+    OnChange = edLoginChange
+    TabOrder = 0
+  end
+  object Label2: TLabel
+    Left = 72
+    Height = 15
+    Top = 280
+    Width = 35
+    Caption = 'Sifrə'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -13
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object edPassword: TEdit
+    Left = 72
+    Height = 23
+    Top = 304
+    Width = 184
+    EchoMode = emPassword
+    ParentShowHint = False
+    PasswordChar = '*'
+    TabOrder = 1
+  end
+  object btnLogin: TButton
+    Left = 112
+    Height = 25
+    Top = 352
+    Width = 104
+    Caption = 'Daxil ol'
+    Color = clGreen
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -16
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    OnClick = btnLoginClick
+    ParentFont = False
+    TabOrder = 2
+  end
+  object Label3: TLabel
+    Left = 64
+    Height = 32
+    Top = 96
+    Width = 180
+    Caption = 'BANK TEST :)'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clGreen
+    Font.Height = -27
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+end

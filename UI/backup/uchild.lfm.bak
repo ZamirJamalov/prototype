@@ -1,0 +1,66 @@
+object Form2: TForm2
+  Left = 574
+  Height = 353
+  Top = 251
+  Width = 783
+  Caption = 'Form2'
+  ClientHeight = 353
+  ClientWidth = 783
+  FormStyle = fsMDIChild
+  LCLVersion = '1.6.4.0'
+  object Button1: TButton
+    Left = 53
+    Height = 25
+    Top = 36
+    Width = 75
+    Caption = 'Button1'
+    TabOrder = 0
+  end
+  object Edit1: TEdit
+    Left = 101
+    Height = 23
+    Top = 115
+    Width = 80
+    Color = clRed
+    TabOrder = 1
+    Text = 'Edit1'
+  end
+  object Button2: TButton
+    Left = 0
+    Height = 25
+    Top = 0
+    Width = 783
+    Align = alTop
+    Caption = 'Button2'
+    TabOrder = 2
+  end
+  object PageControl1: TPageControl
+    Left = 296
+    Height = 200
+    Top = 72
+    Width = 344
+    ActivePage = TabSheet1
+    TabIndex = 0
+    TabOrder = 3
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+    end
+  end
+  object CheckBox1: TCheckBox
+    Left = 116
+    Height = 19
+    Top = 251
+    Width = 78
+    Caption = 'CheckBox1'
+    TabOrder = 4
+  end
+  object ComboBox1: TComboBox
+    Left = 73
+    Height = 23
+    Top = 170
+    Width = 100
+    ItemHeight = 15
+    TabOrder = 5
+    Text = 'ComboBox1'
+  end
+end
