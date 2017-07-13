@@ -260,7 +260,7 @@ begin
    CASE jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString of
         'TEDIT': BEGIN
                          WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TEDIT) DO BEGIN
-                           text := jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(i) + '].values').Count-1)+'].name').AsString;  //jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(0)+'].name').AsString;
+                           text := jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(k) + '].values').Count-1)+'].name').AsString;  //jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(0)+'].name').AsString;
                            hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
                            showhint := TRUE;
                            enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
@@ -283,7 +283,7 @@ begin
                         WITH (p_form.findComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString)  AS TCHECKBOX) DO BEGIN
                             hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString ;
                             showhint := TRUE;
-                            checked := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(i) + '].values').Count-1)+'].name').AsString);  //stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].values[0].name').AsString);
+                            checked := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(k) + '].values').Count-1)+'].name').AsString);  //stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].values[0].name').AsString);
                             enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
                             visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
                             if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin

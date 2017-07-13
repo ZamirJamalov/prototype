@@ -187,6 +187,7 @@ begin
 
       Response_array[k].type_ :=jdata.FindPath('Response.Components[' + IntToStr(k) + '].type').AsString;
       Response_array[k].name_ :=jdata.FindPath('Response.Components[' + IntToStr(k) + '].name').AsString;
+      Response_array[k].value :=jdata.FindPath('Response.Components[' + IntToStr(k) + '].value').AsString;
       Response_array[k].label_caption :=jdata.FindPath('Response.Components[' + IntToStr(k) + '].label_caption').AsString;
       Response_array[k].width :=jdata.FindPath('Response.Components['+ inttostr(k) + '].width').AsString;
       Response_array[k].top :=jdata.FindPath('Response.Components['+ inttostr(k) + '].top').AsString;

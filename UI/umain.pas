@@ -39,6 +39,8 @@ type
     Panel2: TPanel;
     Splitter1: TSplitter;
     TreeView1: TTreeView;
+    procedure btnUpdClick(Sender: TObject);
+    procedure showform(p_crud:string;p_id:string);
     procedure btnNewClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -48,13 +50,15 @@ type
       Shift: TShiftState; X, Y: Integer);
 
 
+
   private
     { private declarations }
     Fnode :TTreeNode;
     function getFormCaptionByActiveTab:String;
   public
     { public declarations }
-
+    procedure onGridClick(Sender:Tobject);
+    procedure onSelectCell(sender:tobject;acol,arow:integer;var CanSelect :boolean);
     procedure viewgrid(form:rform);
     procedure fillgrid(grid:TStringGrid;empty_grid:string;from_:integer;to_:integer);
   end;
@@ -63,6 +67,7 @@ type
 
 var
    frmMain: TfrmMain;
+
    Tab:TTabSheet;
    button_new, button_upd, button_del, button_view, button_excel:TButton;
    panel,panel2:TPanel;
@@ -72,6 +77,8 @@ var
    form:Rform;
    frm:TForm;
    schema_name :string;
+   v_row:integer;
+   v_grid_id:integer;
 implementation
 uses uchild,ujson,uusers,uForm;
 {$R *.lfm}
@@ -178,6 +185,34 @@ begin
   END;
 end;
 
+procedure TfrmMain.onGridClick(Sender:Tobject);
+ var
+   i:integer;
+   f:boolean;
+begin
+  f:=false;
+  for i:=0 to (sender as TStringGrid).ColCount do begin
+     if lowercase((sender as TStringGrid).Columns[i].Title.Caption)='id' then begin
+         f:=true;
+         break;
+     end;
+  end;
+  v_grid_id := strtoint((sender as TStringGrid).Cells[i,v_row]);
+  if not f then begin
+     showmessage('There not found column with name id.This is critical');
+  end;
+end;
+
+
+
+
+procedure TfrmMain.onSelectCell(sender: tobject; acol, arow: integer;
+  var CanSelect: boolean);
+begin
+  //showmessage((sender as Tstringgrid).Cells[acol,arow]) ;
+  v_row := arow;
+end;
+
 
 
 procedure TfrmMain.viewgrid(form:rform);
@@ -198,11 +233,12 @@ begin
    stringGrid.Parent := tab;
    stringGrid.Align:=alClient;
    stringGrid.Anchors:=[akLeft,akTop,akBottom,akRight];
-   stringGrid.Options:=[goColSizing,goColMoving,goVertLine,goSmoothScroll,goRangeSelect,goHorzLine,goFixedVertLine,goFixedHorzLine];
+   stringGrid.Options:=[goColSizing,goColMoving,goVertLine,goSmoothScroll,goRangeSelect,goHorzLine,goFixedVertLine,goFixedHorzLine,goRowSelect];
    stringGrid.FixedCols:=0;
    stringGrid.RowCount:=1;
    stringGrid.ColumnClickSorts:=true;
-
+   stringGrid.OnSelectCell:=@onSelectCell;
+   stringGrid.OnClick:=@onGridClick;
    for i:=0 to  jdata.FindPath('columns').Count-1  do   begin
           stringGrid.Columns.Add;
           stringGrid.Columns[i].Title.Alignment:=taCenter;
@@ -252,8 +288,8 @@ begin
   Application.terminate;
 end;
 
-procedure TfrmMain.btnNewClick(Sender: TObject);
- var
+procedure TfrmMain.showform(p_crud: string;p_id:string);
+var
     frm:Tfrm;
     active_pagename :string;
 begin
@@ -268,11 +304,30 @@ begin
    IF NOT (assigned(self.FindComponent(active_pagename) as Tfrm)) THEN BEGIN
        frm :=  Tfrm.Create(self);
        frm.Name:=active_pagename;
-       frm.load_components(active_pagename);
-       frm.setCrud('add');
+       frm.load_components(active_pagename,p_id);
+       frm.setCrud(p_crud);
        frm.setCaption(getFormCaptionByActiveTab);
        frm.Show;
     END;
+end;
+
+procedure TfrmMain.btnUpdClick(Sender: TObject);
+begin
+  if v_grid_id=0 then begin
+      showmessage('no row selected');
+  end else showform('upd',inttostr(v_grid_id));
+end;
+
+procedure TfrmMain.btnNewClick(Sender: TObject);
+ var
+   grid:TStringGrid;
+   grid_id :string;
+   frm:Tfrm;
+   active_pagename:string;
+begin
+  active_pagename :=  copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name));
+
+  showform('add','');
 end;
 
 end.

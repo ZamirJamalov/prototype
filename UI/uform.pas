@@ -49,7 +49,7 @@ type
     { private declarations }
   public
     { public declarations }
-    procedure load_components(p_form:String);
+    procedure load_components(p_form:String;p_id:string);
     procedure setCrud(p_crud:string);
     procedure setCaption(p_caption:string);
     function  getClosedParam:boolean;
@@ -99,11 +99,11 @@ end;
 
 
 
-procedure Tfrm.load_components(p_form: String);
+procedure Tfrm.load_components(p_form: String;p_id:string);
 var
   v_json :widestring;
 begin
-     v_json := ujs_.runHub(umain.schema_name+'.ui_pkg.get_ui_comps','"form":"'+p_form+'"');
+     v_json := ujs_.runHub(umain.schema_name+'.ui_pkg.get_ui_comps','"form":"'+p_form+'","id":"'+p_id+'"');
      ujs_ :=  ujs.Create;
      ujs_.parseResponse(v_json);
      ujs_.newform(self,v_json,Panel3);

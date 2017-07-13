@@ -136,6 +136,7 @@ BEGIN
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(zamir.json_ext.get_string(hub.getJson(),'form'))) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => zamir.json_ext.get_string(hub.getJson(),'form')||'.'||i.name_,
                             p_values           => api_component.exec(i.ds_proc),
+                            p_value            => i.default_value,
                             p_label_caption    => i.label_caption,
                             p_width            => i.width_,
                             p_font_size        => i.font_size,
