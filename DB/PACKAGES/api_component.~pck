@@ -24,7 +24,6 @@ FUNCTION component_values_to_json(p_coll ttvalues,p_comma_param_renew BOOLEAN DE
 
 PROCEDURE setvalue(p_component         VARCHAR2,
                    p_values            CLOB DEFAULT NULL,
-                   p_value             VARCHAR2 DEFAULT NULL,
                    p_label_caption     ui_components.label_caption%TYPE DEFAULT NULL,
                    p_width             ui_components.width_%TYPE DEFAULT NULL,
                    p_top               ui_components.top_%TYPE DEFAULT NULL,
@@ -139,7 +138,6 @@ END component_values_to_json;
 
 PROCEDURE setvalue(p_component         VARCHAR2,
                    p_values            CLOB DEFAULT NULL,
-                   p_value             VARCHAR2 DEFAULT NULL,
                    p_label_caption     ui_components.label_caption%TYPE DEFAULT NULL,
                    p_width             ui_components.width_%TYPE DEFAULT NULL,
                    p_top               ui_components.top_%TYPE DEFAULT NULL,
@@ -176,7 +174,7 @@ BEGIN
       dbms_lob.createtemporary(rows,TRUE);
    END IF;
    --dbms_output.put_line(v_add_comma1);
-   dbms_lob.append(rows,add_comma(v_add_comma1)||'{"type":"'||v_type||'","name":"'||v_component||'","value":"'||p_value||'","label_caption":"'||p_label_caption||'","width":"'||p_width||'","top":"'||p_top||'","font_size":"'||p_font_size||'","font_color":"'||p_font_color||'","background_color":"'||p_background_color||'","enabled":"'||p_enabled||'","visible":"'||p_visible||'","hint":"'||p_hint||'","onclick":"'||p_onclick||'","onkeypress":"'||p_onkeypress||'","onchange":"'||p_onchange||'","required":"'||p_required||'","values":[');
+   dbms_lob.append(rows,add_comma(v_add_comma1)||'{"type":"'||v_type||'","name":"'||v_component||'","label_caption":"'||p_label_caption||'","width":"'||p_width||'","top":"'||p_top||'","font_size":"'||p_font_size||'","font_color":"'||p_font_color||'","background_color":"'||p_background_color||'","enabled":"'||p_enabled||'","visible":"'||p_visible||'","hint":"'||p_hint||'","onclick":"'||p_onclick||'","onkeypress":"'||p_onkeypress||'","onchange":"'||p_onchange||'","required":"'||p_required||'","values":[');
    IF length(p_values)>0 THEN dbms_lob.append(rows,p_values); ELSE dbms_lob.append(rows,'{"index":"","id":"","name":"","checked":""}'); END IF;
    dbms_lob.append(rows,']}');    
 END setvalue;                   

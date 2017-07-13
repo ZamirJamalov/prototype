@@ -31,17 +31,19 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uLogin"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="23" Y="55"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="30"/>
+        <CursorPos X="57" Y="16"/>
         <UsageCount Value="234"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="ujson.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="UJson"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="221"/>
-        <CursorPos X="146" Y="179"/>
+        <TopLine Value="557"/>
+        <CursorPos X="45" Y="587"/>
         <UsageCount Value="234"/>
         <Bookmarks Count="6">
           <Item0 Y="176" ID="1"/>
@@ -67,7 +69,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="232"/>
+        <TopLine Value="228"/>
         <CursorPos X="29" Y="252"/>
         <UsageCount Value="342"/>
         <Loaded Value="True"/>
@@ -108,9 +110,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uForm"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="41"/>
-        <CursorPos X="26" Y="77"/>
+        <TopLine Value="64"/>
+        <CursorPos X="32" Y="82"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -176,7 +179,7 @@
         <UsageCount Value="14"/>
       </Unit17>
     </Units>
-    <JumpHistory Count="17" HistoryIndex="16">
+    <JumpHistory Count="23" HistoryIndex="22">
       <Position1>
         <Filename Value="ujson.pas"/>
         <Caret Line="536" Column="37" TopLine="514"/>
@@ -239,12 +242,36 @@
       </Position15>
       <Position16>
         <Filename Value="ujson.pas"/>
-        <Caret Line="475" Column="56" TopLine="575"/>
+        <Caret Line="469" Column="219" TopLine="457"/>
       </Position16>
       <Position17>
         <Filename Value="ujson.pas"/>
-        <Caret Line="469" Column="219" TopLine="457"/>
+        <Caret Line="589" Column="18" TopLine="565"/>
       </Position17>
+      <Position18>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="74" Column="40" TopLine="66"/>
+      </Position18>
+      <Position19>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="80" Column="15" TopLine="66"/>
+      </Position19>
+      <Position20>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="248" Column="15" TopLine="222"/>
+      </Position20>
+      <Position21>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="251" Column="17" TopLine="222"/>
+      </Position21>
+      <Position22>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="382" Column="15" TopLine="347"/>
+      </Position22>
+      <Position23>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="385" Column="18" TopLine="356"/>
+      </Position23>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

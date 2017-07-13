@@ -78,6 +78,8 @@ begin
   ujs_1.parseResponse(s);
   ujs_.AppendResponseJsonToExistsJson := ujs_1.retParseResponse;
   ujs_.existsform(self,s,panel3);
+  if ujs_.errorexists=false then
+     showmessage('Data saved');
 end;
 
 procedure Tfrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
