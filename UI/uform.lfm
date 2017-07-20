@@ -11,6 +11,7 @@ object frm: Tfrm
   ClientHeight = 600
   ClientWidth = 800
   FormStyle = fsStayOnTop
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -32,7 +33,7 @@ object frm: Tfrm
       Top = 0
       Width = 75
       Align = alRight
-      Caption = 'Save'
+      Caption = 'Execute'
       OnClick = btnSaveTopClick
       TabOrder = 0
     end
@@ -44,6 +45,8 @@ object frm: Tfrm
     Width = 800
     Align = alClient
     BevelOuter = bvNone
+    Color = clForm
+    ParentColor = False
     TabOrder = 1
   end
 end

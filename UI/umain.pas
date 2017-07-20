@@ -38,12 +38,17 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     Splitter1: TSplitter;
+    Timer1: TTimer;
+    TrayIcon1: TTrayIcon;
     TreeView1: TTreeView;
+    procedure btnDelClick(Sender: TObject);
     procedure btnUpdClick(Sender: TObject);
+    procedure btnViewClick(Sender: TObject);
     procedure showform(p_crud:string;p_id:string);
     procedure btnNewClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
     procedure TreeView1Click(Sender: TObject);
     procedure newTab(p_form:Rform);
     procedure TreeView1MouseDown(Sender: TObject; Button: TMouseButton;
@@ -59,8 +64,8 @@ type
     { public declarations }
     procedure onGridClick(Sender:Tobject);
     procedure onSelectCell(sender:tobject;acol,arow:integer;var CanSelect :boolean);
+    procedure onPrepareCanvas(sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
     procedure viewgrid(form:rform);
-    procedure fillgrid(grid:TStringGrid;empty_grid:string;from_:integer;to_:integer);
   end;
 
 
@@ -80,7 +85,7 @@ var
    v_row:integer;
    v_grid_id:integer;
 implementation
-uses uchild,ujson,uusers,uForm;
+uses uchild,ujson,uusers,uForm,uforms,uselfdialogbox;
 {$R *.lfm}
 
 
@@ -99,14 +104,14 @@ procedure TfrmMain.FormCreate(Sender: TObject);
     jData := GetJSON(ujs_.runHub('zamir.ui_pkg.menu_data',''));
     ujs_.Free;
     TreeView1.Items.Clear;
-    for i:=0 to  jdata.FindPath('rows').Count-1 do begin
+    for i:=0 to  jdata.FindPath('Response.Components[0].rows').Count-1 do begin
       setlength(arr_menu,i+1);
-      arr_menu[i].id              :=jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)+'[0]').AsString;
-      arr_menu[i].root_id         :=jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)+'[1]').AsString;
-      arr_menu[i].caption         :=jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)+'[2]').AsString;
-      arr_menu[i].form_name       :=jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)+'[3]').AsString;
-      arr_menu[i].form_caption    :=jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)+'[4]').AsString;
-      arr_menu[i].schema_name     :=jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)+'[5]').AsString;
+      arr_menu[i].id              :=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'[0]').AsString;
+      arr_menu[i].root_id         :=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'[1]').AsString;
+      arr_menu[i].caption         :=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'[2]').AsString;
+      arr_menu[i].form_name       :=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'[3]').AsString;
+      arr_menu[i].form_caption    :=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'[4]').AsString;
+      arr_menu[i].schema_name     :=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'[5]').AsString;
     end;//for i
     for i:=0 to length(arr_menu)-1 do  begin
        if i=0 then begin
@@ -119,6 +124,16 @@ procedure TfrmMain.FormCreate(Sender: TObject);
     jData.Free;
 end;
 
+procedure TfrmMain.Timer1Timer(Sender: TObject);
+begin
+    TrayIcon1.BalloonFlags:=bfInfo;
+     TrayIcon1.BalloonTitle:='New version is available';
+     TrayIcon1.BalloonHint:='Bank program 1.10 is released. Please visit us. www.test.com';
+     TrayIcon1.ShowBalloonHint;
+end;
+
+
+
 procedure TfrmMain.TreeView1Click(Sender: TObject);
 var
   i:integer;
@@ -127,6 +142,11 @@ begin
       exit;
   END;
   for i:=0 to length(arr_menu)-1 do begin
+     if (TreeView1.Selected=Fnode) and (arr_menu[i].caption=TreeView1.Selected.Text) and (arr_menu[i].form_name='XFORMS') then  begin
+         frm := TxFORMS.Create(self);
+         frm.Visible:=true;
+         exit;
+     end;
      if (TreeView1.Selected=Fnode) and (arr_menu[i].caption=TreeView1.Selected.Text) and (arr_menu[i].form_name<>'') then  begin
          form.form_name:=arr_menu[i].form_name;
          form.form_caption:=arr_menu[i].form_caption;
@@ -158,7 +178,9 @@ begin
    tab.Parent := PageControl1;
    Tab.Name:='tab_'+p_form.form_name;
    Tab.Caption:=p_form.form_caption;
+   Cursor:=crSQLWait;
    viewgrid(p_form);
+   Cursor:=crDefault;
    IF panel2.Visible=false THEN Panel2.Visible:=true;
 end;
 
@@ -213,18 +235,35 @@ begin
   v_row := arow;
 end;
 
+procedure TfrmMain.onPrepareCanvas(sender: TObject; aCol, aRow: Integer;
+  aState: TGridDrawState);
+begin
+  if not (gdfixed in aState) then
+    if aRow mod 2 = 0 then begin
+      (sender as TStringGrid).Canvas.Brush.Color := clWhite;
+    end else begin
+      (sender as TStringGrid).Canvas.Brush.Color := $00F8F8F8;
+    end;
+end;
+
 
 
 procedure TfrmMain.viewgrid(form:rform);
   var
-   jData : TJSONData;
+   jData :  TJSONData;
    jObject: TJSONObject;
    jArray : TJSONArray;
    i,j:integer;
    ujs_:ujs;
+   s:widestring;
 begin
    ujs_ :=  ujs.Create;
-   jData := GetJSON(ujs_.runHub(schema_name+'.'+form.form_name+'_pkg.grid_data',''));
+   s := ujs_.runHub(schema_name+'.'+form.form_name+'_pkg.grid_data','');
+   if ujs_.jsonError<>'' then begin
+      Showmessage(ujs_.jsonError);
+      exit;
+   end;
+   jData := GetJSON(s);
    ujs_.Free;
 
    stringGrid := TStringGrid.Create(tab);
@@ -233,51 +272,30 @@ begin
    stringGrid.Parent := tab;
    stringGrid.Align:=alClient;
    stringGrid.Anchors:=[akLeft,akTop,akBottom,akRight];
-   stringGrid.Options:=[goColSizing,goColMoving,goVertLine,goSmoothScroll,goRangeSelect,goHorzLine,goFixedVertLine,goFixedHorzLine,goRowSelect];
    stringGrid.FixedCols:=0;
    stringGrid.RowCount:=1;
    stringGrid.ColumnClickSorts:=true;
    stringGrid.OnSelectCell:=@onSelectCell;
    stringGrid.OnClick:=@onGridClick;
-   for i:=0 to  jdata.FindPath('columns').Count-1  do   begin
+   stringGrid.OnPrepareCanvas:=@OnPrepareCanvas;
+   stringGrid.Options:=[goColSizing,goColMoving,goVertLine,goSmoothScroll,goRangeSelect,goHorzLine,goFixedVertLine,goFixedHorzLine];
+   stringGrid.DoubleBuffered:=true;
+   for i:=0 to  jdata.FindPath('Response.Components[0].columns').Count-1  do   begin
           stringGrid.Columns.Add;
           stringGrid.Columns[i].Title.Alignment:=taCenter;
-          stringGrid.Columns[i].Title.Caption := jdata.FindPath('columns['+inttostr(i)+']').AsString;
-          stringGrid.Columns[i].Width:=100;
+          stringGrid.Columns[i].Title.Font.Style:=[fsBold];
+          stringGrid.Columns[i].Title.Caption := jdata.FindPath('Response.Components[0].columns['+inttostr(i)+']').AsString;
+          stringGrid.Columns[i].Width:=round(tab.Width/jdata.FindPath('Response.Components[0].columns').Count);
+          stringGrid.Columns[i].Title.Font.Color:=clwhite;
+          stringGrid.Columns[i].Title.Color:=$00621E0B;
+          //stringGrid.Columns[i].Color:=$00FFD3CA;
     end;
-    for i:=0 to  jdata.FindPath('rows').Count-1  do begin
+    for i:=0 to  jdata.FindPath('Response.Components[0].rows').Count-1  do begin
         stringGrid.RowCount:=stringGrid.RowCount+1;
-        for j:=0 to jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)).Count-1 do begin
-           stringGrid.Cells[j,i+1]:=jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)+'['+inttostr(j)+']').AsString;
+        for j:=0 to jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)).Count-1 do begin
+           stringGrid.Cells[j,i+1]:=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'['+inttostr(j)+']').AsString;
         end;//for j
     end;//for i
-    stringGrid.Visible:=true;
-    jData.Free;
-end;
-
-procedure TfrmMain.fillgrid(grid: TStringGrid; empty_grid: string; from_: integer; to_: integer);
-var
-  jData : TJSONData;
-  jObject: TJSONObject;
-  jArray : TJSONArray;
-  i,j:integer;
-  ujs_:ujs;
-begin
-  ujs_ :=  ujs.Create;
-  jData := GetJSON(ujs_.runHub('zamir.users_pkg.grid_data',''));
-  ujs_.Free;
-  for i:=0 to  jdata.FindPath('columns').Count-1  do begin
-       stringGrid.Columns.Add;
-       stringGrid.Columns[i].Title.Alignment:=taCenter;
-       stringGrid.Columns[i].Title.Caption := jdata.FindPath('columns['+inttostr(i)+']').AsString;
-       stringGrid.Columns[i].Width:=100;
-   end;
-   for i:=0 to  jdata.FindPath('rows').Count-1 do begin
-       stringGrid.RowCount:=stringGrid.RowCount+1;
-       for j:=0 to jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)).Count-1 do begin
-           stringGrid.Cells[j,i+1]:=jdata.FindPath('rows['+inttostr(i)+'].row'+inttostr(i+1)+'['+inttostr(j)+']').AsString;
-        end;
-    end;
     stringGrid.Visible:=true;
     jData.Free;
 end;
@@ -304,9 +322,15 @@ begin
    IF NOT (assigned(self.FindComponent(active_pagename) as Tfrm)) THEN BEGIN
        frm :=  Tfrm.Create(self);
        frm.Name:=active_pagename;
-       frm.load_components(active_pagename,p_id);
+       frm.schemaName:=schema_name;
        frm.setCrud(p_crud);
-       frm.setCaption(getFormCaptionByActiveTab);
+       frm.load_components(active_pagename,p_id);
+       case p_crud  of
+        'add'   : frm.setCaption(getFormCaptionByActiveTab+'  -Yeni melumat');
+        'upd'   : frm.setCaption(getFormCaptionByActiveTab+'  -Cari melumatin deyishdirilmsei');
+        'view_' : frm.setCaption(getFormCaptionByActiveTab+'  -Cari melumata baxish');
+        'del'   : frm.setCaption(getFormCaptionByActiveTab+'  -Cari melumatin silinmesi');
+       end;
        frm.Show;
     END;
 end;
@@ -318,15 +342,22 @@ begin
   end else showform('upd',inttostr(v_grid_id));
 end;
 
-procedure TfrmMain.btnNewClick(Sender: TObject);
- var
-   grid:TStringGrid;
-   grid_id :string;
-   frm:Tfrm;
-   active_pagename:string;
+procedure TfrmMain.btnDelClick(Sender: TObject);
 begin
-  active_pagename :=  copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name));
+  if v_grid_id=0 then begin
+      showmessage('no row selected');
+  end else showform('del',inttostr(v_grid_id));
+end;
 
+procedure TfrmMain.btnViewClick(Sender: TObject);
+begin
+  if v_grid_id=0 then begin
+      showmessage('no row selected');
+  end else showform('view_',inttostr(v_grid_id));
+end;
+
+procedure TfrmMain.btnNewClick(Sender: TObject);
+begin
   showform('add','');
 end;
 

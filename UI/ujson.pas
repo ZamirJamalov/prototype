@@ -54,10 +54,12 @@ type
     Value_array: array of ujs.Tvalue;
     comps_value_array: array of string;
     function stringToBoolean(p_string :string) : boolean;
+    function getJsonError: string;
     procedure appendjson(p_response_array:TResponse_array);
+
   public
     property  AppendResponseJsonToExistsJson: TResponse_array  write appendjson;
-
+    property  jsonError: string read getJsonError;
     function errorexists:boolean;
     function runHub(p_method_name: WideString; p_request_json: WideString): WideString;
     function prepareRequest(p_form: TForm): WideString;
@@ -81,6 +83,7 @@ type
   click_form:tform;
   click_wincontrol:TWinControl;
   click_button_name:string;
+  v_jsonError:string;
 implementation
 
 uses usession,umain;
@@ -260,8 +263,12 @@ begin
 
    CASE jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString of
         'TEDIT': BEGIN
-                         WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TEDIT) DO BEGIN
-                           text := jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(k) + '].values').Count-1)+'].name').AsString;  //jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(0)+'].name').AsString;
+                       WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TEDIT) DO BEGIN
+                          if  jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString='' then begin
+                              text := jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(k) + '].values').Count-1)+'].name').AsString;
+                           end else begin
+                              text := jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString;
+                           end;
                            hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
                            showhint := TRUE;
                            enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
@@ -452,7 +459,12 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
 
-                                    text := jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(i) + '].values').Count-1)+'].name').AsString;
+                                    if  jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString='' then begin
+                                      text := jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(i) + '].values').Count-1)+'].name').AsString;
+                                    end else begin
+                                        text := jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString;
+                                    end;
+
 
                                     if jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString='' then font.Color:=clblack  else font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString);
 
@@ -571,6 +583,11 @@ begin
 
 end;
 
+function ujs.getJsonError: string;
+begin
+  result :=  v_jsonError;
+end;
+
 procedure ujs.appendjson(p_response_array: TResponse_array);
  var
     i,j:integer;
@@ -595,7 +612,7 @@ var
   v_json: WideString;
   S: WideString;
   i:integer;
-
+  jdata:TJSONData;
 begin
   i:=0;
   IF length(p_request_json) > 0 THEN
@@ -607,6 +624,10 @@ begin
   WITH TFPHttpClient.Create(nil) DO
     TRY
       s := Post('http://localhost:8089/WebApplication1/NewServlet?myparam=' + v_json);
+      jdata := getjson(s);
+      if jdata.FindPath('Response.Message.Status').AsString = 'ERROR' then begin
+        v_jsonError :=  jdata.FindPath('Response.Message.Text').AsString;
+     end;
     FINALLY
       Free;
     END;

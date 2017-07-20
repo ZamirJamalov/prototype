@@ -4,6 +4,7 @@ create or replace package hub is
   -- Created : 5/27/2017 17:25:52 17:25:52 
   -- Purpose : 
 FUNCTION getSession RETURN VARCHAR2;
+FUNCTION getMethodname RETURN VARCHAR2;
 FUNCTION getJson RETURN json;  
 FUNCTION run(p_json_in CLOB) RETURN CLOB;  
 
@@ -14,11 +15,17 @@ create or replace package body hub is
 
 g_json json;
 v_session_key VARCHAR2(250) DEFAULT NULL; 
+v_method_name VARCHAR2(250) DEFAULT NULL;
 
 FUNCTION getSession RETURN VARCHAR2 IS
 BEGIN
   RETURN v_session_key; 
 END getSession;  
+
+FUNCTION getMethodName RETURN VARCHAR2 IS
+BEGIN
+  RETURN v_method_name;
+END getMethodName;  
 
 FUNCTION getJson RETURN json IS
 BEGIN
@@ -28,7 +35,7 @@ END getJson;
 FUNCTION run(p_json_in CLOB) RETURN CLOB IS
   v_json json;
   v_res CLOB;
-  v_method_name VARCHAR2(250) DEFAULT NULL;
+ 
   
 BEGIN
   log_pkg.setParentIdNull;

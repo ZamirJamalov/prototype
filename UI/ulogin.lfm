@@ -96,4 +96,8 @@ object frmLogin: TfrmLogin
     ParentColor = False
     ParentFont = False
   end
+  object TrayIcon1: TTrayIcon
+    left = 94
+    top = 171
+  end
 end

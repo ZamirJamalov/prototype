@@ -31,7 +31,7 @@ BEGIN
                             p_sql       => 'select rownum,a.id as id,a.root_id as root_id,a.caption as caption,a.form_name as form_name,a.form_caption as form_caption,a.schema_name as schema_name
                              from (select id,root_id,caption,form_name,form_caption,schema_name from ui_menu order by id asc ) a');
   json_kernel.append_as_text(']}'); 
-  RETURN json_kernel.response;   
+  RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
     RETURN '';
@@ -132,25 +132,34 @@ BEGIN
 END del_component;  
 
 FUNCTION  get_ui_comps RETURN CLOB IS
+   v_form VARCHAR2(4000);
+   v_grid_id VARCHAR2(100);
+   v_crud VARCHAR2(100);
 BEGIN
-  FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(zamir.json_ext.get_string(hub.getJson(),'form'))) ORDER BY sort_ ASC) LOOP
-     api_component.setvalue(p_component        => zamir.json_ext.get_string(hub.getJson(),'form')||'.'||i.name_,
+  v_form := zamir.json_ext.get_string(hub.getJson(),'form');
+  v_grid_id := zamir.json_ext.get_string(hub.getJson(),'id');
+  v_crud := zamir.json_ext.get_string(hub.getJson(),'crud');              
+  
+  api_component.collectcolumnvalues(p_schema_name => 'ZAMIR', p_table_name  => upper(v_form), p_id => v_grid_id);
+  
+  FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
+     api_component.setvalue(p_component        => v_form||'.'||i.name_,
                             p_values           => api_component.exec(i.ds_proc),
-                            p_value            => i.default_value,
+                            p_value            => nvl(api_component.getColumnValue(i.name_),i.default_value),
                             p_label_caption    => i.label_caption,
                             p_width            => i.width_,
                             p_font_size        => i.font_size,
                             p_font_color       => i.font_color,
                             p_background_color => i.background_color,
-                            p_enabled          => i.enabled_,
-                            p_visible          => i.visible_,
+                            p_enabled          => CASE v_crud  WHEN 'upd' THEN i.upd_enabled_  ELSE i.enabled_ END,
+                            p_visible          => CASE v_crud WHEN  'upd' THEN i.upd_visible_  ELSE i.visible_ END,
                             p_hint             => i.hint,
                             p_onclick          => i.onclick,
                             p_onkeypress       => i.onkeypress,
                             p_onchange         => i.onchange,
                             p_required         => i.required);
-                                  
   END LOOP;
+ 
  RETURN api_component.exec;
  EXCEPTION
    WHEN OTHERS THEN 

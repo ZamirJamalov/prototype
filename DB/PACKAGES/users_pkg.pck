@@ -107,8 +107,8 @@ BEGIN
                     mob_phone)
              VALUES (users_seq.nextval,
                      NULL,
-                     api_component.getvalue('edlogin'),
-                     api_component.getvalue('edpassword'),
+                     api_component.getvalue('login'),
+                     api_component.getvalue('password'),
                      0,
                      NULL,
                      api_component.getvalue('email'),
@@ -127,14 +127,14 @@ BEGIN
                     a.blocked_time=CASE WHEN api_component.getvalue('users.blocked')='Y' THEN SYSDATE ELSE NULL END,
                     a.email=api_component.getvalue('users.email'),
                     a.mob_phone=api_component.getvalue('users.mob_phone')
-        WHERE    a.login=api_component.getvalue('users.edlogin');
+        WHERE    a.login=api_component.getvalue('users.login');
  COMMIT;
  RETURN uiresp('message','OK'); 
 END upd;  
 
 FUNCTION del RETURN CLOB IS
 BEGIN
-  DELETE FROM users WHERE login=api_component.getvalue('users.edlogin');
+  DELETE FROM users WHERE login=api_component.getvalue('users.login');
   COMMIT;
   RETURN uiresp('message','OK');
 END del;  
@@ -148,7 +148,7 @@ BEGIN
                             p_sql       => 'select rownum,a.id as id,a.session_ as session,a.login as login, a.email as email,a.wrong_attempt_count as wrong_attempt_count,a.blocked_time as blocked_time,a.mob_phone as mob_phone,a.logon_time as logon_time 
                              from (select id,session_,login,email,wrong_attempt_count,blocked_time,mob_phone,to_char(logon_time,''DD-MM-YYYY HH24:MI:SS'') as logon_time from users where rownum<10 order by id asc ) a');
   json_kernel.append_as_text(']}'); 
-  RETURN json_kernel.response;   
+  RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
     RETURN '';

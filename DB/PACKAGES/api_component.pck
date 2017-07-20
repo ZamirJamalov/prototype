@@ -42,11 +42,14 @@ PROCEDURE setvalue(p_component         VARCHAR2,
                    
                    
 FUNCTION getvalue(p_component VARCHAR2) RETURN VARCHAR2;
-
+FUNCTION getColumnValue(p_column_name  VARCHAR2) RETURN VARCHAR2;
+PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2);
 FUNCTION exec RETURN CLOB;
 FUNCTION exec(p_ds_proc VARCHAR2) RETURN CLOB;
+FUNCTION exec(p_json_part CLOB) RETURN CLOB;
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS');
 PROCEDURE setJsonHeadMessageError(p_message VARCHAR2);
+
 end api_component;
 /
 create or replace package body api_component is
@@ -60,6 +63,14 @@ create or replace package body api_component is
   VALUE VARCHAR2(4000));
  TYPE ttcmp IS TABLE OF tcmp;
  ttcmp_ ttcmp:= ttcmp(); 
+ 
+  TYPE tcol IS RECORD
+ (column_name VARCHAR2(500),
+  COLUMN_VALUE VARCHAR2(4000));
+ TYPE ttcol IS TABLE OF tcol;
+ col ttcol := ttcol();
+ 
+ 
  n NUMBER DEFAULT 0;
  v_value VARCHAR2(4000);
  
@@ -96,6 +107,9 @@ BEGIN
                  p_log_text    => sqlerrm,
                  p_log_clob    =>NULL);
   END;
+  IF json_ext.get_string(v_json,'method_name')='zamir.ui_pkg.get_ui_comps' THEN 
+     RETURN;
+  END IF;   
   FOR i IN 4..v_json.count LOOP
     ttcmp_.extend();
     n := n + 1;
@@ -194,6 +208,50 @@ BEGIN
   RETURN NULL; 
 END getvalue; 
 
+FUNCTION getColumnValue(p_column_name VARCHAR2) RETURN VARCHAR2 IS
+BEGIN
+ FOR i IN 1..col.count LOOP
+    IF upper(col(i).column_name) = upper(p_column_name) THEN 
+      RETURN col(i).column_value;
+      EXIT;
+    END IF;     
+ END LOOP;
+ RETURN NULL;  
+END getColumnValue;  
+
+PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2) IS
+  v_json_string VARCHAR2(32767);
+ v_sql_string VARCHAR2(32767);
+ n NUMBER DEFAULT 0;
+ l NUMBER DEFAULT 0;
+ v_table VARCHAR2(100)  DEFAULT 'users';
+ v_id VARCHAR2(100) DEFAULT '1';
+ v_json json;
+ v_json_list json_list;
+BEGIN
+  
+  FOR i IN (SELECT column_name FROM all_tab_columns WHERE owner=p_schema_name AND table_name=p_table_name) LOOP
+    v_json_string := v_json_string||CASE WHEN n>0 THEN ',' ELSE NULL END||'"'||i.column_name||'":"@'||i.column_name||'"';
+    v_sql_string := v_sql_string||CASE WHEN n>0 THEN ',' ELSE NULL END||i.column_name;
+    n := n + 1;
+  END LOOP;
+
+  json_kernel.append_as_text('{');
+  json_kernel.append_as_sql(p_json_part =>v_json_string, p_sql => 'select '||v_sql_string|| ' from '|| p_table_name ||' where id=:id',bind1 => p_id);
+  json_kernel.append_as_text('}');
+  v_json := json(json_kernel.response);
+  col.delete();
+
+  FOR i IN 1..v_json.count LOOP
+    col.extend();
+    l := l + 1;
+    v_json_list := v_json.get_keys;
+    col(l).column_name := v_json_list.get(i).get_string();
+    col(l).column_value := json_ext.get_string(v_json,v_json_list.get(i).get_string());
+  END LOOP;
+END collectcolumnvalues;  
+
+
 FUNCTION exec RETURN CLOB IS
 BEGIN
    --IF NOT setvalue_activated THEN RETURN NULL; END IF; login de bu ishlemir
@@ -218,6 +276,19 @@ BEGIN
     v_res := '{"index":"0","id":"","name":"","checked":""}';  
   END IF;  
   RETURN v_res;
+END exec;  
+
+FUNCTION exec(p_json_part CLOB) RETURN CLOB IS
+BEGIN
+   setvalue_activated := FALSE;
+   dbms_lob.createtemporary(rows_all,TRUE);
+   dbms_lob.append(rows_all,'{"Response":');
+   dbms_lob.append(rows_all,'{"Message":{"Status":"'||JsonHeadMessageType||'","Text":"'||JsonHeadMessage||'"},');
+   dbms_lob.append(rows_all,'"Components":[');
+   IF length(p_json_part)>0 THEN dbms_lob.append(rows_all,p_json_part); END IF;
+   dbms_lob.append(rows_all,']}}');
+   
+   RETURN rows_all;
 END exec;  
 
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS') IS

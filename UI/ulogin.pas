@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  CheckLst, ExtCtrls, Buttons, UJson;
+  CheckLst, ExtCtrls, Buttons, UJson,windows;
 
 type
 
@@ -19,6 +19,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    TrayIcon1: TTrayIcon;
     procedure btnLoginClick(Sender: TObject);
     procedure edLoginChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -74,7 +75,10 @@ end;
 
 procedure TfrmLogin.FormCreate(Sender: TObject);
 begin
-
+    ShowWindow(FindWindow('Shell_TrayWnd', nil), SW_SHOW);
+  ShowWindow(
+      FindWindowEx(0, 0, MAKEINTATOM($C017), 'Start'),
+      SW_SHOW);
 end;
 
 end.

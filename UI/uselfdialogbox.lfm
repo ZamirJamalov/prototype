@@ -1,0 +1,41 @@
+object fDialogBox: TfDialogBox
+  Left = 876
+  Height = 145
+  Top = 430
+  Width = 386
+  BorderStyle = bsDialog
+  ClientHeight = 145
+  ClientWidth = 386
+  LCLVersion = '1.6.4.0'
+  object Label1: TLabel
+    Left = 48
+    Height = 22
+    Top = 24
+    Width = 60
+    Caption = 'Label1'
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -19
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    ParentColor = False
+    ParentFont = False
+  end
+  object btnYes: TButton
+    Left = 73
+    Height = 25
+    Top = 93
+    Width = 75
+    Caption = 'Yes'
+    OnClick = btnYesClick
+    TabOrder = 0
+  end
+  object btnNo: TButton
+    Left = 232
+    Height = 25
+    Top = 93
+    Width = 75
+    Caption = 'No'
+    TabOrder = 1
+  end
+end

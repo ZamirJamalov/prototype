@@ -1,0 +1,286 @@
+object xFORMS: TxFORMS
+  Left = 294
+  Height = 642
+  Top = 228
+  Width = 1577
+  HorzScrollBar.Page = 1536
+  VertScrollBar.Page = 113
+  AutoScroll = True
+  Caption = 'xFORMS'
+  ClientHeight = 642
+  ClientWidth = 1577
+  LCLVersion = '1.6.4.0'
+  object cmbforms: TComboBox
+    Left = 272
+    Height = 23
+    Top = 16
+    Width = 232
+    ItemHeight = 15
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 200
+    Height = 15
+    Top = 24
+    Width = 61
+    Caption = 'Table name'
+    ParentColor = False
+  end
+  object edformname: TEdit
+    Left = 264
+    Height = 23
+    Top = 16
+    Width = 248
+    TabOrder = 1
+    Visible = False
+  end
+  object btnor: TButton
+    Left = 24
+    Height = 25
+    Top = 16
+    Width = 136
+    Caption = 'New form name'
+    OnClick = btnorClick
+    TabOrder = 2
+  end
+  object cmbtype: TComboBox
+    Left = 24
+    Height = 23
+    Top = 90
+    Width = 192
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'TEDIT'
+      'TCHECKBOX'
+      'TCOMBOBOX'
+      'TMEMO'
+    )
+    Style = csDropDownList
+    TabOrder = 3
+    Text = 'TEDIT'
+  end
+  object Label2: TLabel
+    Left = 24
+    Height = 15
+    Top = 64
+    Width = 90
+    Caption = 'Component type'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 240
+    Height = 15
+    Top = 64
+    Width = 99
+    Caption = 'Component Name'
+    ParentColor = False
+  end
+  object edname: TEdit
+    Left = 240
+    Height = 23
+    Top = 90
+    Width = 152
+    TabOrder = 4
+  end
+  object Label4: TLabel
+    Left = 408
+    Height = 15
+    Top = 64
+    Width = 71
+    Caption = 'Default name'
+    ParentColor = False
+  end
+  object eddefaultname: TEdit
+    Left = 408
+    Height = 23
+    Top = 90
+    Width = 152
+    TabOrder = 5
+  end
+  object Label5: TLabel
+    Left = 568
+    Height = 15
+    Top = 64
+    Width = 71
+    Caption = 'Label caption'
+    ParentColor = False
+  end
+  object edlabelcaption: TEdit
+    Left = 568
+    Height = 23
+    Top = 90
+    Width = 152
+    TabOrder = 6
+  end
+  object Label6: TLabel
+    Left = 728
+    Height = 15
+    Top = 64
+    Width = 32
+    Caption = 'Width'
+    ParentColor = False
+  end
+  object edwidth: TEdit
+    Left = 728
+    Height = 23
+    Top = 90
+    Width = 64
+    TabOrder = 7
+  end
+  object Label7: TLabel
+    Left = 800
+    Height = 15
+    Top = 64
+    Width = 20
+    Caption = 'Top'
+    ParentColor = False
+  end
+  object edtop: TEdit
+    Left = 800
+    Height = 23
+    Top = 90
+    Width = 56
+    TabOrder = 8
+  end
+  object Label8: TLabel
+    Left = 864
+    Height = 15
+    Top = 64
+    Width = 46
+    Caption = 'Font size'
+    ParentColor = False
+  end
+  object edfontsize: TEdit
+    Left = 864
+    Height = 23
+    Top = 90
+    Width = 40
+    TabOrder = 9
+  end
+  object Label9: TLabel
+    Left = 920
+    Height = 15
+    Top = 64
+    Width = 54
+    Caption = 'Font color'
+    ParentColor = False
+  end
+  object edfontcolor: TEdit
+    Left = 920
+    Height = 23
+    Top = 90
+    Width = 72
+    TabOrder = 10
+  end
+  object Label10: TLabel
+    Left = 1000
+    Height = 15
+    Top = 64
+    Width = 94
+    Caption = 'Background color'
+    ParentColor = False
+  end
+  object edbkgcolor: TEdit
+    Left = 1000
+    Height = 23
+    Top = 90
+    Width = 88
+    TabOrder = 11
+  end
+  object Label11: TLabel
+    Left = 1104
+    Height = 15
+    Top = 64
+    Width = 42
+    Caption = 'Enabled'
+    ParentColor = False
+  end
+  object edenabled: TEdit
+    Left = 1104
+    Height = 23
+    Top = 90
+    Width = 24
+    MaxLength = 1
+    TabOrder = 12
+  end
+  object Label12: TLabel
+    Left = 1152
+    Height = 15
+    Top = 64
+    Width = 34
+    Caption = 'Visible'
+    ParentColor = False
+  end
+  object edvisible: TEdit
+    Left = 1152
+    Height = 23
+    Top = 90
+    Width = 24
+    MaxLength = 1
+    TabOrder = 13
+  end
+  object Label13: TLabel
+    Left = 1192
+    Height = 15
+    Top = 64
+    Width = 67
+    Caption = 'Upd Enabled'
+    ParentColor = False
+  end
+  object edupdenabled: TEdit
+    Left = 1192
+    Height = 23
+    Top = 90
+    Width = 24
+    MaxLength = 1
+    TabOrder = 14
+  end
+  object Label14: TLabel
+    Left = 1264
+    Height = 15
+    Top = 64
+    Width = 59
+    Caption = 'Upd Visible'
+    ParentColor = False
+  end
+  object edupdvisible: TEdit
+    Left = 1264
+    Height = 23
+    Top = 90
+    Width = 24
+    MaxLength = 1
+    TabOrder = 15
+  end
+  object Label15: TLabel
+    Left = 1328
+    Height = 15
+    Top = 64
+    Width = 47
+    Caption = 'Required'
+    ParentColor = False
+  end
+  object edrequired: TEdit
+    Left = 1328
+    Height = 23
+    Top = 90
+    Width = 24
+    MaxLength = 1
+    TabOrder = 16
+  end
+  object Label16: TLabel
+    Left = 1384
+    Height = 15
+    Top = 64
+    Width = 40
+    Caption = 'Ds proc'
+    ParentColor = False
+  end
+  object eddsproc: TEdit
+    Left = 1384
+    Height = 23
+    Top = 90
+    Width = 152
+    TabOrder = 17
+  end
+end
