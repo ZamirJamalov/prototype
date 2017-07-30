@@ -42,6 +42,7 @@ type
     TrayIcon1: TTrayIcon;
     TreeView1: TTreeView;
     procedure btnDelClick(Sender: TObject);
+    procedure btnRefreshClick(Sender: TObject);
     procedure btnUpdClick(Sender: TObject);
     procedure btnViewClick(Sender: TObject);
     procedure showform(p_crud:string;p_id:string);
@@ -347,6 +348,54 @@ begin
   if v_grid_id=0 then begin
       showmessage('no row selected');
   end else showform('del',inttostr(v_grid_id));
+end;
+
+procedure TfrmMain.btnRefreshClick(Sender: TObject);
+var
+   jData :  TJSONData;
+   jObject: TJSONObject;
+   jArray : TJSONArray;
+   i,j:integer;
+   ujs_:ujs;
+   s:widestring;
+   active_pagename:String;
+   tab :TTabSheet;
+begin
+   active_pagename :=  copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name));
+
+   ujs_ :=  ujs.Create;
+   s := ujs_.runHub(schema_name+'.'+active_pagename+'_pkg.grid_data','');
+   if ujs_.jsonError<>'' then begin
+      Showmessage(ujs_.jsonError);
+      exit;
+   end;
+   jData := GetJSON(s);
+   ujs_.Free;
+
+   tab := self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet;
+   with (self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet).FindComponent('grid_'+active_pagename) as TStringGrid do begin
+    Clear;
+    FixedCols:=0;
+    RowCount:=1;
+    for i:=0 to  jdata.FindPath('Response.Components[0].columns').Count-1  do   begin
+          //Columns.Add;
+          Columns[i].Title.Alignment:=taCenter;
+          Columns[i].Title.Font.Style:=[fsBold];
+          Columns[i].Title.Caption := jdata.FindPath('Response.Components[0].columns['+inttostr(i)+']').AsString;
+          Columns[i].Width:=round(tab.Width/jdata.FindPath('Response.Components[0].columns').Count);
+          Columns[i].Title.Font.Color:=clwhite;
+          Columns[i].Title.Color:=$00621E0B;
+          //stringGrid.Columns[i].Color:=$00FFD3CA;
+      end;
+      for i:=0 to  jdata.FindPath('Response.Components[0].rows').Count-1  do begin
+         RowCount:=RowCount+1;
+        for j:=0 to jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)).Count-1 do begin
+           Cells[j,i+1]:=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'['+inttostr(j)+']').AsString;
+        end;//for j
+      end;//for i
+    jData.Free;
+   end; //with
+
 end;
 
 procedure TfrmMain.btnViewClick(Sender: TObject);

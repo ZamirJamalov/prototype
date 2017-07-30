@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 815
+  Left = 637
   Height = 441
-  Top = 513
+  Top = 422
   Width = 907
   AlphaBlendValue = 200
   ClientHeight = 441
@@ -919,6 +919,7 @@ object frmMain: TfrmMain
           1B01000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        OnClick = btnRefreshClick
         TabOrder = 5
       end
     end

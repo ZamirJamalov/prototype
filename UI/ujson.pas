@@ -625,6 +625,7 @@ begin
     TRY
       s := Post('http://localhost:8089/WebApplication1/NewServlet?myparam=' + v_json);
       jdata := getjson(s);
+      v_jsonError := '';
       if jdata.FindPath('Response.Message.Status').AsString = 'ERROR' then begin
         v_jsonError :=  jdata.FindPath('Response.Message.Text').AsString;
      end;
