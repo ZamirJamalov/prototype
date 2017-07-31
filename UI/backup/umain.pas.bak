@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls,grids, Buttons,fpjson,jsonparser,MTProcs;
+  ComCtrls, ExtCtrls,grids, Buttons,fpjson,jsonparser,MTProcs,LazUTF8Classes;
 type
   Rmenu=record
     id:string;
@@ -42,6 +42,7 @@ type
     TrayIcon1: TTrayIcon;
     TreeView1: TTreeView;
     procedure btnDelClick(Sender: TObject);
+    procedure btnExcelClick(Sender: TObject);
     procedure btnRefreshClick(Sender: TObject);
     procedure btnUpdClick(Sender: TObject);
     procedure btnViewClick(Sender: TObject);
@@ -61,6 +62,7 @@ type
     { private declarations }
     Fnode :TTreeNode;
     function getFormCaptionByActiveTab:String;
+    function addcomma(p_val :integer):string;
   public
     { public declarations }
     procedure onGridClick(Sender:Tobject);
@@ -208,6 +210,11 @@ begin
   END;
 end;
 
+function TfrmMain.addcomma(p_val: integer): string;
+begin
+  if p_val>0 then result := ',' else result := '';
+end;
+
 procedure TfrmMain.onGridClick(Sender:Tobject);
  var
    i:integer;
@@ -350,6 +357,47 @@ begin
   end else showform('del',inttostr(v_grid_id));
 end;
 
+procedure TfrmMain.btnExcelClick(Sender: TObject);
+ var
+    active_pagename : string;
+    tab : TTabSheet;
+    i,j:integer;
+    memo:TMemo;
+    s:widestring;
+    // str:TStringListUTF8;
+    str:TStringList;
+    savedialog:TSaveDialog;
+begin
+  savedialog := TSaveDialog.Create(nil);
+  savedialog.Filter:='*.csv';
+  if savedialog.Execute then begin
+  active_pagename :=  copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name));
+  tab := self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet;
+  memo :=  tmemo.Create(self);
+  str := TStringListUTF8.create;
+
+
+  with (self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet).FindComponent('grid_'+active_pagename) as TStringGrid do begin
+   for i:=0 to colcount-1 do begin
+    s := s + addcomma(i)+columns[i].Title.Caption;
+   end;
+   s := s+#13#10;
+   for i :=1 to rowcount-1 do begin
+         for j := 0 to colcount-1 do begin
+          s := s + addcomma(j)+Cells[j,i];
+         end; //for j
+         s:= s+#13#10;
+   end; //for i
+  SaveToCSVFile(savedialog.FileName,',');
+  str.Text :=s;
+  str.text := AnsiToUtf8(str.text);
+  str.SaveToFile(savedialog.FileName);
+  str.Free;
+ end;
+  end;
+
+end;
+
 procedure TfrmMain.btnRefreshClick(Sender: TObject);
 var
    jData :  TJSONData;
@@ -372,10 +420,6 @@ begin
    jData := GetJSON(s);
    ujs_.Free;
 
-
-   //if assigned(self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet) then begin
-     // (self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet).fin
-   //end;
    tab := self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet;
    with (self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet).FindComponent('grid_'+active_pagename) as TStringGrid do begin
     Clear;

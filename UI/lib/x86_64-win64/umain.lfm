@@ -779,6 +779,7 @@ object frmMain: TfrmMain
           1B01000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000
         }
+        OnClick = btnExcelClick
         TabOrder = 4
       end
       object btnRefresh: TBitBtn
