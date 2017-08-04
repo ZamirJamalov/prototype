@@ -369,7 +369,7 @@ procedure TfrmMain.btnExcelClick(Sender: TObject);
     savedialog:TSaveDialog;
 begin
   savedialog := TSaveDialog.Create(nil);
-  savedialog.Filter:='*.csv';
+  savedialog.Filter:='*.csv|*.csv';
   if savedialog.Execute then begin
   active_pagename :=  copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name));
   tab := self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet;

@@ -379,7 +379,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
    jData: TJSONData;
    jObject: TJSONObject;
    jArray: TJSONArray;
-
+   cmbItemIndex :integer;
  begin
   v_top := 0;
   jData := GetJSON(p_json);
@@ -509,11 +509,15 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     if jdata.FindPath('Response.Components['+inttostr(i)+'].background_color').AsString='' then Color:= clWhite else color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].background_color').AsString);
                                     enabled:=  stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].enabled').AsString);
                                     visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].visible').AsString);
-
+                                    cmbItemIndex := 0;
                                     FOR j := 0 TO jdata.FindPath('Response.Components['+inttostr(i)+'].values').count - 1 DO BEGIN
                                       items.add(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].name').asString);
+                                       if  jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].checked').asString<>'' then begin
+                                        cmbItemIndex:= StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].checked').asString);
+                                       end;
+
                                     END;//FOR j
-                                    itemindex := 0;
+                                    itemindex := cmbItemIndex;
                               end; //with
                             end;//TCOMBOBOX
            'TMEMO':         begin

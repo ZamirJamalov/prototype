@@ -46,9 +46,10 @@ FUNCTION getColumnValue(p_column_name  VARCHAR2) RETURN VARCHAR2;
 PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2);
 FUNCTION exec RETURN CLOB;
 FUNCTION exec(p_ds_proc VARCHAR2) RETURN CLOB;
+FUNCTION exec(p_json_part CLOB) RETURN CLOB;
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS');
 PROCEDURE setJsonHeadMessageError(p_message VARCHAR2);
-
+PROCEDURE setModifyCmbChecked(p_coll IN OUT  ttvalues,p_id NUMBER,p_checked VARCHAR2);
 end api_component;
 /
 create or replace package body api_component is
@@ -277,6 +278,19 @@ BEGIN
   RETURN v_res;
 END exec;  
 
+FUNCTION exec(p_json_part CLOB) RETURN CLOB IS
+BEGIN
+   setvalue_activated := FALSE;
+   dbms_lob.createtemporary(rows_all,TRUE);
+   dbms_lob.append(rows_all,'{"Response":');
+   dbms_lob.append(rows_all,'{"Message":{"Status":"'||JsonHeadMessageType||'","Text":"'||JsonHeadMessage||'"},');
+   dbms_lob.append(rows_all,'"Components":[');
+   IF length(p_json_part)>0 THEN dbms_lob.append(rows_all,p_json_part); END IF;
+   dbms_lob.append(rows_all,']}}');
+   
+   RETURN rows_all;
+END exec;  
+
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS') IS
 BEGIN
    JsonHeadMessageType := 'OK';
@@ -287,7 +301,16 @@ BEGIN
   JsonHeadMessageType := 'ERROR';
   JsonHeadMessage := p_message;
 END;  
- 
+
+PROCEDURE setModifyCmbChecked(p_coll IN OUT ttvalues,p_id NUMBER,p_checked VARCHAR2) IS
+BEGIN
+  FOR i IN p_coll.first..p_coll.last LOOP
+    IF p_coll(i).id=p_id THEN 
+       p_coll(i).checked := p_checked;
+       EXIT;
+    END IF;   
+  END LOOP;
+END setModifyCmbChecked;   
 begin
   api_component.parse_component_params(hub.getJson);
 end api_component;

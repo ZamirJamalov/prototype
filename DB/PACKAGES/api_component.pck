@@ -49,7 +49,7 @@ FUNCTION exec(p_ds_proc VARCHAR2) RETURN CLOB;
 FUNCTION exec(p_json_part CLOB) RETURN CLOB;
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS');
 PROCEDURE setJsonHeadMessageError(p_message VARCHAR2);
-
+PROCEDURE setModifyCmbChecked(p_coll IN OUT  ttvalues,p_id NUMBER,p_checked VARCHAR2 DEFAULT '1');
 end api_component;
 /
 create or replace package body api_component is
@@ -301,7 +301,16 @@ BEGIN
   JsonHeadMessageType := 'ERROR';
   JsonHeadMessage := p_message;
 END;  
- 
+
+PROCEDURE setModifyCmbChecked(p_coll IN OUT ttvalues,p_id NUMBER,p_checked VARCHAR2 DEFAULT '1') IS
+BEGIN
+  FOR i IN p_coll.first..p_coll.last LOOP
+    IF p_coll(i).id=p_id THEN 
+       p_coll(i).checked := p_checked;
+       EXIT;
+    END IF;   
+  END LOOP;
+END setModifyCmbChecked;   
 begin
   api_component.parse_component_params(hub.getJson);
 end api_component;

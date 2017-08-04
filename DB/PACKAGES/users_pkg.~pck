@@ -148,7 +148,7 @@ BEGIN
                             p_sql       => 'select rownum,a.id as id,a.session_ as session,a.login as login, a.email as email,a.wrong_attempt_count as wrong_attempt_count,a.blocked_time as blocked_time,a.mob_phone as mob_phone,a.logon_time as logon_time 
                              from (select id,session_,login,email,wrong_attempt_count,blocked_time,mob_phone,to_char(logon_time,''DD-MM-YYYY HH24:MI:SS'') as logon_time from users where rownum<10 order by id asc ) a');
   json_kernel.append_as_text(']}'); 
-  RETURN json_kernel.response;   
+  RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
     RETURN '';
@@ -162,7 +162,7 @@ FUNCTION test RETURN CLOB IS
  v_res api_component.ttvalues := api_component.ttvalues();
 BEGIN
   SELECT id,name_,'' BULK COLLECT INTO v_res FROM ui_components;
-  
+  api_component.setModifyCmbChecked(v_res,1);
   RETURN api_component.component_values_to_json(v_res);
 END test;  
 

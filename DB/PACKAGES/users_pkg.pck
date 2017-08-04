@@ -162,7 +162,8 @@ FUNCTION test RETURN CLOB IS
  v_res api_component.ttvalues := api_component.ttvalues();
 BEGIN
   SELECT id,name_,'' BULK COLLECT INTO v_res FROM ui_components;
-  
+  --set checked for id 1
+  api_component.setModifyCmbChecked(v_res,1);
   RETURN api_component.component_values_to_json(v_res);
 END test;  
 
