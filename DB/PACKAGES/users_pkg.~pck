@@ -159,17 +159,20 @@ BEGIN
 END grid_data;  
 
 FUNCTION test RETURN CLOB IS
- v_res api_component.ttvalues := api_component.ttvalues();
+ --v_res api_component.ttvalues := api_component.ttvalues();
+ v_res tt_component_obj := tt_component_obj();
 BEGIN
-  SELECT id,name_,'' BULK COLLECT INTO v_res FROM ui_components;
+  SELECT t_component_obj(id,name_,'') BULK COLLECT INTO v_res FROM ui_components;
+  --set checked for id 1
   api_component.setModifyCmbChecked(v_res,1);
   RETURN api_component.component_values_to_json(v_res);
 END test;  
 
 FUNCTION test1 RETURN CLOB IS 
-  v_res  api_component.ttvalues := api_component.ttvalues();
+  --v_res  api_component.ttvalues := api_component.ttvalues();
+  v_res  tt_component_obj := tt_component_obj();
 BEGIN
- SELECT  p.id,p.name,p.checked  BULK COLLECT INTO v_res FROM (
+ SELECT  t_component_obj(p.id,p.name,p.checked)  BULK COLLECT INTO v_res FROM (
   SELECT 1 AS id,'name1' AS NAME,'' AS checked FROM dual
   UNION ALL
   SELECT 2 AS id,'name2' AS NAME,'' AS checked FROM dual) p  ;
@@ -177,9 +180,10 @@ BEGIN
 END test1;  
 
 FUNCTION ui_setid RETURN CLOB IS
-  v_res api_component.ttvalues := api_component.ttvalues();
+  --v_res api_component.ttvalues := api_component.ttvalues();
+  v_res  tt_component_obj := tt_component_obj();
 BEGIN
-  SELECT '',users_seq.nextval,'' BULK COLLECT INTO v_res FROM dual;
+  SELECT t_component_obj('',users_seq.nextval,'') BULK COLLECT INTO v_res FROM dual;
   RETURN api_component.component_values_to_json(v_res);
 END ui_setid;  
 

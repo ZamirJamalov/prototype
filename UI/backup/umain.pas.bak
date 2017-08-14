@@ -68,7 +68,9 @@ type
     procedure onGridClick(Sender:Tobject);
     procedure onSelectCell(sender:tobject;acol,arow:integer;var CanSelect :boolean);
     procedure onPrepareCanvas(sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
-    procedure viewgrid(form:rform);
+    procedure onCompareCells(Sender:Tobject;ACol,ARow,BCol,BRow:Integer;var Result:integer);
+    procedure headerClick(Sender :TObject;IsColumn:boolean;index:integer);
+    procedure viewgrid(form:rform;tab:ttabsheet);
   end;
 
 
@@ -76,10 +78,10 @@ type
 var
    frmMain: TfrmMain;
 
-   Tab:TTabSheet;
+
    button_new, button_upd, button_del, button_view, button_excel:TButton;
    panel,panel2:TPanel;
-   stringGrid:TStringGrid;
+
    ora_package_name:string;
    arr_menu:array of rmenu;
    form:Rform;
@@ -162,11 +164,12 @@ end;
 
 procedure TfrmMain.newTab(p_form: Rform);
   var
-   k:integer;
    jData : TJSONData;
    jObject: TJSONObject;
    jArray : TJSONArray;
    i:integer;
+   Tab:TTabSheet;
+
 begin
    IF assigned(PageControl1.FindComponent('tab_'+p_form.form_name) as TTabSheet) then BEGIN
       PageControl1.ActivePage := self.PageControl1.FindComponent('tab_'+copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name))) as TTabSheet;
@@ -175,16 +178,18 @@ begin
    END;
 
    form := p_form;
-   k := PageControl1.PageCount+1;
-   Tab := TTabSheet.Create(PageControl1);
-   tab.PageControl := PageControl1;
+   tab := TTabSheet.Create(PageControl1);
+   //Tab := PageControl1.AddTabSheet;// TTabSheet.Create(PageControl1);
+   //tab.PageControl := PageControl1;
    tab.Parent := PageControl1;
    Tab.Name:='tab_'+p_form.form_name;
    Tab.Caption:=p_form.form_caption;
+   PageControl1.ActivePage:=tab;
    Cursor:=crSQLWait;
-   viewgrid(p_form);
+   viewgrid(p_form,tab);
+
    Cursor:=crDefault;
-   IF panel2.Visible=false THEN Panel2.Visible:=true;
+   IF panel2.Visible=false THEN begin Panel2.Visible:=true; end;
 end;
 
 
@@ -254,9 +259,22 @@ begin
     end;
 end;
 
+procedure TfrmMain.onCompareCells(Sender: Tobject; ACol, ARow, BCol,
+  BRow: Integer; var Result: integer);
+begin
+  Result := StrToIntDef((Sender as TStringGrid).Cells[ACol,Arow],0)-StrToIntDef((Sender as TStringGrid).Cells[BCol,BRow],0);
+end;
+
+procedure TfrmMain.headerClick(Sender: TObject; IsColumn: boolean;
+  index: integer);
+begin
+   if isColumn then
+     (Sender as TStringGrid).SortColRow(True,1);
+end;
 
 
-procedure TfrmMain.viewgrid(form:rform);
+
+procedure TfrmMain.viewgrid(form: rform; tab: ttabsheet);
   var
    jData :  TJSONData;
    jObject: TJSONObject;
@@ -264,6 +282,7 @@ procedure TfrmMain.viewgrid(form:rform);
    i,j:integer;
    ujs_:ujs;
    s:widestring;
+   stringGrid:TStringGrid;
 begin
    ujs_ :=  ujs.Create;
    s := ujs_.runHub(schema_name+'.'+form.form_name+'_pkg.grid_data','');
@@ -273,7 +292,6 @@ begin
    end;
    jData := GetJSON(s);
    ujs_.Free;
-
    stringGrid := TStringGrid.Create(tab);
    stringGrid.Name:='grid_'+form.form_name;
    stringGrid.Visible:=false;
@@ -286,6 +304,8 @@ begin
    stringGrid.OnSelectCell:=@onSelectCell;
    stringGrid.OnClick:=@onGridClick;
    stringGrid.OnPrepareCanvas:=@OnPrepareCanvas;
+   stringGrid.OnCompareCells:=@onCompareCells;
+   stringGrid.OnHeaderClick:=@HeaderClick;
    stringGrid.Options:=[goColSizing,goColMoving,goVertLine,goSmoothScroll,goRangeSelect,goHorzLine,goFixedVertLine,goFixedHorzLine];
    stringGrid.DoubleBuffered:=true;
    for i:=0 to  jdata.FindPath('Response.Components[0].columns').Count-1  do   begin
@@ -304,6 +324,7 @@ begin
            stringGrid.Cells[j,i+1]:=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'['+inttostr(j)+']').AsString;
         end;//for j
     end;//for i
+
     stringGrid.Visible:=true;
     jData.Free;
 end;

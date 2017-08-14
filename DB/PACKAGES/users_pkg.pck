@@ -10,9 +10,9 @@ FUNCTION add RETURN CLOB;
 FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;
 FUNCTION grid_data RETURN CLOB;  
-FUNCTION test RETURN CLOB;
-FUNCTION test1 RETURN CLOB;
-FUNCTION ui_setid RETURN CLOB;
+FUNCTION test RETURN tt_component_obj;
+FUNCTION test1 RETURN tt_component_obj;
+FUNCTION ui_setid RETURN tt_component_obj;
 FUNCTION onclick_calculate RETURN CLOB;
 end users_pkg;
 /
@@ -158,30 +158,33 @@ BEGIN
                 p_log_clob    => SQLERRM);
 END grid_data;  
 
-FUNCTION test RETURN CLOB IS
- v_res api_component.ttvalues := api_component.ttvalues();
+FUNCTION test RETURN tt_component_obj IS
+ --v_res api_component.ttvalues := api_component.ttvalues();
+ v_res tt_component_obj := tt_component_obj();
 BEGIN
-  SELECT id,name_,'' BULK COLLECT INTO v_res FROM ui_components;
+  SELECT t_component_obj(id,name_,'') BULK COLLECT INTO v_res FROM ui_components;
   --set checked for id 1
   api_component.setModifyCmbChecked(v_res,1);
-  RETURN api_component.component_values_to_json(v_res);
+  RETURN  v_res;
 END test;  
 
-FUNCTION test1 RETURN CLOB IS 
-  v_res  api_component.ttvalues := api_component.ttvalues();
+FUNCTION test1 RETURN tt_component_obj IS 
+  --v_res  api_component.ttvalues := api_component.ttvalues();
+  v_res  tt_component_obj := tt_component_obj();
 BEGIN
- SELECT  p.id,p.name,p.checked  BULK COLLECT INTO v_res FROM (
+ SELECT  t_component_obj(p.id,p.name,p.checked)  BULK COLLECT INTO v_res FROM (
   SELECT 1 AS id,'name1' AS NAME,'' AS checked FROM dual
   UNION ALL
   SELECT 2 AS id,'name2' AS NAME,'' AS checked FROM dual) p  ;
-  RETURN api_component.component_values_to_json(v_res);
+  RETURN v_res;
 END test1;  
 
-FUNCTION ui_setid RETURN CLOB IS
-  v_res api_component.ttvalues := api_component.ttvalues();
+FUNCTION ui_setid RETURN tt_component_obj IS
+  --v_res api_component.ttvalues := api_component.ttvalues();
+  v_res  tt_component_obj := tt_component_obj();
 BEGIN
-  SELECT '',users_seq.nextval,'' BULK COLLECT INTO v_res FROM dual;
-  RETURN api_component.component_values_to_json(v_res);
+  SELECT t_component_obj('',users_seq.nextval,'') BULK COLLECT INTO v_res FROM dual;
+  RETURN v_res;
 END ui_setid;  
 
 FUNCTION onclick_calculate RETURN CLOB IS

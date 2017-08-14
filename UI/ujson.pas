@@ -484,7 +484,8 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
 
-                                    caption := jdata.FindPath('Response.Components['+inttostr(i)+'].label_caption').AsString;
+                                    //caption := jdata.FindPath('Response.Components['+inttostr(i)+'].label_caption').AsString;
+                                    caption := '';
                                     Alignment:=taLeftJustify;
 
                                     if jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString='' then font.Color:=clblack else font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString);

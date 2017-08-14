@@ -139,12 +139,13 @@ BEGIN
   v_form := zamir.json_ext.get_string(hub.getJson(),'form');
   v_grid_id := zamir.json_ext.get_string(hub.getJson(),'id');
   v_crud := zamir.json_ext.get_string(hub.getJson(),'crud');              
-  
+
   api_component.collectcolumnvalues(p_schema_name => 'ZAMIR', p_table_name  => upper(v_form), p_id => v_grid_id);
   
+ IF v_form='UI_COMPONENTS' THEN 
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => v_form||'.'||i.name_,
-                            p_values           => api_component.exec(i.ds_proc),
+                            p_values           => api_component.exec(i.ds_proc,CASE WHEN i.name_='form_list' THEN v_form ELSE api_component.getColumnValue(i.name_) END),
                             p_value            => nvl(api_component.getColumnValue(i.name_),i.default_value),
                             p_label_caption    => i.label_caption,
                             p_width            => i.width_,
@@ -159,7 +160,26 @@ BEGIN
                             p_onchange         => i.onchange,
                             p_required         => i.required);
   END LOOP;
- 
+ ELSE
+    
+  FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
+     api_component.setvalue(p_component        => v_form||'.'||i.name_,
+                            p_values           => api_component.exec(i.ds_proc,i.name_),
+                            p_value            => nvl(api_component.getColumnValue(i.name_),i.default_value),
+                            p_label_caption    => i.label_caption,
+                            p_width            => i.width_,
+                            p_font_size        => i.font_size,
+                            p_font_color       => i.font_color,
+                            p_background_color => i.background_color,
+                            p_enabled          => CASE v_crud  WHEN 'upd' THEN i.upd_enabled_  ELSE i.enabled_ END,
+                            p_visible          => CASE v_crud WHEN  'upd' THEN i.upd_visible_  ELSE i.visible_ END,
+                            p_hint             => i.hint,
+                            p_onclick          => i.onclick,
+                            p_onkeypress       => i.onkeypress,
+                            p_onchange         => i.onchange,
+                            p_required         => i.required);
+  END LOOP;
+ END IF;
  RETURN api_component.exec;
  EXCEPTION
    WHEN OTHERS THEN 

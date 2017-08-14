@@ -63,9 +63,11 @@ begin
      ujs_.existsform(self,s,self);
      if ujs_.errorexists then begin exit; end;
      frmMain := umain.TfrmMain.Create(nil);
+     frmMain.ShowInTaskBar:= stAlways;
+     frmMain.Show;
+     frmLogin.Hide;
+     //frmMain.Visible:= true;
 
-     frmMain.Visible:= true;
-     frmLogin.Visible:=false;
    end;
  except
    on E:Exception do

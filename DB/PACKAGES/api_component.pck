@@ -7,11 +7,12 @@ create or replace package api_component is
 
 
 TYPE tttvalues IS RECORD
-(id NUMBER,
+(id VARCHAR2(4000),
  NAME VARCHAR2(4000),
  checked CHAR(1));
 
-TYPE ttvalues IS TABLE OF tttvalues ;
+TYPE ttvalues IS TABLE OF tttvalues;
+
 
 
 
@@ -20,7 +21,7 @@ TYPE ttvalues IS TABLE OF tttvalues ;
 
 PROCEDURE parse_component_params(p_json json); 
 
-FUNCTION component_values_to_json(p_coll ttvalues,p_comma_param_renew BOOLEAN DEFAULT TRUE) RETURN CLOB;
+FUNCTION component_values_to_json(p_coll tt_component_obj,p_comma_param_renew BOOLEAN DEFAULT TRUE) RETURN CLOB;
 
 PROCEDURE setvalue(p_component         VARCHAR2,
                    p_values            CLOB DEFAULT NULL,
@@ -45,11 +46,11 @@ FUNCTION getvalue(p_component VARCHAR2) RETURN VARCHAR2;
 FUNCTION getColumnValue(p_column_name  VARCHAR2) RETURN VARCHAR2;
 PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2);
 FUNCTION exec RETURN CLOB;
-FUNCTION exec(p_ds_proc VARCHAR2) RETURN CLOB;
+FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2) RETURN CLOB;
 FUNCTION exec(p_json_part CLOB) RETURN CLOB;
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS');
 PROCEDURE setJsonHeadMessageError(p_message VARCHAR2);
-PROCEDURE setModifyCmbChecked(p_coll IN OUT  ttvalues,p_id NUMBER,p_checked VARCHAR2 DEFAULT '1');
+PROCEDURE setModifyCmbChecked(p_coll IN OUT  tt_component_obj,p_id VARCHAR2,p_checked VARCHAR2 DEFAULT '1');
 end api_component;
 /
 create or replace package body api_component is
@@ -128,7 +129,7 @@ BEGIN
   END LOOP;
 END parse_component_params;   
 
-FUNCTION component_values_to_json(p_coll ttvalues,p_comma_param_renew BOOLEAN DEFAULT TRUE) RETURN CLOB IS 
+FUNCTION component_values_to_json(p_coll tt_component_obj,p_comma_param_renew BOOLEAN DEFAULT TRUE) RETURN CLOB IS 
  v_res CLOB;
  n NUMBER DEFAULT 1;
 BEGIN
@@ -266,12 +267,16 @@ BEGIN
    RETURN rows_all;
 END exec;
 
-FUNCTION exec(p_ds_proc VARCHAR2) RETURN  CLOB IS
+FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2) RETURN  CLOB IS
  v_res CLOB;
+ v_tt_values ttvalues := ttvalues();
+ v_tt_component_obj tt_component_obj := tt_component_obj();
 BEGIN
   dbms_lob.createtemporary(v_res,TRUE);
   IF length(p_ds_proc)>0 THEN 
-    EXECUTE IMMEDIATE  'begin :1:='||p_ds_proc||'; end;' USING OUT v_res;
+    EXECUTE IMMEDIATE  'begin :1:='||p_ds_proc||'; end;' USING OUT v_tt_component_obj;
+    setModifyCmbChecked(v_tt_component_obj,p_value);
+    v_res := component_values_to_json(v_tt_component_obj);
   ELSE
     v_res := '{"index":"0","id":"","name":"","checked":""}';  
   END IF;  
@@ -302,7 +307,7 @@ BEGIN
   JsonHeadMessage := p_message;
 END;  
 
-PROCEDURE setModifyCmbChecked(p_coll IN OUT ttvalues,p_id NUMBER,p_checked VARCHAR2 DEFAULT '1') IS
+PROCEDURE setModifyCmbChecked(p_coll IN OUT tt_component_obj,p_id VARCHAR2,p_checked VARCHAR2 DEFAULT '1') IS
 BEGIN
   FOR i IN p_coll.first..p_coll.last LOOP
     IF p_coll(i).id=p_id THEN 

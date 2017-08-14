@@ -1,11 +1,12 @@
 object frmMain: TfrmMain
-  Left = 598
+  Left = 426
   Height = 441
-  Top = 325
+  Top = 232
   Width = 907
   AlphaBlendValue = 200
   ClientHeight = 441
   ClientWidth = 907
+  DefaultMonitor = dmMainForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poDesktopCenter
@@ -646,7 +647,7 @@ object frmMain: TfrmMain
         Height = 40
         Top = 0
         Width = 120
-        Caption = 'Export Excel'
+        Caption = 'Export Data'
         Glyph.Data = {
           36100000424D3610000000000000360000002800000020000000200000000100
           2000000000000010000064000000640000000000000000000000000000000000
@@ -12584,6 +12585,7 @@ object frmMain: TfrmMain
     top = 141
   end
   object Timer1: TTimer
+    Enabled = False
     Interval = 100000
     OnTimer = Timer1Timer
     left = 37

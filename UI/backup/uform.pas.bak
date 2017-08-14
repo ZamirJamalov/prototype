@@ -79,6 +79,10 @@ begin
   ujs_1.clear;
 
   s := ujs_.runHub(schema_name+'.'+self.name+'_pkg.'+v_crud,'"TFORM":"'+self.name+'",'+ujs_.prepareRequest(self));
+  if ujs_.jsonError<>'' then begin
+     Showmessage(ujs_.jsonError);
+     exit;
+  end;
   ujs_1.parseResponse(s);
   ujs_.AppendResponseJsonToExistsJson := ujs_1.retParseResponse;
   ujs_.existsform(self,s,panel3);
@@ -117,6 +121,10 @@ var
   v_json :widestring;
 begin
      v_json := ujs_.runHub(schema_name+'.ui_pkg.get_ui_comps','"form":"'+p_form+'","crud":"'+v_crud+'","id":"'+p_id+'"');
+     if ujs_.jsonError<>'' then begin
+        showmessage(ujs_.jsonError);
+        exit;
+     end;
      ujs_ :=  ujs.Create;
      ujs_.parseResponse(v_json);
      ujs_.newform(self,v_json,Panel3);
