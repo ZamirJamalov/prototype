@@ -3,99 +3,68 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="10"/>
-    <BuildModes Active="Default"/>
-    <Units Count="19">
+    <BuildModes Active="Release"/>
+    <Units Count="13">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="9"/>
-        <CursorPos X="46" Y="20"/>
+        <EditorIndex Value="5"/>
+        <CursorPos X="10" Y="9"/>
         <UsageCount Value="223"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="unit1.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Unit1"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="129"/>
-        <CursorPos X="54" Y="54"/>
-        <UsageCount Value="223"/>
-      </Unit1>
-      <Unit2>
         <Filename Value="ulogin.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmLogin"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uLogin"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="58"/>
-        <CursorPos X="38" Y="66"/>
+        <EditorIndex Value="3"/>
+        <CursorPos X="51" Y="26"/>
         <UsageCount Value="234"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-      </Unit2>
-      <Unit3>
+      </Unit1>
+      <Unit2>
         <Filename Value="ujson.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="UJson"/>
-        <TopLine Value="618"/>
-        <CursorPos X="4" Y="635"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="484"/>
+        <CursorPos X="51" Y="531"/>
         <UsageCount Value="234"/>
         <Bookmarks Count="6">
-          <Item0 Y="179" ID="1"/>
-          <Item1 X="14" Y="249" ID="2"/>
-          <Item2 X="43" Y="334" ID="3"/>
-          <Item3 X="3" Y="541" ID="4"/>
-          <Item4 X="28" Y="276"/>
-          <Item5 X="23" Y="273" ID="5"/>
+          <Item0 X="14" Y="249" ID="2"/>
+          <Item1 X="43" Y="334" ID="3"/>
+          <Item2 X="3" Y="542" ID="4"/>
+          <Item3 X="23" Y="273" ID="5"/>
+          <Item4 Y="552" ID="1"/>
+          <Item5 Y="432"/>
         </Bookmarks>
         <Loaded Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="usession.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="25" Y="10"/>
-        <UsageCount Value="343"/>
-      </Unit4>
-      <Unit5>
+      </Unit2>
+      <Unit3>
         <Filename Value="umain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="286"/>
-        <CursorPos X="31" Y="308"/>
+        <TopLine Value="428"/>
+        <CursorPos X="44" Y="467"/>
         <UsageCount Value="342"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="uchild.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form2"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="118" Y="5"/>
-        <UsageCount Value="341"/>
-      </Unit6>
-      <Unit7>
+      </Unit3>
+      <Unit4>
         <Filename Value="uthread.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <CursorPos X="72" Y="10"/>
+        <CursorPos X="62" Y="22"/>
         <UsageCount Value="266"/>
-      </Unit7>
-      <Unit8>
+      </Unit4>
+      <Unit5>
         <Filename Value="uusers.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Users"/>
@@ -103,218 +72,193 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uUsers"/>
         <EditorIndex Value="-1"/>
-        <CursorPos X="24" Y="14"/>
+        <CursorPos X="38" Y="14"/>
         <UsageCount Value="219"/>
-      </Unit8>
-      <Unit9>
+      </Unit5>
+      <Unit6>
         <Filename Value="uform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uForm"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="111"/>
-        <CursorPos X="27" Y="83"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="98"/>
+        <CursorPos X="61" Y="138"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="uforms.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="xFORMS"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="usession.pas"/>
+        <EditorIndex Value="4"/>
+        <CursorPos Y="14"/>
+        <UsageCount Value="343"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="uchild.pas"/>
+        <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <CursorPos X="72" Y="17"/>
-        <UsageCount Value="202"/>
-      </Unit10>
-      <Unit11>
+        <UsageCount Value="317"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="uforms.pas"/>
+        <ComponentName Value="xFORMS"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="55" Y="18"/>
+        <UsageCount Value="178"/>
+      </Unit9>
+      <Unit10>
         <Filename Value="uselfdialogbox.pas"/>
-        <IsPartOfProject Value="True"/>
         <ComponentName Value="fDialogBox"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uSelfDialogBox"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="3"/>
-        <CursorPos X="26" Y="31"/>
-        <UsageCount Value="221"/>
+        <CursorPos X="39" Y="16"/>
+        <UsageCount Value="197"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="unit1.pas"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="199"/>
       </Unit11>
       <Unit12>
         <Filename Value="project1.lpi"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="126"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="4"/>
         <DefaultSyntaxHighlighter Value="XML"/>
       </Unit12>
-      <Unit13>
-        <Filename Value="C:\lazarus\lcl\include\control.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="3251"/>
-        <CursorPos Y="3271"/>
-        <UsageCount Value="24"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="C:\lazarus\lcl\graphics.pp"/>
-        <UnitName Value="Graphics"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="263"/>
-        <CursorPos X="29" Y="274"/>
-        <UsageCount Value="24"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="C:\lazarus\lcl\graphtype.pp"/>
-        <UnitName Value="GraphType"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="45"/>
-        <CursorPos X="46" Y="33"/>
-        <UsageCount Value="24"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="C:\lazarus\lcl\include\customform.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2804"/>
-        <CursorPos X="43" Y="2848"/>
-        <UsageCount Value="21"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="C:\lazarus\lcl\include\wincontrol.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="6553"/>
-        <CursorPos Y="6579"/>
-        <UsageCount Value="21"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="C:\lazarus\lcl\grids.pas"/>
-        <UnitName Value="Grids"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="315"/>
-        <CursorPos X="3" Y="329"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit18>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="umain.pas"/>
-        <Caret Line="183" Column="11" TopLine="160"/>
+        <Filename Value="ulogin.pas"/>
+        <Caret Line="71" Column="16" TopLine="43"/>
       </Position1>
       <Position2>
-        <Filename Value="umain.pas"/>
-        <Caret Line="170" Column="20" TopLine="152"/>
+        <Filename Value="ulogin.pas"/>
+        <Caret Line="35" Column="10" TopLine="25"/>
       </Position2>
       <Position3>
-        <Filename Value="umain.pas"/>
-        <Caret Line="260" Column="24" TopLine="252"/>
+        <Filename Value="usession.pas"/>
+        <Caret Line="6" Column="25"/>
       </Position3>
       <Position4>
         <Filename Value="umain.pas"/>
-        <Caret Line="71" Column="48" TopLine="52"/>
+        <Caret Line="91" Column="24" TopLine="79"/>
       </Position4>
       <Position5>
         <Filename Value="umain.pas"/>
-        <Caret Line="294" Column="77" TopLine="266"/>
+        <Caret Line="345" Column="24" TopLine="326"/>
       </Position5>
       <Position6>
-        <Filename Value="project1.lpr"/>
-        <Caret Line="28"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="86" Column="34" TopLine="76"/>
       </Position6>
       <Position7>
         <Filename Value="umain.pas"/>
-        <Caret Line="187" Column="23" TopLine="158"/>
+        <Caret Line="158" Column="59" TopLine="143"/>
       </Position7>
       <Position8>
         <Filename Value="umain.pas"/>
-        <Caret Line="188" Column="23" TopLine="159"/>
+        <Caret Line="161" Column="20" TopLine="156"/>
       </Position8>
       <Position9>
         <Filename Value="umain.pas"/>
-        <Caret Line="189" Column="23" TopLine="160"/>
+        <Caret Line="55" Column="19" TopLine="39"/>
       </Position9>
       <Position10>
         <Filename Value="umain.pas"/>
-        <Caret Line="190" Column="23" TopLine="161"/>
+        <Caret Line="190" Column="22" TopLine="172"/>
       </Position10>
       <Position11>
         <Filename Value="umain.pas"/>
-        <Caret Line="185" Column="6" TopLine="162"/>
+        <Caret Line="73" Column="18" TopLine="63"/>
       </Position11>
       <Position12>
         <Filename Value="umain.pas"/>
-        <Caret Line="184" Column="6" TopLine="161"/>
+        <Caret Line="216" Column="26" TopLine="178"/>
       </Position12>
       <Position13>
         <Filename Value="umain.pas"/>
-        <Caret Line="183" Column="6" TopLine="160"/>
+        <Caret Line="481" Column="33" TopLine="449"/>
       </Position13>
       <Position14>
         <Filename Value="umain.pas"/>
-        <Caret Line="182" Column="6" TopLine="159"/>
+        <Caret Line="49" Column="17" TopLine="30"/>
       </Position14>
       <Position15>
         <Filename Value="umain.pas"/>
-        <Caret Line="181" Column="6" TopLine="158"/>
+        <Caret Line="358" Column="74" TopLine="329"/>
       </Position15>
       <Position16>
-        <Filename Value="ulogin.pas"/>
-        <Caret Line="9" Column="45"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="432" Column="60" TopLine="407"/>
       </Position16>
       <Position17>
-        <Filename Value="ulogin.pas"/>
-        <Caret Line="67" Column="6" TopLine="57"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="18" Column="18" TopLine="4"/>
       </Position17>
       <Position18>
-        <Filename Value="ulogin.pas"/>
-        <Caret Line="66" Column="38" TopLine="58"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="551" Column="20" TopLine="526"/>
       </Position18>
       <Position19>
         <Filename Value="ujson.pas"/>
-        <Caret Line="632" Column="15" TopLine="500"/>
+        <Caret Line="72" Column="30" TopLine="16"/>
       </Position19>
       <Position20>
-        <Filename Value="umain.pas"/>
-        <Caret Line="280" Column="61" TopLine="239"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="83" Column="8" TopLine="52"/>
       </Position20>
       <Position21>
-        <Filename Value="umain.pas"/>
-        <Caret Line="307" Column="14" TopLine="290"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="84" Column="8" TopLine="53"/>
       </Position21>
       <Position22>
-        <Filename Value="umain.pas"/>
-        <Caret Line="309" Column="48" TopLine="287"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="85" Column="8" TopLine="54"/>
       </Position22>
       <Position23>
-        <Filename Value="umain.pas"/>
-        <Caret Line="71" Column="27" TopLine="52"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="203" Column="100" TopLine="173"/>
       </Position23>
       <Position24>
-        <Filename Value="umain.pas"/>
-        <Caret Line="264" Column="48" TopLine="250"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="387" Column="8" TopLine="356"/>
       </Position24>
       <Position25>
-        <Filename Value="umain.pas"/>
-        <Caret Line="72" Column="20" TopLine="58"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="388" Column="8" TopLine="357"/>
       </Position25>
       <Position26>
-        <Filename Value="umain.pas"/>
-        <Caret Line="308" Column="44" TopLine="295"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="433" Column="66" TopLine="420"/>
       </Position26>
       <Position27>
-        <Filename Value="C:\lazarus\lcl\grids.pas"/>
-        <Caret Line="1739" Column="14" TopLine="1728"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="18" Column="16"/>
       </Position27>
       <Position28>
-        <Filename Value="C:\lazarus\lcl\grids.pas"/>
-        <Caret Line="1409" Column="14" TopLine="1396"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="561" Column="11" TopLine="551"/>
       </Position28>
       <Position29>
-        <Filename Value="C:\lazarus\lcl\grids.pas"/>
-        <Caret Line="1262" Column="31" TopLine="1247"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="67" Column="15" TopLine="49"/>
       </Position29>
       <Position30>
-        <Filename Value="umain.pas"/>
-        <Caret Line="308" Column="39" TopLine="301"/>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="177" Column="3" TopLine="175"/>
       </Position30>
     </JumpHistory>
   </ProjectSession>

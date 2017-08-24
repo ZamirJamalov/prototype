@@ -1,7 +1,7 @@
 object frm: Tfrm
-  Left = 772
+  Left = 2231
   Height = 600
-  Top = 210
+  Top = 186
   Width = 800
   HorzScrollBar.Page = 75
   VertScrollBar.Page = 32
@@ -16,7 +16,7 @@ object frm: Tfrm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '1.8.0.4'
   object Panel1: TPanel
     Left = 0
     Height = 32

@@ -1,0 +1,74 @@
+object frmLogin: TfrmLogin
+  Left = 327
+  Height = 369
+  Top = 184
+  Width = 313
+  Caption = 'Login'
+  ClientHeight = 369
+  ClientWidth = 313
+  LCLVersion = '6.2'
+  object edLogin: TLabeledEdit
+    Left = 80
+    Height = 23
+    Top = 160
+    Width = 189
+    EditLabel.AnchorSideTop.Control = edLogin
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = edLogin
+    EditLabel.AnchorSideBottom.Control = edLogin
+    EditLabel.AnchorSideBottom.Side = asrBottom
+    EditLabel.Left = 47
+    EditLabel.Height = 15
+    EditLabel.Top = 164
+    EditLabel.Width = 30
+    EditLabel.Caption = 'Login'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    TabOrder = 0
+  end
+  object edPassword: TLabeledEdit
+    Left = 80
+    Height = 23
+    Top = 200
+    Width = 189
+    EchoMode = emPassword
+    EditLabel.AnchorSideTop.Control = edPassword
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = edPassword
+    EditLabel.AnchorSideBottom.Control = edPassword
+    EditLabel.AnchorSideBottom.Side = asrBottom
+    EditLabel.Left = 27
+    EditLabel.Height = 15
+    EditLabel.Top = 204
+    EditLabel.Width = 50
+    EditLabel.Caption = 'Password'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    PasswordChar = '*'
+    TabOrder = 1
+  end
+  object btnLogin: TButton
+    Left = 120
+    Height = 25
+    Top = 264
+    Width = 99
+    Caption = 'Login'
+    OnClick = btnLoginClick
+    TabOrder = 2
+  end
+  object Label1: TLabel
+    Left = 80
+    Height = 37
+    Top = 96
+    Width = 162
+    Caption = 'LOGO HERE'
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -32
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+end

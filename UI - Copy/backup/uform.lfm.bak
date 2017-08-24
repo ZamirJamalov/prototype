@@ -1,0 +1,52 @@
+object frm: Tfrm
+  Left = 1111
+  Height = 600
+  Top = 191
+  Width = 800
+  HorzScrollBar.Page = 75
+  VertScrollBar.Page = 32
+  AlphaBlendValue = 253
+  AutoScroll = True
+  BorderIcons = [biSystemMenu, biMaximize]
+  ClientHeight = 600
+  ClientWidth = 800
+  FormStyle = fsStayOnTop
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.8.0.4'
+  object Panel1: TPanel
+    Left = 0
+    Height = 32
+    Top = 568
+    Width = 800
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 32
+    ClientWidth = 800
+    TabOrder = 0
+    object btnSaveTop: TButton
+      Left = 725
+      Height = 32
+      Top = 0
+      Width = 75
+      Align = alRight
+      Caption = 'Execute'
+      OnClick = btnSaveTopClick
+      TabOrder = 0
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Height = 568
+    Top = 0
+    Width = 800
+    Align = alClient
+    BevelOuter = bvNone
+    Color = clForm
+    ParentColor = False
+    TabOrder = 1
+  end
+end

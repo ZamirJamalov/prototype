@@ -287,6 +287,31 @@ begin
                            end;
                         END;//WITH
                    END;//TEDIT
+        'TMEMO': BEGIN
+                       WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TMEMO) DO BEGIN
+                          if  jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString='' then begin
+                              text := jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(k) + '].values').Count-1)+'].name').AsString;
+                           end else begin
+                              text := jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString;
+                           end;
+                           hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
+                           showhint := TRUE;
+                           enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
+                           visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
+                           if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin
+                             font.color := clBlack;
+                            end
+                           else begin
+                             font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString);
+                           end;
+                           if stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].required').AsString)=true then begin
+                             color := clRed;
+                           end
+                           else begin
+                             color := clwhite;
+                           end;
+                        END;//WITH
+                   END;//TEDIT
        'TCHECKBOX': BEGIN
                         WITH (p_form.findComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString)  AS TCHECKBOX) DO BEGIN
                             hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString ;
@@ -404,7 +429,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
   for i:=0 to jdata.FindPath('Response.Components').Count-1 do begin
 
          //create components labels
-         if (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TEDIT') or (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TCHECKBOX') or (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TCOMBOBOX') then begin
+         if (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TEDIT') or (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TCHECKBOX') or (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TCOMBOBOX') or (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TMEMO') then begin
             component := TLabel.Create(p_component);
             with (component as TLabel) do begin
                 parent:=p_component;
@@ -473,6 +498,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                      visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].visible').AsString);
                                end; //with
                            end;   //tedit end
+
            'TCHECKBOX':    begin
 
                               component:=TCheckBox.Create(p_component);
@@ -548,6 +574,7 @@ var
    v_response_array:TResponse_array;
 
 begin
+ (*
   WITH (click_wincontrol.FindComponent('memo_test') As TMemo) do begin
       for i:=0 to length(response_array) -1 do begin
         Lines.Add('Name - '+response_array[i].name_);
@@ -556,10 +583,12 @@ begin
         end; //j
        end;//j
   end; //with
+ *)
   v_response_array := response_array;
   s := runHub(umain.schema_name+'.'+click_form.name+'_pkg.onclick_'+click_button_name,'"TFORM":"'+click_form.name+'",'+prepareRequest(click_form));
   parseResponse(s);
-   for i := 0 to length(v_response_array) - 1 do begin
+  (*
+  for i := 0 to length(v_response_array) - 1 do begin
      for j := 0 to length(response_array) - 1 do begin
         if v_response_array[i].name_=response_array[j].name_ then
            break;
@@ -576,7 +605,7 @@ begin
        end;//j
      Lines.Add('Finish');
   end; //with
-
+  *)
   //response_array := v_response_array;
   existsform(click_form,s,click_wincontrol);
 end;

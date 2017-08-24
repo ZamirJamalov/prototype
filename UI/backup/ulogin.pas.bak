@@ -35,7 +35,7 @@ var
   ujs_ : ujs;
 
 implementation
- uses unit1,usession,umain;
+ uses usession,umain;
 {$R *.lfm}
 
 { TfrmLogin }
@@ -63,7 +63,7 @@ begin
      ujs_.existsform(self,s,self);
      if ujs_.errorexists then begin exit; end;
      frmMain := umain.TfrmMain.Create(nil);
-     frmMain.ShowInTaskBar:= stDefault;
+     frmMain.ShowInTaskBar:= stAlways;
      frmMain.Show;
      frmLogin.Hide;
      //frmMain.Visible:= true;

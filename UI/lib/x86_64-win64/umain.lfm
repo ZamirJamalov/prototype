@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 426
+  Left = 590
   Height = 441
-  Top = 232
+  Top = 343
   Width = 907
   AlphaBlendValue = 200
   ClientHeight = 441
@@ -10,7 +10,7 @@ object frmMain: TfrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poDesktopCenter
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '1.8.0.4'
   WindowState = wsMaximized
   object TreeView1: TTreeView
     Left = 0
@@ -19,8 +19,7 @@ object frmMain: TfrmMain
     Width = 193
     Align = alLeft
     BackgroundColor = 6430219
-    Color = clBtnHighlight
-    DefaultItemHeight = 18
+    Color = 6430219
     ExpandSignColor = clInactiveBorder
     ExpandSignType = tvestPlusMinus
     Font.CharSet = ANSI_CHARSET

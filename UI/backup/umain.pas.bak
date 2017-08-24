@@ -89,8 +89,9 @@ var
    schema_name :string;
    v_row:integer;
    v_grid_id:integer;
+   v_grid_sort:integer;
 implementation
-uses uchild,ujson,uusers,uForm,uforms,uselfdialogbox;
+uses ujson,uForm;
 {$R *.lfm}
 
 
@@ -147,12 +148,7 @@ begin
       exit;
   END;
   for i:=0 to length(arr_menu)-1 do begin
-     if (TreeView1.Selected=Fnode) and (arr_menu[i].caption=TreeView1.Selected.Text) and (arr_menu[i].form_name='XFORMS') then  begin
-         frm := TxFORMS.Create(self);
-         frm.Visible:=true;
-         exit;
-     end;
-     if (TreeView1.Selected=Fnode) and (arr_menu[i].caption=TreeView1.Selected.Text) and (arr_menu[i].form_name<>'') then  begin
+      if (TreeView1.Selected=Fnode) and (arr_menu[i].caption=TreeView1.Selected.Text) and (arr_menu[i].form_name<>'') then  begin
          form.form_name:=arr_menu[i].form_name;
          form.form_caption:=arr_menu[i].form_caption;
          schema_name := arr_menu[i].schema_name;
@@ -262,14 +258,21 @@ end;
 procedure TfrmMain.onCompareCells(Sender: Tobject; ACol, ARow, BCol,
   BRow: Integer; var Result: integer);
 begin
-  Result := StrToIntDef((Sender as TStringGrid).Cells[ACol,Arow],0)-StrToIntDef((Sender as TStringGrid).Cells[BCol,BRow],0);
+    v_grid_sort := 1;
+    //showmessage(inttostr(v_grid_sort));
+    Result := StrToIntDef((Sender as TStringGrid).Cells[ACol,Arow],0)-StrToIntDef((Sender as TStringGrid).Cells[BCol,BRow],0);
+
+    if (Sender as TStringGrid).SortOrder=soDescending then
+      result := -result;
 end;
 
 procedure TfrmMain.headerClick(Sender: TObject; IsColumn: boolean;
   index: integer);
 begin
-   if isColumn then
-     (Sender as TStringGrid).SortColRow(True,1);
+  v_grid_sort := 2;
+  //showmessage(inttostr(v_grid_sort));
+  if isColumn then
+     (Sender as TStringGrid).SortColRow(true,index);
 end;
 
 
@@ -304,8 +307,8 @@ begin
    stringGrid.OnSelectCell:=@onSelectCell;
    stringGrid.OnClick:=@onGridClick;
    stringGrid.OnPrepareCanvas:=@OnPrepareCanvas;
-   stringGrid.OnCompareCells:=@onCompareCells;
-   stringGrid.OnHeaderClick:=@HeaderClick;
+   //stringGrid.OnCompareCells:=@onCompareCells;
+   //stringGrid.OnHeaderClick:=@HeaderClick;
    stringGrid.Options:=[goColSizing,goColMoving,goVertLine,goSmoothScroll,goRangeSelect,goHorzLine,goFixedVertLine,goFixedHorzLine];
    stringGrid.DoubleBuffered:=true;
    for i:=0 to  jdata.FindPath('Response.Components[0].columns').Count-1  do   begin
