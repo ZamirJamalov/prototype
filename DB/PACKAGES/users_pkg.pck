@@ -12,7 +12,7 @@ FUNCTION del RETURN CLOB;
 FUNCTION grid_data RETURN CLOB;  
 FUNCTION test RETURN tt_component_obj;
 FUNCTION test1 RETURN tt_component_obj;
-FUNCTION ui_setid RETURN tt_component_obj;
+FUNCTION ui_setid RETURN VARCHAR2;
 FUNCTION onclick_calculate RETURN CLOB;
 end users_pkg;
 /
@@ -179,17 +179,17 @@ BEGIN
   RETURN v_res;
 END test1;  
 
-FUNCTION ui_setid RETURN tt_component_obj IS
-  --v_res api_component.ttvalues := api_component.ttvalues();
-  v_res  tt_component_obj := tt_component_obj();
+FUNCTION ui_setid RETURN VARCHAR2 IS
 BEGIN
-  SELECT t_component_obj('',users_seq.nextval,'') BULK COLLECT INTO v_res FROM dual;
-  RETURN v_res;
+  RETURN users_seq.nextval;
 END ui_setid;  
 
 FUNCTION onclick_calculate RETURN CLOB IS
 BEGIN
   api_component.setvalue(p_component=>'users.email',p_required=>'Y');  
+  api_component.setvalue(p_component=>'users.memo_test',p_value=>'SalamAleykum');
+  api_component.setvalue(p_component=>'users.test1',p_required => 'Y');
+  api_component.setvalue(p_component=>'users.Blocked',p_required => 'Y');
   RETURN api_component.exec;
 END onclick_calculate;  
 

@@ -183,6 +183,7 @@ begin
   end;
   //set session
   f := false;
+
   for i := 0 to jdata.FindPath('Response.Components').Count - 1 do begin
     k := i;
     if (jdata.FindPath('Response.Components[' + IntToStr(k) + '].type').AsString='TCOMBOBOX') or (jdata.FindPath('Response.Components[' + IntToStr(k) + '].type').AsString='TCHECKLISTBOX') then  begin
@@ -221,7 +222,6 @@ begin
     end; //for i
 
   end;
-
 END;
 
  function ujs.retParseResponse: TResponse_array;
@@ -246,8 +246,10 @@ procedure ujs.existsform(p_form: tform; p_json: widestring;p_component:TWinContr
    jObject: TJSONObject;
    jArray: TJSONArray;
    v_form,v_name,v_value,v_hint,v_enabled:string;
+   v_received_text:widestring;
+   checkbox:TCheckBox;
 begin
- jData := GetJson(p_json);
+  jData := GetJson(p_json);
 
   error_exists :=false;
   if jdata.FindPath('Response.Message.Status').AsString = 'ERROR' then begin
@@ -260,17 +262,41 @@ begin
   end;
 
  for k := 0 to jdata.FindPath('Response.Components').Count-1 do begin
-
+   //showmessage(jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString);
+   if (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TEDIT') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TCHECKBOX') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TCOMBOBOX') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TMEMO') then begin
+       WITH (p_component.FindComponent('lbl_'+jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TLabel) DO BEGIN
+           if jdata.FindPath('Response.Components['+inttostr(k)+'].required').AsString='Y' then begin
+              color := clRed;
+           end else begin
+             color := clWhite;
+           end;
+       end;
+    end;
    CASE jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString of
         'TEDIT': BEGIN
                        WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TEDIT) DO BEGIN
-                          if  jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString='' then begin
-                              text := jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(k) + '].values').Count-1)+'].name').AsString;
-                           end else begin
+                           if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN   //''_ chr(1760)
                               text := jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString;
-                           end;
+                           END;
                            hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
                            showhint := TRUE;
+                           enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
+                           visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
+                           if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin
+                             font.color := clBlack;
+                            end
+                           else begin
+                             font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString);
+                           end;
+                        END;//WITH
+                   END;//TEDIT
+        'TMEMO': BEGIN
+                       WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TMEMO) DO BEGIN
+                           if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN
+                              text := jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString;
+                           END;
+
+                           hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
                            enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
                            visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
                            if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin
@@ -286,12 +312,13 @@ begin
                              color := clwhite;
                            end;
                         END;//WITH
-                   END;//TEDIT
+                   END;//TMEMO
        'TCHECKBOX': BEGIN
-                        WITH (p_form.findComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString)  AS TCHECKBOX) DO BEGIN
+                        WITH (p_component.findComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString)  AS TCHECKBOX) DO BEGIN
+                            if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN
+                               Checked := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString);
+                            END;
                             hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString ;
-                            showhint := TRUE;
-                            checked := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(k) + '].values').Count-1)+'].name').AsString);  //stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].values[0].name').AsString);
                             enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
                             visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
                             if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin
@@ -310,19 +337,19 @@ begin
                         END;//WITH
                     END;//TCHECKBOX
        'TCOMBOBOX': BEGIN
-                        WITH (p_form.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString ) AS TCOMBOBOX) DO BEGIN
-                            style := csDropDownList;
+                        WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString ) AS TComboBox) DO BEGIN
                             hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
-                            showhint := TRUE;
                             caption := jdata.FindPath('Response.Components['+inttostr(k)+'].label_caption').AsString ;
                             enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
                             visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
+
                             if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin
                              font.color := clBlack;
                             end
                             else begin
                              font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString);
                             end;
+
                             if stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].required').AsString)=true then begin
                              color := clRed;
                             end
@@ -330,18 +357,19 @@ begin
                              color := clwhite;
                             end;
 
-                            clear;
-                            FOR j := 0 TO jdata.FindPath('Response.Components['+inttostr(k)+'].values').count - 1 DO BEGIN
-                                items.add(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].name').asString);
-                                //items.Add(p_response_array[k].values[j].name);
-                            END;//FOR j
-                            itemindex := 0;
+                            if (jdata.FindPath('Response.Components['+inttostr(k)+'].values').count >0) and (jdata.FindPath('Response.Components['+inttostr(k)+'].values[0].index').asString<>'') then begin
+                               clear;
+                               FOR j := 0 TO jdata.FindPath('Response.Components['+inttostr(k)+'].values').count - 1 DO BEGIN
+                                   items.add(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].name').asString);
+                                    //items.Add(p_response_array[k].values[j].name);
+                               END;//FOR j
+                               itemindex := 0;
+                             end;
                         END;//WITH
                      END;//TCOMBOBOX
     'TCHECKLISTBOX': BEGIN
-                         WITH (p_form.FindComponent(jdata.FindPath('Response.Component['+inttostr(k)+'].name').asstring) AS TCHECKLISTBOX) DO BEGIN
+                         WITH (p_component.FindComponent(jdata.FindPath('Response.Component['+inttostr(k)+'].name').asstring) AS TCHECKLISTBOX) DO BEGIN
                              hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
-                             showhint := TRUE;
                              enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
                              visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
                              if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin
@@ -356,17 +384,18 @@ begin
                              else begin
                              color := clwhite;
                              end;
-
+                             if (jdata.FindPath('Response.Components['+inttostr(k)+'].values').count >0) and (jdata.FindPath('Response.Components['+inttostr(k)+'].values[0].index').asString<>'') then begin
                              clear;
                              FOR j := 0 TO jdata.FindPath('Response.Components['+inttostr(k)+'].values').count - 1 DO BEGIN
                                  items.add(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].name').asString);
                                  Checked[j] := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].checked').asString);
                              END; //FOR j
+                          end;
                          END;//WITH
                      END;//TCHECKLISTBOX
    END; //case
- end;
 
+ end;
 end;
 
 
@@ -402,7 +431,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
     usession.session_var := jdata.FindPath('Response.Message.Text').AsString;
   end;
   for i:=0 to jdata.FindPath('Response.Components').Count-1 do begin
-
+        // showmessage(jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString);
          //create components labels
          if (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TEDIT') or (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TCHECKBOX') or (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TCOMBOBOX') or (jdata.FindPath('Response.Components['+inttostr(i)+'].type').AsString='TMEMO') then begin
             component := TLabel.Create(p_component);
@@ -458,19 +487,10 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     left := 100;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
-
-                                    if  jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString='' then begin
-                                      text := jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(i) + '].values').Count-1)+'].name').AsString;
-                                    end else begin
-                                        text := jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString;
-                                    end;
-
-
+                                    text := jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString;
                                     if jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString='' then font.Color:=clblack  else font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString);
-
-                                    //if comp.background_color='' then  Color:= clWhite else color := StrToInt(comp.background_color);
-                                     enabled:=  stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].enabled').AsString);
-                                     visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].visible').AsString);
+                                    enabled:=  stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].enabled').AsString);
+                                    visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].visible').AsString);
                                end; //with
                            end;   //tedit end
 
@@ -480,17 +500,12 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                               with (component as TCheckBox) do begin
                                     parent := p_component;
                                     name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
-                                    checked := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(jData.FindPath('Response.Components[' + IntToStr(i) + '].values').Count-1)+'].name').AsString);
+                                    checked := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString);
                                     left := 100;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
-
-                                    //caption := jdata.FindPath('Response.Components['+inttostr(i)+'].label_caption').AsString;
-                                    caption := '';
                                     Alignment:=taLeftJustify;
-
                                     if jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString='' then font.Color:=clblack else font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString);
-                                    if jdata.FindPath('Response.Components['+inttostr(i)+'].background_color').AsString='' then Color:= clWhite else color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].background_color').AsString);
                                     enabled:=  stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].enabled').AsString);
                                     visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].visible').AsString);
 
@@ -527,11 +542,12 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                with (component as TMemo) do begin
                                 parent := p_component;
                                 name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
-                                Text := '';
+                                Text := jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString;;
                                 left := 100;
                                 Height:=200;
                                 top := v_top;
                                 width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
+                                if jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString='' then font.Color:=clblack  else font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString);
                                 Visible:= stringtoboolean((jdata.FindPath('Response.Components['+inttostr(i)+'].visible').AsString));
                                 Enabled:= stringtoboolean((jdata.FindPath('Response.Components['+inttostr(i)+'].enabled').AsString));
                                end; //with

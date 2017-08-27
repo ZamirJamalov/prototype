@@ -120,7 +120,7 @@ procedure Tfrm.load_components(p_form: String;p_id:string);
 var
   v_json :widestring;
 begin
-     v_json := ujs_.runHub(schema_name+'.ui_pkg.get_ui_comps','"form":"'+p_form+'","crud":"'+v_crud+'","id":"'+p_id+'"');
+     v_json := ujs_.runHub(schema_name+'.ui_pkg.get_ui_comps','"form":"'+p_form+'","crud":"'+v_crud+'","id":"'+p_id+'",'+'"schema_name":"'+schema_name+'"');
      if ujs_.jsonError<>'' then begin
         showmessage(ujs_.jsonError);
         exit;

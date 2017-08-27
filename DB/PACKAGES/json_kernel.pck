@@ -235,6 +235,12 @@ BEGIN
             nvl1(bind10,' and :10=987654321 ')
          bulk collect into tmainjson 
          USING bind1, bind2, bind3, bind4, bind5, bind6, bind7, bind8, bind9, bind10;
+         EXCEPTION
+          WHEN OTHERS THEN 
+            log_pkg.add(p_log_type    =>  log_pkg.REQUEST,
+                        p_method_name => 'json_kernel.append_as_sql',
+                        p_log_text    => SQLERRM,
+                        p_log_clob    => NULL);
        END;
 
     

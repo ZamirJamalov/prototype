@@ -135,17 +135,19 @@ FUNCTION  get_ui_comps RETURN CLOB IS
    v_form VARCHAR2(4000);
    v_grid_id VARCHAR2(100);
    v_crud VARCHAR2(100);
+   v_schema_name VARCHAR2(100);
 BEGIN
   v_form := zamir.json_ext.get_string(hub.getJson(),'form');
   v_grid_id := zamir.json_ext.get_string(hub.getJson(),'id');
-  v_crud := zamir.json_ext.get_string(hub.getJson(),'crud');              
+  v_crud := zamir.json_ext.get_string(hub.getJson(),'crud');    
+  v_schema_name := zamir.json_ext.get_string(hub.getJson(),'schema_name');              
 
   api_component.collectcolumnvalues(p_schema_name => 'ZAMIR', p_table_name  => upper(v_form), p_id => v_grid_id);
   
  IF v_form='UI_COMPONENTS' THEN 
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => v_form||'.'||i.name_,
-                            p_values           => api_component.exec(i.ds_proc,CASE WHEN i.name_='form_list' THEN v_form ELSE api_component.getColumnValue(i.name_) END),
+                            p_values           => api_component.exec(i.ds_proc,CASE WHEN i.name_='form_list' THEN v_form ELSE api_component.getColumnValue(i.name_) END)  ,
                             p_value            => nvl(api_component.getColumnValue(i.name_),i.default_value),
                             p_label_caption    => i.label_caption,
                             p_width            => i.width_,
@@ -164,8 +166,8 @@ BEGIN
     
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => v_form||'.'||i.name_,
-                            p_values           => api_component.exec(i.ds_proc,i.name_),
-                            p_value            => nvl(api_component.getColumnValue(i.name_),i.default_value),
+                            p_values           => null,--CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN api_component.exec(i.ds_proc,i.name_) ELSE NULL END,
+                            p_value            => CASE WHEN i.type_ NOT IN ('TCOMBOBOX','TCHECKLISTBOX') AND i.ds_proc IS NOT NULL THEN api_component.exec_(i.ds_proc) ELSE   nvl(api_component.getColumnValue(i.name_),i.default_value) END,
                             p_label_caption    => i.label_caption,
                             p_width            => i.width_,
                             p_font_size        => i.font_size,

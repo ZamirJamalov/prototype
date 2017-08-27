@@ -25,7 +25,7 @@ FUNCTION component_values_to_json(p_coll tt_component_obj,p_comma_param_renew BO
 
 PROCEDURE setvalue(p_component         VARCHAR2,
                    p_values            CLOB DEFAULT NULL,
-                   p_value             VARCHAR2 DEFAULT NULL,
+                   p_value             VARCHAR2 DEFAULT chr(1760),
                    p_label_caption     ui_components.label_caption%TYPE DEFAULT NULL,
                    p_width             ui_components.width_%TYPE DEFAULT NULL,
                    p_top               ui_components.top_%TYPE DEFAULT NULL,
@@ -44,7 +44,8 @@ PROCEDURE setvalue(p_component         VARCHAR2,
                    
 FUNCTION getvalue(p_component VARCHAR2) RETURN VARCHAR2;
 FUNCTION getColumnValue(p_column_name  VARCHAR2) RETURN VARCHAR2;
-PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2);
+PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2 DEFAULT 0);
+FUNCTION exec_(p_func_name VARCHAR2) RETURN VARCHAR2;
 FUNCTION exec RETURN CLOB;
 FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2) RETURN CLOB;
 FUNCTION exec(p_json_part CLOB) RETURN CLOB;
@@ -154,7 +155,7 @@ END component_values_to_json;
 
 PROCEDURE setvalue(p_component         VARCHAR2,
                    p_values            CLOB DEFAULT NULL,
-                   p_value             VARCHAR2 DEFAULT NULL,
+                   p_value             VARCHAR2 DEFAULT chr(1760),
                    p_label_caption     ui_components.label_caption%TYPE DEFAULT NULL,
                    p_width             ui_components.width_%TYPE DEFAULT NULL,
                    p_top               ui_components.top_%TYPE DEFAULT NULL,
@@ -191,9 +192,13 @@ BEGIN
       dbms_lob.createtemporary(rows,TRUE);
    END IF;
    --dbms_output.put_line(v_add_comma1);
-   dbms_lob.append(rows,add_comma(v_add_comma1)||'{"type":"'||v_type||'","name":"'||v_component||'","value":"'||p_value||'","label_caption":"'||p_label_caption||'","width":"'||p_width||'","top":"'||p_top||'","font_size":"'||p_font_size||'","font_color":"'||p_font_color||'","background_color":"'||p_background_color||'","enabled":"'||p_enabled||'","visible":"'||p_visible||'","hint":"'||p_hint||'","onclick":"'||p_onclick||'","onkeypress":"'||p_onkeypress||'","onchange":"'||p_onchange||'","required":"'||p_required||'","values":[');
-   IF length(p_values)>0 THEN dbms_lob.append(rows,p_values); ELSE dbms_lob.append(rows,'{"index":"","id":"","name":"","checked":""}'); END IF;
-   dbms_lob.append(rows,']}');    
+   IF upper(v_type)='TCOMBOBOX' OR upper(v_type)='TCHECKLISTBOX' THEN 
+       dbms_lob.append(rows,add_comma(v_add_comma1)||'{"type":"'||v_type||'","name":"'||v_component||'","value":"'||p_value||'","label_caption":"'||p_label_caption||'","width":"'||p_width||'","top":"'||p_top||'","font_size":"'||p_font_size||'","font_color":"'||p_font_color||'","background_color":"'||p_background_color||'","enabled":"'||p_enabled||'","visible":"'||p_visible||'","hint":"'||p_hint||'","onclick":"'||p_onclick||'","onkeypress":"'||p_onkeypress||'","onchange":"'||p_onchange||'","required":"'||p_required||'","values":[');
+        IF length(p_values)>0 THEN dbms_lob.append(rows,p_values); END IF; --ELSE dbms_lob.append(rows,'{"index":"","id":"'||chr(1760)||'","name":"'||chr(1760)||'","checked":"'||chr(1760)||'"}'); END IF;
+        dbms_lob.append(rows,']}');    
+    ELSE
+       dbms_lob.append(rows,add_comma(v_add_comma1)||'{"type":"'||v_type||'","name":"'||v_component||'","value":"'||p_value||'","label_caption":"'||p_label_caption||'","width":"'||p_width||'","top":"'||p_top||'","font_size":"'||p_font_size||'","font_color":"'||p_font_color||'","background_color":"'||p_background_color||'","enabled":"'||p_enabled||'","visible":"'||p_visible||'","hint":"'||p_hint||'","onclick":"'||p_onclick||'","onkeypress":"'||p_onkeypress||'","onchange":"'||p_onchange||'","required":"'||p_required||'","values":[]}');
+    END IF;     
 END setvalue;                   
 
 
@@ -220,7 +225,7 @@ BEGIN
  RETURN NULL;  
 END getColumnValue;  
 
-PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2) IS
+PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2 DEFAULT 0) IS
   v_json_string VARCHAR2(32767);
  v_sql_string VARCHAR2(32767);
  n NUMBER DEFAULT 0;
@@ -238,7 +243,7 @@ BEGIN
   END LOOP;
 
   json_kernel.append_as_text('{');
-  json_kernel.append_as_sql(p_json_part =>v_json_string, p_sql => 'select '||v_sql_string|| ' from '|| p_table_name ||' where id=:id',bind1 => p_id);
+  json_kernel.append_as_sql(p_json_part =>v_json_string, p_sql => 'select '||v_sql_string|| ' from '|| p_table_name ||' where id=:id or 0=:id and rownum<2',bind1 => p_id,bind2=>p_id);
   json_kernel.append_as_text('}');
   v_json := json(json_kernel.response);
   col.delete();
@@ -252,6 +257,13 @@ BEGIN
   END LOOP;
 END collectcolumnvalues;  
 
+
+FUNCTION exec_(p_func_name VARCHAR2) RETURN VARCHAR2 IS 
+  v_res VARCHAR2(32767);
+BEGIN
+   EXECUTE IMMEDIATE  'begin :1:='||p_func_name||'; end;' USING OUT v_res;
+   RETURN v_res;
+END exec_;  
 
 FUNCTION exec RETURN CLOB IS
 BEGIN
@@ -278,7 +290,7 @@ BEGIN
     setModifyCmbChecked(v_tt_component_obj,p_value);
     v_res := component_values_to_json(v_tt_component_obj);
   ELSE
-    v_res := '{"index":"0","id":"","name":"","checked":""}';  
+    v_res := '{"index":"0","id":"'||chr(1760)||'","name":"'||chr(1760)||'","checked":"'||chr(1760)||'"}';  
   END IF;  
   RETURN v_res;
 END exec;  
