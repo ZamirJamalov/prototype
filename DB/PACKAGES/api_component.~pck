@@ -52,6 +52,7 @@ FUNCTION exec(p_json_part CLOB) RETURN CLOB;
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS');
 PROCEDURE setJsonHeadMessageError(p_message VARCHAR2);
 PROCEDURE setModifyCmbChecked(p_coll IN OUT  tt_component_obj,p_id VARCHAR2,p_checked VARCHAR2 DEFAULT '1');
+FUNCTION  newForm(p_form VARCHAR2, p_schema VARCHAR2) RETURN CLOB;
 end api_component;
 /
 create or replace package body api_component is
@@ -194,7 +195,7 @@ BEGIN
    --dbms_output.put_line(v_add_comma1);
    IF upper(v_type)='TCOMBOBOX' OR upper(v_type)='TCHECKLISTBOX' THEN 
        dbms_lob.append(rows,add_comma(v_add_comma1)||'{"type":"'||v_type||'","name":"'||v_component||'","value":"'||p_value||'","label_caption":"'||p_label_caption||'","width":"'||p_width||'","top":"'||p_top||'","font_size":"'||p_font_size||'","font_color":"'||p_font_color||'","background_color":"'||p_background_color||'","enabled":"'||p_enabled||'","visible":"'||p_visible||'","hint":"'||p_hint||'","onclick":"'||p_onclick||'","onkeypress":"'||p_onkeypress||'","onchange":"'||p_onchange||'","required":"'||p_required||'","values":[');
-        IF length(p_values)>0 THEN dbms_lob.append(rows,p_values); ELSE dbms_lob.append(rows,'{"index":"","id":"'||chr(1760)||'","name":"'||chr(1760)||'","checked":"'||chr(1760)||'"}'); END IF;
+        IF length(p_values)>0 THEN dbms_lob.append(rows,p_values); END IF; --ELSE dbms_lob.append(rows,'{"index":"","id":"'||chr(1760)||'","name":"'||chr(1760)||'","checked":"'||chr(1760)||'"}'); END IF;
         dbms_lob.append(rows,']}');    
     ELSE
        dbms_lob.append(rows,add_comma(v_add_comma1)||'{"type":"'||v_type||'","name":"'||v_component||'","value":"'||p_value||'","label_caption":"'||p_label_caption||'","width":"'||p_width||'","top":"'||p_top||'","font_size":"'||p_font_size||'","font_color":"'||p_font_color||'","background_color":"'||p_background_color||'","enabled":"'||p_enabled||'","visible":"'||p_visible||'","hint":"'||p_hint||'","onclick":"'||p_onclick||'","onkeypress":"'||p_onkeypress||'","onchange":"'||p_onchange||'","required":"'||p_required||'","values":[]}');
@@ -261,7 +262,7 @@ END collectcolumnvalues;
 FUNCTION exec_(p_func_name VARCHAR2) RETURN VARCHAR2 IS 
   v_res VARCHAR2(32767);
 BEGIN
-   EXECUTE IMMEDIATE  'begin :1:='||p_ds_proc||'; end;' USING OUT v_res;
+   EXECUTE IMMEDIATE  'begin :1:='||p_func_name||'; end;' USING OUT v_res;
    RETURN v_res;
 END exec_;  
 
@@ -327,7 +328,13 @@ BEGIN
        EXIT;
     END IF;   
   END LOOP;
-END setModifyCmbChecked;   
+END setModifyCmbChecked;  
+
+FUNCTION  newForm(p_form VARCHAR2, p_schema VARCHAR2) RETURN CLOB IS
+BEGIN
+  json_kernel.append_as_text('{"Form":"'||p_form||'","schema":"'||p_schema||'"}');
+  RETURN exec(p_json_part=>json_kernel.response);
+END;  
 begin
   api_component.parse_component_params(hub.getJson);
 end api_component;

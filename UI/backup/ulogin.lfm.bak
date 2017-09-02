@@ -1,7 +1,7 @@
 object frmLogin: TfrmLogin
-  Left = 2605
+  Left = 963
   Height = 434
-  Top = 270
+  Top = 240
   Width = 304
   BorderStyle = bsDialog
   Caption = 'Giriş'

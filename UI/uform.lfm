@@ -1,5 +1,5 @@
 object frm: Tfrm
-  Left = 437
+  Left = 2477
   Height = 600
   Top = 122
   Width = 800

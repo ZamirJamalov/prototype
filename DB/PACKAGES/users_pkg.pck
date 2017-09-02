@@ -14,6 +14,7 @@ FUNCTION test RETURN tt_component_obj;
 FUNCTION test1 RETURN tt_component_obj;
 FUNCTION ui_setid RETURN VARCHAR2;
 FUNCTION onclick_calculate RETURN CLOB;
+FUNCTION setuimenuid RETURN CLOB;
 end users_pkg;
 /
 create or replace package body users_pkg is
@@ -186,12 +187,20 @@ END ui_setid;
 
 FUNCTION onclick_calculate RETURN CLOB IS
 BEGIN
-  api_component.setvalue(p_component=>'users.email',p_required=>'Y');  
-  api_component.setvalue(p_component=>'users.memo_test',p_value=>'SalamAleykum');
-  api_component.setvalue(p_component=>'users.test1',p_required => 'Y');
-  api_component.setvalue(p_component=>'users.Blocked',p_required => 'Y');
-  RETURN api_component.exec;
+  --api_component.setvalue(p_component=>'users.email',p_required=>'Y');  
+  --api_component.setvalue(p_component=>'users.memo_test',p_value=>'SalamAleykum');
+  --api_component.setvalue(p_component=>'users.test1',p_required => 'Y');
+  --api_component.setvalue(p_component=>'users.Blocked',p_required => 'Y');
+  
+  --RETURN api_component.exec;
+  RETURN api_component.action_loadform(p_form => 'ui_menu',p_call_proc_name => 'zamir.users_pkg.setuimenuid');
 END onclick_calculate;  
+
+FUNCTION setuimenuid RETURN CLOB IS
+BEGIN
+  api_component.setvalue(p_component=>'users.memo_test',p_value=>api_component.getvalue('id'));
+  RETURN api_component.exec;
+END setuimenuid;  
 
 BEGIN
 NULL;  

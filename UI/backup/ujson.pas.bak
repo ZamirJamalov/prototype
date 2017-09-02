@@ -272,6 +272,7 @@ begin
            end;
        end;
     end;
+
    CASE jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString of
         'TEDIT': BEGIN
                        WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TEDIT) DO BEGIN
@@ -292,6 +293,7 @@ begin
                    END;//TEDIT
         'TMEMO': BEGIN
                        WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TMEMO) DO BEGIN
+
                            if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN
                               text := jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString;
                            END;
@@ -501,6 +503,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     parent := p_component;
                                     name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
                                     checked := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString);
+                                    Caption:=''; //label var ona gore lazim deyil
                                     left := 100;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
@@ -563,42 +566,44 @@ var
    i, j:integer;
    s:widestring;
    v_response_array:TResponse_array;
-
+   jData: TJSONData;
+   jObject: TJSONObject;
+   timer:TTimer;
+   click_wincontrol_tmp : TWinControl;
+   click_form_tmp : tform;
 begin
- (*
-  WITH (click_wincontrol.FindComponent('memo_test') As TMemo) do begin
-      for i:=0 to length(response_array) -1 do begin
-        Lines.Add('Name - '+response_array[i].name_);
-        for j:=0 to length(response_array[i].values) - 1 do begin
-           lines.add('value - '+ response_array[i].values[j].name+' - id - '+response_array[i].values[j].id+' - index - '+response_array[i].values[j].index);
-        end; //j
-       end;//j
-  end; //with
- *)
   v_response_array := response_array;
   s := runHub(umain.schema_name+'.'+click_form.name+'_pkg.onclick_'+click_button_name,'"TFORM":"'+click_form.name+'",'+prepareRequest(click_form));
-  parseResponse(s);
-  (*
-  for i := 0 to length(v_response_array) - 1 do begin
-     for j := 0 to length(response_array) - 1 do begin
-        if v_response_array[i].name_=response_array[j].name_ then
-           break;
-      end; //for j
-    v_response_array[i].values := response_array[j].values;
-  end; //for i
-   WITH (click_wincontrol.FindComponent('memo_test') As TMemo) do begin
-     Lines.Add('part2');
-     for i:=0 to length(response_array) -1 do begin
-        Lines.Add('Name - '+response_array[i].name_);
-        for j:=0 to length(response_array[i].values) - 1 do begin
-           lines.add('value - '+ response_array[i].values[j].name+' - id - '+response_array[i].values[j].id+' - index - '+response_array[i].values[j].index);
-        end; //j
-       end;//j
-     Lines.Add('Finish');
-  end; //with
-  *)
-  //response_array := v_response_array;
-  existsform(click_form,s,click_wincontrol);
+  jData := GetJSON(s);
+  if jdata.FindPath('Action.form').AsString='' then begin
+     parseResponse(s);
+
+     existsform(click_form,s,click_wincontrol);
+  end
+  else begin
+     click_wincontrol_tmp := click_wincontrol;
+     click_form_tmp :=  click_form;
+     usession.call_proc_name:=jdata.FindPath('Action.proc_name').AsString;
+     frmMain.showform(jdata.FindPath('Action.schema').AsString,jdata.FindPath('Action.form').AsString,'','');
+
+     while usession.call_proc_result='' do begin
+       //loop
+      Application.ProcessMessages;
+     end;
+     //showmessage(usession.call_proc_name);
+     //showmessage(usession.call_proc_result);
+      v_response_array := response_array;
+      s := runHub(usession.call_proc_name,'"TFORM":"'+jdata.FindPath('Action.form').AsString+'",'+usession.call_proc_result);
+      jData := GetJSON(s);
+      parseResponse(s);
+
+      existsform(click_form_tmp,s,click_wincontrol_tmp);
+      click_form := click_form_tmp;
+      click_wincontrol :=click_wincontrol_tmp;
+      usession.call_proc_name:='';
+      usession.call_proc_result:='';
+   end;
+
 end;
 
 function ujs.stringToBoolean(p_string: string): boolean;

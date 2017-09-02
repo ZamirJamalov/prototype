@@ -5,10 +5,12 @@ create or replace package ui_menu_pkg is
   -- Purpose : 
   
 FUNCTION grid_data RETURN CLOB;  
-
+FUNCTION form_list RETURN CLOB;
 end ui_menu_pkg;
 /
 create or replace package body ui_menu_pkg is
+
+v_res  api_component.ttvalues := api_component.ttvalues();
   
 FUNCTION grid_data RETURN CLOB IS
 BEGIN
@@ -28,7 +30,10 @@ BEGIN
                 p_log_clob    => SQLERRM);
 END grid_data;  
 
-
+FUNCTION form_list RETURN CLOB IS 
+BEGIN
+  NULL;
+END form_list;  
 begin
  NULL;
 end ui_menu_pkg;

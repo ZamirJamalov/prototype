@@ -65,7 +65,7 @@ var
   ujs_:ujs;
   schema_name:string;
 implementation
-
+ uses usession;
 {$R *.lfm}
 
 { Tfrm }
@@ -75,6 +75,13 @@ procedure Tfrm.btnSaveTopClick(Sender: TObject);
   ujs_1:ujs;
   s:widestring;
 begin
+  if usession.call_proc_name<>'' then begin
+     usession.call_proc_result:= ujs_.prepareRequest(self);
+     Close;
+  end;
+  exit;
+
+
   ujs_1 :=  ujs.Create;
   ujs_1.clear;
 

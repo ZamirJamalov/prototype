@@ -48,10 +48,11 @@ PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_i
 FUNCTION exec_(p_func_name VARCHAR2) RETURN VARCHAR2;
 FUNCTION exec RETURN CLOB;
 FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2) RETURN CLOB;
-FUNCTION exec(p_json_part CLOB) RETURN CLOB;
+FUNCTION exec(p_json_part CLOB,p_action CLOB DEFAULT NULL) RETURN CLOB;
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS');
 PROCEDURE setJsonHeadMessageError(p_message VARCHAR2);
 PROCEDURE setModifyCmbChecked(p_coll IN OUT  tt_component_obj,p_id VARCHAR2,p_checked VARCHAR2 DEFAULT '1');
+FUNCTION  action_loadform(p_form VARCHAR2,p_call_proc_name VARCHAR2) RETURN CLOB;
 end api_component;
 /
 create or replace package body api_component is
@@ -295,7 +296,7 @@ BEGIN
   RETURN v_res;
 END exec;  
 
-FUNCTION exec(p_json_part CLOB) RETURN CLOB IS
+FUNCTION exec(p_json_part CLOB,p_action CLOB DEFAULT NULL) RETURN CLOB IS
 BEGIN
    setvalue_activated := FALSE;
    dbms_lob.createtemporary(rows_all,TRUE);
@@ -303,7 +304,8 @@ BEGIN
    dbms_lob.append(rows_all,'{"Message":{"Status":"'||JsonHeadMessageType||'","Text":"'||JsonHeadMessage||'"},');
    dbms_lob.append(rows_all,'"Components":[');
    IF length(p_json_part)>0 THEN dbms_lob.append(rows_all,p_json_part); END IF;
-   dbms_lob.append(rows_all,']}}');
+   dbms_lob.append(rows_all,']},');
+   dbms_lob.append(rows_all,'"Action":{'||p_action||'}}');
    
    RETURN rows_all;
 END exec;  
@@ -327,7 +329,14 @@ BEGIN
        EXIT;
     END IF;   
   END LOOP;
-END setModifyCmbChecked;   
+END setModifyCmbChecked;  
+
+FUNCTION  action_loadForm(p_form VARCHAR2,p_call_proc_name VARCHAR2) RETURN CLOB IS
+BEGIN
+  json_kernel.append_as_text('"form":"'||p_form||'","schema":"'||'zamir'||'","proc_name":"'||p_call_proc_name||'"');
+  RETURN exec(p_json_part=>null,p_action=>json_kernel.response);
+END action_loadForm;  
+
 begin
   api_component.parse_component_params(hub.getJson);
 end api_component;

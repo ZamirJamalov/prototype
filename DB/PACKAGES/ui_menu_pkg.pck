@@ -6,6 +6,7 @@ create or replace package ui_menu_pkg is
   
 FUNCTION grid_data RETURN CLOB;  
 FUNCTION form_list RETURN CLOB;
+FUNCTION setid     RETURN CLOB;
 end ui_menu_pkg;
 /
 create or replace package body ui_menu_pkg is
@@ -34,6 +35,12 @@ FUNCTION form_list RETURN CLOB IS
 BEGIN
   NULL;
 END form_list;  
+
+FUNCTION setid RETURN CLOB IS 
+BEGIN
+  RETURN NULL;
+END;  
+
 begin
  NULL;
 end ui_menu_pkg;

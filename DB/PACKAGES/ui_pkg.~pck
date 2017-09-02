@@ -166,7 +166,7 @@ BEGIN
     
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => v_form||'.'||i.name_,
-                            p_values           => null,--CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN api_component.exec(i.ds_proc,i.name_) ELSE NULL END,
+                            p_values           => CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN api_component.exec(i.ds_proc,i.name_) ELSE NULL END,
                             p_value            => CASE WHEN i.type_ NOT IN ('TCOMBOBOX','TCHECKLISTBOX') AND i.ds_proc IS NOT NULL THEN api_component.exec_(i.ds_proc) ELSE   nvl(api_component.getColumnValue(i.name_),i.default_value) END,
                             p_label_caption    => i.label_caption,
                             p_width            => i.width_,
