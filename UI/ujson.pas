@@ -572,6 +572,8 @@ var
    click_wincontrol_tmp : TWinControl;
    click_form_tmp : tform;
 begin
+  //showmessage(click_form.Name);
+  usession.form_closed:=false;
   v_response_array := response_array;
   s := runHub(umain.schema_name+'.'+click_form.name+'_pkg.onclick_'+click_button_name,'"TFORM":"'+click_form.name+'",'+prepareRequest(click_form));
   jData := GetJSON(s);
@@ -584,11 +586,18 @@ begin
      click_wincontrol_tmp := click_wincontrol;
      click_form_tmp :=  click_form;
      usession.call_proc_name:=jdata.FindPath('Action.proc_name').AsString;
-     frmMain.showform(jdata.FindPath('Action.schema').AsString,jdata.FindPath('Action.form').AsString,'','');
+     frmMain.showform(jdata.FindPath('Action.schema').AsString,jdata.FindPath('Action.form').AsString,'','',strtoint(jdata.FindPath('Action.width').AsString),strtoint(jdata.FindPath('Action.height').AsString));
 
-     while usession.call_proc_result='' do begin
-       //loop
-      Application.ProcessMessages;
+     while usession.form_closed=false do begin
+       Application.ProcessMessages;
+     end;
+     //form terminated
+     if usession.form_closed_by_user=false then begin
+         click_form := click_form_tmp;
+         click_wincontrol :=click_wincontrol_tmp;
+         usession.form_closed_by_user:=false;
+         usession.form_closed:=false;
+        exit;
      end;
       v_response_array := response_array;
       s := runHub(usession.call_proc_name,'"TFORM":"'+jdata.FindPath('Action.form').AsString+'",'+usession.call_proc_result);
@@ -600,6 +609,7 @@ begin
       click_wincontrol :=click_wincontrol_tmp;
       usession.call_proc_name:='';
       usession.call_proc_result:='';
+      usession.form_closed:=false;
    end;
 
 end;

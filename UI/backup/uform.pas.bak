@@ -75,13 +75,7 @@ procedure Tfrm.btnSaveTopClick(Sender: TObject);
   ujs_1:ujs;
   s:widestring;
 begin
-  if usession.call_proc_name<>'' then begin
-     usession.call_proc_result:= ujs_.prepareRequest(self);
-     Close;
-  end;
-
-
-
+ if  usession.call_proc_name=''  then begin
   ujs_1 :=  ujs.Create;
   ujs_1.clear;
 
@@ -95,6 +89,13 @@ begin
   ujs_.existsform(self,s,panel3);
   if ujs_.errorexists=false then
      showmessage('Data saved');
+ end
+   else begin
+     usession.call_proc_result:= ujs_.prepareRequest(self);
+     usession.form_closed_by_user:=true;
+     closedParam:=true;
+     Close;
+   end;
 end;
 
 procedure Tfrm.FormActivate(Sender: TObject);
@@ -104,12 +105,15 @@ end;
 
 procedure Tfrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-
+  usession.form_closed:=true;
 end;
 
 procedure Tfrm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  closedParam :=true;
+  usession.call_proc_name:='';
+  usession.call_proc_result:='';
+  usession.form_closed:=true;
+  CanClose:=true;
 end;
 
 procedure Tfrm.FormCreate(Sender: TObject);

@@ -4,7 +4,7 @@ create or replace package ui_components_pkg is
   -- Created : 8/10/2017 0:08:22 0:08:22 
   -- Purpose : 
 
-  
+FUNCTION READ(p_form_name VARCHAR2) RETURN ui_components%ROWTYPE;
 FUNCTION grid_data RETURN CLOB;
 FUNCTION list_component_types RETURN  tt_component_obj;--api_component.ttvalues ; 
 FUNCTION add RETURN CLOB;
@@ -40,6 +40,13 @@ BEGIN
 END CASE;  
  RETURN  api_component.exec; 
 END uiresp;
+
+FUNCTION READ(p_form_name VARCHAR2) RETURN ui_components%ROWTYPE IS
+ v_res ui_components%ROWTYPE;
+BEGIN
+  SELECT * INTO v_res FROM ui_components WHERE upper(type_)='TFORM' AND upper(name_)=upper(p_form_name);
+  RETURN v_res;
+END READ;  
 
 FUNCTION grid_data RETURN CLOB IS 
 BEGIN

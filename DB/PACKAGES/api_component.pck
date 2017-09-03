@@ -332,8 +332,9 @@ BEGIN
 END setModifyCmbChecked;  
 
 FUNCTION  action_loadForm(p_form VARCHAR2,p_call_proc_name VARCHAR2) RETURN CLOB IS
+ v_row ui_components%ROWTYPE DEFAULT ui_components_pkg.READ(p_form);
 BEGIN
-  json_kernel.append_as_text('"form":"'||p_form||'","schema":"'||'zamir'||'","proc_name":"'||p_call_proc_name||'"');
+  json_kernel.append_as_text('"form":"'||p_form||'","width":"'||v_row.width_||'","height":"'||v_row.height||'","schema":"'||v_row.orcl_schema||'","proc_name":"'||p_call_proc_name||'"');
   RETURN exec(p_json_part=>null,p_action=>json_kernel.response);
 END action_loadForm;  
 

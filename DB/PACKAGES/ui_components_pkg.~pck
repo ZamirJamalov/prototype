@@ -9,7 +9,7 @@ FUNCTION grid_data RETURN CLOB;
 FUNCTION list_component_types RETURN  tt_component_obj;--api_component.ttvalues ; 
 FUNCTION add RETURN CLOB;
 FUNCTION upd RETURN CLOB;
-FUNCTION ui_setid RETURN CLOB;
+FUNCTION ui_setid RETURN VARCHAR2;
 FUNCTION del RETURN CLOB;
 end ui_components_pkg;
 /
@@ -172,10 +172,13 @@ BEGIN
       RETURN uiresp('message','ERROR',SQLERRM);                               
 END;  
 
-FUNCTION ui_setid RETURN CLOB IS
+FUNCTION ui_setid RETURN VARCHAR2 IS
 BEGIN
-  SELECT t_component_obj('',ui_components_seq.nextval,'') BULK COLLECT INTO v_res FROM dual;
-  RETURN api_component.component_values_to_json(v_res);
+  --SELECT t_component_obj('',ui_components_seq.nextval,'') BULK COLLECT INTO v_res FROM dual;
+  --RETURN api_component.component_values_to_json(v_res);
+  --api_component.setvalue(p_component => 'ui_menu.id',p_value=>ui_components_seq.nextval);
+  --RETURN api_component.exec;
+  RETURN ui_components_seq.nextval;
 END ui_setid;  
 
 FUNCTION del RETURN CLOB IS

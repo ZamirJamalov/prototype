@@ -46,7 +46,7 @@ type
     procedure btnRefreshClick(Sender: TObject);
     procedure btnUpdClick(Sender: TObject);
     procedure btnViewClick(Sender: TObject);
-    procedure showform(p_schema_name:String;p_form_name:String;p_crud:string;p_id:string);
+    procedure showform(p_schema_name:String;p_form_name:String;p_crud:string;p_id:string;p_width,p_height:integer);
     procedure btnNewClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -338,23 +338,41 @@ begin
   Application.terminate;
 end;
 
-procedure TfrmMain.showform(p_schema_name:String;p_form_name:String;p_crud: string;p_id:string);
+procedure TfrmMain.showform(p_schema_name:String;p_form_name:String;p_crud: string;p_id:string;p_width,p_height:integer);
 var
     frm:Tfrm;
+    v_width,v_height:integer;
 begin
-   //showmessage(p_form_name);
-   //IF (assigned(self.FindComponent(p_form_name) as Tfrm))  and ((self.findcomponent(p_form_name) as Tfrm).getClosedParam=false) THEN   begin
-    //  exit;
-  // end;
 
-  // IF (assigned(self.FindComponent(p_form_name) as Tfrm))  and ((self.findcomponent(p_form_name) as Tfrm).getClosedParam=true) THEN   begin
-  //    (self.findcomponent(p_form_name) as Tfrm).Destroy;
-  //    (self.findcomponent(p_form_name) as Tfrm).Free;
+  //showmessage(p_form_name);
+  // IF (assigned(application.FindComponent(p_form_name) as Tfrm )) then begin///  and ((application.findcomponent(p_form_name) as Tfrm).getClosedParam=false) THEN   begin
+  //    exit;
   // end;
+  // IF (assigned(application.FindComponent(p_form_name) as Tform)) then begin
+  //     showmessage('ok1');
+  // end;
+ //  IF (assigned(application.FindComponent(p_form_name) as Tfrm)) then begin
+ //      showmessage('ok2');
+ //  end;
+   v_width := p_width;
+   v_height:=p_height;
+   if v_width=0 then begin
+      v_width:=700;
+    end;
+   if v_height=0 then begin
+      v_height:=700;
+    end;
+   IF (assigned(application.FindComponent(p_form_name) as Tfrm)) then begin  //and ((application.findcomponent(p_form_name) as Tfrm).getClosedParam=true)) THEN   begin
+      (application.findcomponent(p_form_name) as Tfrm).Destroy;
+      (application.findcomponent(p_form_name) as Tfrm).Free;
+   end;
 
-  // IF NOT (assigned(self.FindComponent(p_form_name) as Tfrm)) THEN BEGIN
-       frm :=  Tfrm.Create(self);
+   IF NOT (assigned(application.FindComponent(p_form_name) as Tfrm)) THEN BEGIN
+
+       frm :=  Tfrm.Create(Application);
        frm.Name:=p_form_name;
+       frm.Width:=v_width;
+       frm.Height:=v_height;
        frm.schemaName:=p_schema_name;
        frm.setCrud(p_crud);
        frm.load_components(p_form_name,p_id);
@@ -365,21 +383,21 @@ begin
         'del'   : frm.setCaption(getFormCaptionByActiveTab+'  -Cari melumatin silinmesi');
        end;
        frm.Show;
-   // END;
+    END;
 end;
 
 procedure TfrmMain.btnUpdClick(Sender: TObject);
 begin
   if v_grid_id=0 then begin
       showmessage('no row selected');
-  end else showform(schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'upd',inttostr(v_grid_id));
+  end else showform(schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'upd',inttostr(v_grid_id),0,0);
 end;
 
 procedure TfrmMain.btnDelClick(Sender: TObject);
 begin
   if v_grid_id=0 then begin
       showmessage('no row selected');
-  end else showform(schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'del',inttostr(v_grid_id));
+  end else showform(schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'del',inttostr(v_grid_id),0,0);
 end;
 
 procedure TfrmMain.btnExcelClick(Sender: TObject);
@@ -475,12 +493,12 @@ procedure TfrmMain.btnViewClick(Sender: TObject);
 begin
   if v_grid_id=0 then begin
       showmessage('no row selected');
-  end else showform(schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'view_',inttostr(v_grid_id));
+  end else showform(schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'view_',inttostr(v_grid_id),0,0);
 end;
 
 procedure TfrmMain.btnNewClick(Sender: TObject);
 begin
-  showform(schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'add','');
+  showform(schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'add','',0,0);
 end;
 
 end.
