@@ -1,0 +1,8 @@
+object frmscoring: Tfrmscoring
+  Left = 2170
+  Height = 240
+  Top = 221
+  Width = 320
+  Caption = 'frmscoring'
+  LCLVersion = '1.6.4.0'
+end

@@ -1,14 +1,14 @@
 object frm: Tfrm
-  Left = 2477
-  Height = 600
-  Top = 122
+  Left = 757
+  Height = 484
+  Top = 294
   Width = 800
   HorzScrollBar.Page = 75
   VertScrollBar.Page = 32
   AlphaBlendValue = 253
   AutoScroll = True
   BorderIcons = [biSystemMenu, biMaximize]
-  ClientHeight = 600
+  ClientHeight = 484
   ClientWidth = 800
   FormStyle = fsStayOnTop
   OnActivate = FormActivate
@@ -20,7 +20,7 @@ object frm: Tfrm
   object Panel1: TPanel
     Left = 0
     Height = 32
-    Top = 568
+    Top = 452
     Width = 800
     Align = alBottom
     BevelOuter = bvNone
@@ -33,14 +33,14 @@ object frm: Tfrm
       Top = 0
       Width = 75
       Align = alRight
-      Caption = 'Execute'
+      Caption = 'Icra et'
       OnClick = btnSaveTopClick
       TabOrder = 0
     end
   end
   object Panel3: TPanel
     Left = 0
-    Height = 568
+    Height = 452
     Top = 0
     Width = 800
     Align = alClient

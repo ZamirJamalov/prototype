@@ -118,7 +118,7 @@ BEGIN
     n := n + 1;
     v_json_list := v_json.get_keys;
     ttcmp_(n).name:=v_json_list.get(i).get_string;
-    --dbms_output.put_line(v_json_list.get(i).get_string);
+    dbms_output.put_line(v_json_list.get(i).get_string);
     v_json_list := json_list(v_json.get(i));
     FOR j IN 1..v_json_list.count LOOP
        IF v_json_list.get(j).get_string IS NOT NULL THEN 
@@ -205,24 +205,42 @@ END setvalue;
 
 
 FUNCTION getvalue(p_component VARCHAR2) RETURN VARCHAR2 IS
+ TYPE runcode IS RECORD 
+ (code VARCHAR2(50),
+  char_ VARCHAR2(50));
+ TYPE ttunicode IS TABLE OF runcode;
+ tunicode ttunicode:=ttunicode();
+ v_curr_value VARCHAR2(4000);
+ v_found NUMBER DEFAULT 0;
 BEGIN
+ IF ttcmp_.count>0 THEN 
+  
+  
   FOR i IN ttcmp_.first..ttcmp_.last LOOP
     IF lower(p_component)=lower(ttcmp_(i).name) THEN 
-      RETURN ttcmp_(i).value;
+      v_curr_value := ttcmp_(i).value;
       EXIT;
     END IF;
   END LOOP;
+  SELECT *  BULK COLLECT INTO tunicode FROM unicode_conv;
+  FOR i IN tunicode.first..tunicode.last LOOP
+     v_curr_value := REPLACE(v_curr_value,tunicode(i).code,tunicode(i).char_);
+  END LOOP;
+  RETURN v_curr_value;
+  END IF;    
   RETURN NULL; 
 END getvalue; 
 
 FUNCTION getColumnValue(p_column_name VARCHAR2) RETURN VARCHAR2 IS
 BEGIN
+ IF col.count>0 THEN 
  FOR i IN 1..col.count LOOP
     IF upper(col(i).column_name) = upper(p_column_name) THEN 
       RETURN col(i).column_value;
       EXIT;
     END IF;     
  END LOOP;
+ END IF;
  RETURN NULL;  
 END getColumnValue;  
 
@@ -236,15 +254,18 @@ PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_i
  v_json json;
  v_json_list json_list;
 BEGIN
-  
-  FOR i IN (SELECT column_name FROM all_tab_columns WHERE owner=p_schema_name AND table_name=p_table_name) LOOP
+  log_pkg.add(p_log_type    => log_pkg.RESPONSE,
+              p_method_name => 'zz',
+              p_log_text    =>p_schema_name||' '||p_table_name,
+              p_log_clob    => NULL);      
+  FOR i IN (SELECT column_name FROM all_tab_columns WHERE upper(owner)=upper(p_schema_name) AND upper(table_name)=upper(p_table_name)) LOOP
     v_json_string := v_json_string||CASE WHEN n>0 THEN ',' ELSE NULL END||'"'||i.column_name||'":"@'||i.column_name||'"';
     v_sql_string := v_sql_string||CASE WHEN n>0 THEN ',' ELSE NULL END||i.column_name;
     n := n + 1;
   END LOOP;
-
+ 
   json_kernel.append_as_text('{');
-  json_kernel.append_as_sql(p_json_part =>v_json_string, p_sql => 'select '||v_sql_string|| ' from '|| p_table_name ||' where id=:id or 0=:id and rownum<2',bind1 => p_id,bind2=>p_id);
+  json_kernel.append_as_sql(p_json_part =>v_json_string, p_sql => 'select '||v_sql_string|| ' from '|| p_schema_name||'.'||p_table_name ||' where id=:id or 0=:id and rownum<2',bind1 => p_id,bind2=>p_id);
   json_kernel.append_as_text('}');
   v_json := json(json_kernel.response);
   col.delete();
@@ -291,7 +312,8 @@ BEGIN
     setModifyCmbChecked(v_tt_component_obj,p_value);
     v_res := component_values_to_json(v_tt_component_obj);
   ELSE
-    v_res := '{"index":"0","id":"'||chr(1760)||'","name":"'||chr(1760)||'","checked":"'||chr(1760)||'"}';  
+    --v_res := '{"index":"0","id":"'||chr(1760)||'","name":"'||chr(1760)||'","checked":"'||chr(1760)||'"}';  
+    v_res := NULL;
   END IF;  
   RETURN v_res;
 END exec;  
@@ -318,14 +340,19 @@ END setJsonHeadMessageOk;
 PROCEDURE setJsonHeadMessageError(p_message VARCHAR2) IS
 BEGIN
   JsonHeadMessageType := 'ERROR';
-  JsonHeadMessage := p_message;
+  JsonHeadMessage := REPLACE(p_message,'"','<_400'); --lazarus-da iki dirnaqi json parse eda bilmadiyi uchun replace olunur
+  JsonHeadMessage := REPLACE(JsonHeadMessage,':','<_401'); --lazarus-da iki dirnaqi json parse eda bilmadiyi uchun replace olunur   
 END;  
 
 PROCEDURE setModifyCmbChecked(p_coll IN OUT tt_component_obj,p_id VARCHAR2,p_checked VARCHAR2 DEFAULT '1') IS
+ idx INTEGER DEFAULT 0;
 BEGIN
   FOR i IN p_coll.first..p_coll.last LOOP
-    IF p_coll(i).id=p_id THEN 
-       p_coll(i).checked := p_checked;
+    idx := idx + 1;
+    IF upper(p_coll(i).id)=upper(p_id) THEN 
+       p_coll(i).checked := idx;
+      
+       
        EXIT;
     END IF;   
   END LOOP;

@@ -1,0 +1,78 @@
+object frm: Tfrm
+  Left = 387
+  Height = 484
+  Top = 226
+  Width = 800
+  HorzScrollBar.Page = 208
+  VertScrollBar.Page = 70
+  AlphaBlend = True
+  AlphaBlendValue = 253
+  AutoScroll = True
+  BorderIcons = [biSystemMenu]
+  BorderWidth = 5
+  ClientHeight = 484
+  ClientWidth = 800
+  FormStyle = fsStayOnTop
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.8.0.4'
+  object Panel1: TPanel
+    Left = 5
+    Height = 60
+    Top = 419
+    Width = 790
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 60
+    ClientWidth = 790
+    TabOrder = 0
+    object btnSaveTop: TButton
+      Left = 592
+      Height = 60
+      Top = 0
+      Width = 198
+      Align = alRight
+      Caption = 'İcra Et'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -21
+      Font.Name = 'Times New Roman'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      OnClick = btnSaveTopClick
+      ParentFont = False
+      TabOrder = 0
+    end
+    object Button1: TButton
+      Left = 0
+      Height = 60
+      Top = 0
+      Width = 198
+      Align = alLeft
+      Caption = 'İmtina'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -21
+      Font.Name = 'Times New Roman'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      OnClick = Button1Click
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object Panel3: TPanel
+    Left = 5
+    Height = 414
+    Top = 5
+    Width = 790
+    Align = alClient
+    BevelOuter = bvNone
+    Color = clForm
+    ParentColor = False
+    TabOrder = 1
+  end
+end

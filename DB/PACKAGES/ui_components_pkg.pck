@@ -49,13 +49,20 @@ BEGIN
 END READ;  
 
 FUNCTION grid_data RETURN CLOB IS 
+  v_idx NUMBER DEFAULT to_number(nvl(api_component.getvalue('index'),0))+1;
+  v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),' desc');
 BEGIN
+   log_pkg.add(p_log_type    => log_pkg.RESPONSE,
+                p_method_name => 'ui_components_pkg.grid_data',
+                p_log_text    => 'before'||v_idx||v_sort_order,
+                p_log_clob    => SQLERRM);
+                
   json_kernel.append_as_text('{"columns":["id","root_id","type_","name_","default_value","label_caption","width_","font_size","font_color","background_color","enabled_","visible_","hint","sort_","onclick","onchange","ds_proc","top_","upd_enabled_","upd_visible_"],');
   json_kernel.append_as_text('"rows":[');
   json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@root_id","@type_","@name_","@default_value","@label_caption","@width_","@font_size","@font_color","@background_color","@enabled_","@visible_","@hint","@sort_","@onclick","@onchange","@ds_proc","@top_","@upd_enabled_","@upd_visible_"]}',
                             p_sql       => 'select rownum, a.id as id,a.root_id as root_id,a.type_ as type_,a.name_ as name_,a.default_value as default_value,a.label_caption as label_caption,a.width_ as width_,a.font_size as font_size,a.font_color as font_color,a.background_color as background_color,a.enabled_ as enabled_,a.visible_ as visible_,
                                                 a.hint as hint,a.sort_ as sort_,a.onclick as onclick,a.onkeypress as onkeypress,a.required as required,a.onchange as onchange,a.ds_proc as ds_proc, a.top_ as top_, a.upd_enabled_ as upd_enabled_,a.upd_visible_ as upd_visible_
-                            from (select id,root_id,type_,name_,default_value,label_caption,width_,font_size,font_color,background_color,enabled_,visible_,hint,sort_,onclick,onkeypress,required,onchange,ds_proc,top_,upd_enabled_,upd_visible_ from ui_components  order by type_ asc) a');
+                            from (select id,root_id,type_,name_,default_value,label_caption,width_,font_size,font_color,background_color,enabled_,visible_,hint,sort_,onclick,onkeypress,required,onchange,ds_proc,top_,upd_enabled_,upd_visible_ from ui_components  order by '||v_idx||' '||v_sort_order||') a');
   json_kernel.append_as_text(']}'); 
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
@@ -63,7 +70,7 @@ BEGIN
     RETURN '';
     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
                 p_method_name => 'ui_components_pkg.grid_data',
-                p_log_text    => NULL,
+                p_log_text    => v_idx||v_sort_order,
                 p_log_clob    => SQLERRM);
 END grid_data;   
 
@@ -116,7 +123,7 @@ BEGIN
                             top_,
                             upd_enabled_,
                             upd_visible_)
-               VALUES       (ui_components_seq.nextval,
+               VALUES       (api_component.getvalue('id'),
                              v_root_id,
                              api_component.getvalue('type_'),
                              api_component.getvalue('name_'),

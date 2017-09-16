@@ -69,7 +69,7 @@ type
     procedure clear;
     procedure existsform(p_form:tform;p_json:widestring;p_component:TWinControl);
     procedure newform(p_form:tform;p_json:widestring;p_component:Twincontrol);
-
+    function getIdByIndex(p_component_name:String;p_index:integer):string;
   end;
 
 
@@ -86,7 +86,7 @@ type
   v_jsonError:string;
 implementation
 
-uses usession,umain;
+uses usession,umain,unit1;
 
 function addComma(p_val: integer; p_point: integer): string;
 begin
@@ -138,7 +138,7 @@ begin
                   END; //TEDIT
      'TCHECKBOX':  BEGIN
                     comma_ := comma_ + 1;
-                    if (p_component AS TCHECKBOX).Checked then a := 'TRUE' ELSE BEGIN a := 'FALSE'; END;
+                    if (p_component AS TCHECKBOX).Checked then a := 'Y' ELSE BEGIN a := 'N'; END;
                     v_json := v_json + addComma(comma_, 1)+ '"' + (p_component AS TCHECKBOX).Name + '":["' + a + '"]';
                   END;//TCHECBOX
      'TCOMBOBOX': BEGIN
@@ -248,6 +248,7 @@ procedure ujs.existsform(p_form: tform; p_json: widestring;p_component:TWinContr
    v_form,v_name,v_value,v_hint,v_enabled:string;
    v_received_text:widestring;
    checkbox:TCheckBox;
+   chbidx:integer;
 begin
   jData := GetJson(p_json);
 
@@ -263,7 +264,10 @@ begin
 
  for k := 0 to jdata.FindPath('Response.Components').Count-1 do begin
    //showmessage(jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString);
+
    if (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TEDIT') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TCHECKBOX') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TCOMBOBOX') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TMEMO') then begin
+
+     if p_form.FindComponent('lbl_'+jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) is TLabel then begin
        WITH (p_component.FindComponent('lbl_'+jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TLabel) DO BEGIN
            if jdata.FindPath('Response.Components['+inttostr(k)+'].required').AsString='Y' then begin
               color := clRed;
@@ -271,14 +275,37 @@ begin
              color := clWhite;
            end;
        end;
+      end;
+
     end;
 
+
+
    CASE jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString of
+        'TLABEL': BEGIN
+                      WITH (p_form.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TLabel) DO BEGIN
+                          if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN   //''_ chr(1760)
+                              caption := jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString;
+                           END;
+                           hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
+                           showhint := TRUE;
+                           enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
+                           visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
+                           if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin
+                             font.color := clBlack;
+                            end
+                           else begin
+                             font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString);
+                           end;
+                        END;//WITH
+                   END;//TLABEL
         'TEDIT': BEGIN
-                       WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TEDIT) DO BEGIN
-                           if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN   //''_ chr(1760)
+
+           WITH (p_form.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TEdit) DO BEGIN
+                             if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN   //''_ chr(1760)
                               text := jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString;
                            END;
+
                            hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
                            showhint := TRUE;
                            enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
@@ -292,7 +319,7 @@ begin
                         END;//WITH
                    END;//TEDIT
         'TMEMO': BEGIN
-                       WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TMEMO) DO BEGIN
+                       WITH (p_form.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TMEMO) DO BEGIN
 
                            if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN
                               text := jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString;
@@ -316,7 +343,8 @@ begin
                         END;//WITH
                    END;//TMEMO
        'TCHECKBOX': BEGIN
-                        WITH (p_component.findComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString)  AS TCHECKBOX) DO BEGIN
+
+          WITH (p_form.findComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString)  AS TCHECKBOX) DO BEGIN
                             if jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString<>'' then BEGIN
                                Checked := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].value').AsString);
                             END;
@@ -339,7 +367,7 @@ begin
                         END;//WITH
                     END;//TCHECKBOX
        'TCOMBOBOX': BEGIN
-                        WITH (p_component.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString ) AS TComboBox) DO BEGIN
+                        WITH (p_form.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString ) AS TComboBox) DO BEGIN
                             hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
                             caption := jdata.FindPath('Response.Components['+inttostr(k)+'].label_caption').AsString ;
                             enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
@@ -370,10 +398,16 @@ begin
                         END;//WITH
                      END;//TCOMBOBOX
     'TCHECKLISTBOX': BEGIN
-                         WITH (p_component.FindComponent(jdata.FindPath('Response.Component['+inttostr(k)+'].name').asstring) AS TCHECKLISTBOX) DO BEGIN
-                             hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
-                             enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
-                             visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
+
+
+       WITH (p_form.FindComponent(jdata.FindPath('Response.Components['+inttostr(k)+'].name').asstring) AS TCheckListBox) DO BEGIN
+
+                           // hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
+                            hint := jdata.FindPath('Response.Components['+inttostr(k)+'].hint').AsString;
+                            enabled := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(k)+'].enabled').AsString);
+                            visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].visible').AsString);
+
+
                              if jdata.FindPath('Response.Components['+inttostr(k)+'].font_color').AsString='' then begin
                               font.color := clBlack;
                              end
@@ -386,13 +420,22 @@ begin
                              else begin
                              color := clwhite;
                              end;
+
                              if (jdata.FindPath('Response.Components['+inttostr(k)+'].values').count >0) and (jdata.FindPath('Response.Components['+inttostr(k)+'].values[0].index').asString<>'') then begin
-                             clear;
-                             FOR j := 0 TO jdata.FindPath('Response.Components['+inttostr(k)+'].values').count - 1 DO BEGIN
-                                 items.add(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].name').asString);
-                                 Checked[j] := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].checked').asString);
+
+                              clear;
+                             chbidx :=0;
+                             FOR j := 0 TO jdata.FindPath('Response.Components['+inttostr(k)+'].values').count-1  DO BEGIN
+                                if jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].name').asString='' then begin
+                                    Continue;
+                                end;
+
+                                items.add(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].name').asString);
+                                Checked[chbidx] := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(k)+'].values['+inttostr(j)+'].checked').asString);
+                                chbidx := chbidx +1;
                              END; //FOR j
                           end;
+
                          END;//WITH
                      END;//TCHECKLISTBOX
    END; //case
@@ -412,7 +455,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
    jArray: TJSONArray;
    cmbItemIndex :integer;
  begin
-  v_top := 0;
+  v_top := 10;
   jData := GetJSON(p_json);
   jObject := TJsonObject(jData);
   click_form :=p_form;
@@ -441,7 +484,8 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                 parent:=p_component;
                 Name:='lbl_'+jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
                 caption := jdata.FindPath('Response.Components['+inttostr(i)+'].label_caption').AsString;
-                left := 5;
+                Font.Size:=15;
+                left := 10;
                 top := v_top;
                 width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
 
@@ -452,7 +496,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                 if jdata.FindPath('Response.Components['+inttostr(i)+'].required').AsString='Y' then begin
                    color := clRed;
                 end else begin
-                   color := clWhite;
+                   color := clForm;
                 end;
             end; //with
            end; //if
@@ -464,8 +508,10 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                        WITH (component AS TBUTTON) DO BEGIN
                           Parent := p_component;
                           name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
+                          ShowHint:=true;
+                          Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
                           click_button_name :=  name;
-                          left := 100;
+                          left := 200;
                           top := v_top;
                           width := strtoint(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
                           Caption := jdata.FindPath('Response.Components['+inttostr(i)+'].label_caption').AsString;
@@ -486,7 +532,10 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                               with (component as TEdit) do begin
                                     parent:=p_component;
                                     Name:=jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
-                                    left := 100;
+                                    ShowHint:=true;
+                                    Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
+                                    Font.Size:=15;
+                                    left := 200;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
                                     text := jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString;
@@ -502,9 +551,11 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                               with (component as TCheckBox) do begin
                                     parent := p_component;
                                     name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
+                                    ShowHint:=true;
+                                    Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
                                     checked := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString);
                                     Caption:=''; //label var ona gore lazim deyil
-                                    left := 100;
+                                    left := 200;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
                                     Alignment:=taLeftJustify;
@@ -519,9 +570,12 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                               with (component as TComboBox) do begin
                                     parent := p_component;
                                     name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
+                                    ShowHint:=true;
+                                    Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
+                                    Font.Size:=15;
                                     style := csDropDownList;
                                     Text := '';
-                                    left := 100;
+                                    left := 200;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
 
@@ -545,8 +599,10 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                with (component as TMemo) do begin
                                 parent := p_component;
                                 name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
+                                ShowHint:=true;
+                                Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
                                 Text := jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString;;
-                                left := 100;
+                                left := 200;
                                 Height:=200;
                                 top := v_top;
                                 width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
@@ -556,9 +612,24 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                end; //with
                             end;//TMEMO
            end;  //case end
-           v_top := v_top+25;
+           v_top := v_top+50;
        end; //for
 
+end;
+
+function ujs.getIdByIndex(p_component_name: String; p_index: integer): string;
+ var
+    i,j:integer;
+begin
+   for i:=0 to length(response_array)-1 do begin
+     if response_array[i].name_=p_component_name then begin
+        for j:=0 to length(response_array[i].values)-1 do begin
+          if response_array[i].values[j].index=inttostr(p_index+1) then begin
+              result := response_array[i].values[j].id;
+          end;
+        end;
+     end;
+   end;
 end;
 
 procedure ujs.click(sender: tobject);
@@ -651,6 +722,7 @@ var
   S: WideString;
   i:integer;
   jdata:TJSONData;
+  frm:TForm1;
 begin
   i:=0;
   IF length(p_request_json) > 0 THEN
@@ -658,7 +730,27 @@ begin
   ELSE BEGIN
     v_json := '{"session_key":"' + usession.session_var + '","method_name":"' + p_method_name + '"}';
   END; //IF
+ // showmessage(v_json);
 
+  v_json:=StringReplace(v_json,'ə','<_301',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'Ə','<_302',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'İ','<_303',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'ş','<_304',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'Ş','<_305',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'ç','<_306',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'Ç','<_307',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'ı','<_308',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'ğ','<_309',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'Ğ','<_310',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'ö','<_311',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'Ö','<_312',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,' ','<_313',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'ü','<_314',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'Ü','<_315',[rfReplaceAll]);
+  v_json:=StringReplace(v_json,'%','<_316',[rfReplaceAll]);
+  //frm := TForm1.Create(nil);
+  //frm.setlog(v_json);
+  //frm.ShowModal;
   WITH TFPHttpClient.Create(nil) DO
     TRY
       s := Post('http://localhost:8089/WebApplication1/NewServlet?myparam=' + v_json);
@@ -666,10 +758,27 @@ begin
       v_jsonError := '';
       if jdata.FindPath('Response.Message.Status').AsString = 'ERROR' then begin
         v_jsonError :=  jdata.FindPath('Response.Message.Text').AsString;
+        v_jsonError := StringReplace(v_jsonError,'<_400','"',[rfReplaceAll]);
+        v_jsonError := StringReplace(v_jsonError,'<_401',':',[rfReplaceAll]);
      end;
     FINALLY
       Free;
     END;
+  (*
+  s := StringReplace(s,'<_301','ə',[rfReplaceAll]);
+  s := StringReplace(s,'<_302','Ə',[rfReplaceAll]);
+  s := StringReplace(s,'<_303','İ',[rfReplaceAll]);
+  s := StringReplace(s,'<_304','ş',[rfReplaceAll]);
+  s := StringReplace(s,'<_305','Ş',[rfReplaceAll]);
+  s := StringReplace(s,'<_306','ç',[rfReplaceAll]);
+  s := StringReplace(s,'<_307','Ç',[rfReplaceAll]);
+  s := StringReplace(s,'<_308','ı',[rfReplaceAll]);
+  s := StringReplace(s,'<_309','ğ',[rfReplaceAll]);
+  s := StringReplace(s,'<_310','Ğ',[rfReplaceAll]);
+  s := StringReplace(s,'<_311','ö',[rfReplaceAll]);
+  s := StringReplace(s,'<_312','Ö',[rfReplaceAll]);
+  *)
+
 
   Result := s;
 END; //runhub

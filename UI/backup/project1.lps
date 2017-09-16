@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="10"/>
+    <BuildModes Active="Release"/>
+    <Units Count="17">
+      <Unit0>
+        <Filename Value="project1.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="9"/>
+        <CursorPos X="45" Y="25"/>
+        <UsageCount Value="223"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="ulogin.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmLogin"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uLogin"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="57"/>
+        <CursorPos X="24" Y="73"/>
+        <UsageCount Value="234"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="ujson.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="UJson"/>
+        <TopLine Value="295"/>
+        <CursorPos X="47" Y="276"/>
+        <UsageCount Value="234"/>
+        <Bookmarks Count="2">
+          <Item0 X="3" Y="612" ID="4"/>
+          <Item1 X="23" Y="310" ID="5"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="umain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmMain"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="169"/>
+        <CursorPos X="147" Y="178"/>
+        <UsageCount Value="342"/>
+        <Bookmarks Count="4">
+          <Item0 Y="522" ID="3"/>
+          <Item1 X="38" Y="585" ID="1"/>
+          <Item2 Y="209" ID="2"/>
+          <Item3 X="13" Y="320"/>
+        </Bookmarks>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="uthread.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="62" Y="22"/>
+        <UsageCount Value="266"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="uusers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Users"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uUsers"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="38" Y="14"/>
+        <UsageCount Value="219"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="uform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uForm"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="81"/>
+        <CursorPos X="41" Y="88"/>
+        <UsageCount Value="201"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="utools.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="4"/>
+        <CursorPos Y="19"/>
+        <UsageCount Value="211"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="uscoring.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmScoring"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="188"/>
+        <CursorPos X="8" Y="124"/>
+        <UsageCount Value="209"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="4"/>
+        <CursorPos Y="37"/>
+        <UsageCount Value="217"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="usession.pas"/>
+        <EditorIndex Value="8"/>
+        <CursorPos Y="18"/>
+        <UsageCount Value="343"/>
+        <Loaded Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="uchild.pas"/>
+        <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="229"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="uforms.pas"/>
+        <ComponentName Value="xFORMS"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="55" Y="18"/>
+        <UsageCount Value="90"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="uselfdialogbox.pas"/>
+        <ComponentName Value="fDialogBox"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uSelfDialogBox"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="39" Y="16"/>
+        <UsageCount Value="109"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="C:\lazarus\components\lazutils\lazutf8classes.pas"/>
+        <UnitName Value="LazUTF8Classes"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="15" Y="9"/>
+        <UsageCount Value="68"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="C:\lazarus\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="255"/>
+        <CursorPos X="29" Y="268"/>
+        <UsageCount Value="87"/>
+        <Loaded Value="True"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="C:\lazarus\lcl\grids.pas"/>
+        <UnitName Value="Grids"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="11356"/>
+        <CursorPos X="41" Y="11364"/>
+        <UsageCount Value="1"/>
+      </Unit16>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="umain.pas"/>
+        <Caret Line="559" Column="89" TopLine="547"/>
+      </Position1>
+      <Position2>
+        <Filename Value="umain.pas"/>
+        <Caret Line="558" Column="78" TopLine="547"/>
+      </Position2>
+      <Position3>
+        <Filename Value="umain.pas"/>
+        <Caret Line="557" Column="23" TopLine="547"/>
+      </Position3>
+      <Position4>
+        <Filename Value="umain.pas"/>
+        <Caret Line="129" Column="14" TopLine="126"/>
+      </Position4>
+      <Position5>
+        <Filename Value="umain.pas"/>
+        <Caret Line="86" Column="15" TopLine="73"/>
+      </Position5>
+      <Position6>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="64" Column="17" TopLine="52"/>
+      </Position6>
+      <Position7>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="744" Column="11" TopLine="731"/>
+      </Position7>
+      <Position8>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="746" Column="22" TopLine="731"/>
+      </Position8>
+      <Position9>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="749" Column="13" TopLine="703"/>
+      </Position9>
+      <Position10>
+        <Filename Value="umain.pas"/>
+        <Caret Line="481" Column="32" TopLine="472"/>
+      </Position10>
+      <Position11>
+        <Filename Value="umain.pas"/>
+        <Caret Line="739" Column="3" TopLine="720"/>
+      </Position11>
+      <Position12>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="71" Column="19" TopLine="47"/>
+      </Position12>
+      <Position13>
+        <Filename Value="umain.pas"/>
+        <Caret Line="59" Column="20" TopLine="53"/>
+      </Position13>
+      <Position14>
+        <Filename Value="umain.pas"/>
+        <Caret Line="487" Column="38" TopLine="480"/>
+      </Position14>
+      <Position15>
+        <Filename Value="umain.pas"/>
+        <Caret Line="480" Column="52" TopLine="473"/>
+      </Position15>
+      <Position16>
+        <Filename Value="umain.pas"/>
+        <Caret Line="479" Column="52" TopLine="472"/>
+      </Position16>
+      <Position17>
+        <Filename Value="umain.pas"/>
+        <Caret Line="480" Column="52" TopLine="473"/>
+      </Position17>
+      <Position18>
+        <Filename Value="umain.pas"/>
+        <Caret Line="485" Column="151" TopLine="475"/>
+      </Position18>
+      <Position19>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="145" Column="174" TopLine="131"/>
+      </Position19>
+      <Position20>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="67" Column="3" TopLine="65"/>
+      </Position20>
+      <Position21>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="140" Column="44" TopLine="125"/>
+      </Position21>
+      <Position22>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="166" Column="76" TopLine="148"/>
+      </Position22>
+      <Position23>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="165" Column="76" TopLine="147"/>
+      </Position23>
+      <Position24>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="166" Column="76" TopLine="148"/>
+      </Position24>
+      <Position25>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="137" Column="27" TopLine="120"/>
+      </Position25>
+      <Position26>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="166" Column="15" TopLine="142"/>
+      </Position26>
+      <Position27>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="70" Column="15" TopLine="57"/>
+      </Position27>
+      <Position28>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="139" Column="11" TopLine="117"/>
+      </Position28>
+      <Position29>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="70" Column="15" TopLine="57"/>
+      </Position29>
+      <Position30>
+        <Filename Value="ujson.pas"/>
+        <Caret Line="268" Column="124" TopLine="260"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>

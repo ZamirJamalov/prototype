@@ -107,7 +107,7 @@ begin
  --  v_sql:=replace(v_sql,'#13',chr(13));
 
   v_json := 'select '||''''||v_json||''''||'  '||substr(p_sql,instr(lower(p_sql),' from'),length(p_sql))||'';
-  dbms_output.put_line(v_json);
+  --dbms_output.put_line(v_json);
   return v_json;
 
 end prepare_json_sql;
@@ -140,11 +140,12 @@ begin
 
 end json_part;
 
-function response return CLOB is
+function response RETURN CLOB is
 begin
   dbms_lob.close(v_main_json_clob);
   --bns_debug.saveClobLog(v_main_json_clob);
   initialized :=FALSE;
+  
   return v_main_json_clob;
  EXCEPTION
    WHEN OTHERS THEN 
@@ -204,6 +205,7 @@ procedure append_as_sql(p_json_part varchar2,p_sql VARCHAR2,
   f BOOLEAN := FALSE;
 
 BEGIN
+     
  initialize;
  tmainjson.delete();
  --v_sql := p_sql||' '||nvl1(bind1,'/*:1*/')||nvl1(bind2,'/*:2*/')||nvl1(bind3,'/*:3*/')||nvl1(bind4,'/*:4*/')||nvl1(bind5,'/*:5*/')||nvl1(bind6,'/*:6*/')||nvl1(bind7,'/*:7*/')||nvl1(bind8,'/*:8*/')||nvl1(bind9,'/*:9*/')||nvl1(bind10,'/*:10*/');

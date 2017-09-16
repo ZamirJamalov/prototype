@@ -86,7 +86,7 @@ type
   v_jsonError:string;
 implementation
 
-uses usession,umain;
+uses usession,umain,unit1;
 
 function addComma(p_val: integer; p_point: integer): string;
 begin
@@ -138,7 +138,7 @@ begin
                   END; //TEDIT
      'TCHECKBOX':  BEGIN
                     comma_ := comma_ + 1;
-                    if (p_component AS TCHECKBOX).Checked then a := 'TRUE' ELSE BEGIN a := 'FALSE'; END;
+                    if (p_component AS TCHECKBOX).Checked then a := 'Y' ELSE BEGIN a := 'N'; END;
                     v_json := v_json + addComma(comma_, 1)+ '"' + (p_component AS TCHECKBOX).Name + '":["' + a + '"]';
                   END;//TCHECBOX
      'TCOMBOBOX': BEGIN
@@ -573,6 +573,7 @@ var
    click_form_tmp : tform;
 begin
   //showmessage(click_form.Name);
+  usession.form_closed:=false;
   v_response_array := response_array;
   s := runHub(umain.schema_name+'.'+click_form.name+'_pkg.onclick_'+click_button_name,'"TFORM":"'+click_form.name+'",'+prepareRequest(click_form));
   jData := GetJSON(s);
@@ -650,6 +651,7 @@ var
   S: WideString;
   i:integer;
   jdata:TJSONData;
+  frm:TForm1;
 begin
   i:=0;
   IF length(p_request_json) > 0 THEN
@@ -657,10 +659,13 @@ begin
   ELSE BEGIN
     v_json := '{"session_key":"' + usession.session_var + '","method_name":"' + p_method_name + '"}';
   END; //IF
-
+ // showmessage(v_json);
   WITH TFPHttpClient.Create(nil) DO
     TRY
       s := Post('http://localhost:8089/WebApplication1/NewServlet?myparam=' + v_json);
+      frm := TForm1.Create(nil);
+      frm.setlog(s);
+      frm.ShowModal;
       jdata := getjson(s);
       v_jsonError := '';
       if jdata.FindPath('Response.Message.Status').AsString = 'ERROR' then begin

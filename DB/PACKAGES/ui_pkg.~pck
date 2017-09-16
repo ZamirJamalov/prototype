@@ -27,9 +27,9 @@ FUNCTION menu_data RETURN CLOB IS
 BEGIN
   json_kernel.append_as_text('{');
   json_kernel.append_as_text('"rows":[');
-  json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@root_id","@caption","@form_name","@form_caption","@schema_name"]}',
-                            p_sql       => 'select rownum,a.id as id,a.root_id as root_id,a.caption as caption,a.form_name as form_name,a.form_caption as form_caption,a.schema_name as schema_name
-                             from (select id,root_id,caption,form_name,form_caption,schema_name from ui_menu order by id asc ) a');
+  json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@root_id","@caption","@form_name","@form_caption","@schema_name","@crud","@external_form"]}',
+                            p_sql       => 'select rownum,a.id as id,a.root_id as root_id,a.caption as caption,a.form_name as form_name,a.form_caption as form_caption,a.schema_name as schema_name,a.crud as crud,a.external_form as external_form
+                             from (select id,root_id,caption,form_name,form_caption,schema_name,crud,external_form from ui_menu order by sort_ asc ) a');
   json_kernel.append_as_text(']}'); 
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
@@ -136,19 +136,58 @@ FUNCTION  get_ui_comps RETURN CLOB IS
    v_grid_id VARCHAR2(100);
    v_crud VARCHAR2(100);
    v_schema_name VARCHAR2(100);
+
+ FUNCTION getFormName(p_id INTEGER) RETURN VARCHAR2 IS
+    v_res VARCHAR2(100);
+   BEGIN
+     SELECT ui_cf.name INTO v_res FROM ui_components_forms ui_cf, ui_components ui_c1, ui_components ui_c WHERE upper(ui_cf.name)=upper(ui_c1.name_) AND ui_c.id=p_id AND ui_c.root_id=ui_c1.id;
+     RETURN v_res;
+   END getFormName;  
+ FUNCTION getSchemaName(p_form VARCHAR2) RETURN VARCHAR2 IS
+   v_res VARCHAR2(100);
+  BEGIN
+    SELECT schema_name INTO v_res FROM ui_menu WHERE upper(form_name)=upper(p_form);
+    RETURN v_res;
+  END getSchemaName;   
 BEGIN
+ 
   v_form := zamir.json_ext.get_string(hub.getJson(),'form');
   v_grid_id := zamir.json_ext.get_string(hub.getJson(),'id');
   v_crud := zamir.json_ext.get_string(hub.getJson(),'crud');    
-  v_schema_name := zamir.json_ext.get_string(hub.getJson(),'schema_name');              
-
-  api_component.collectcolumnvalues(p_schema_name => 'ZAMIR', p_table_name  => upper(v_form), p_id => v_grid_id);
-  
- IF v_form='UI_COMPONENTS' THEN 
+  v_schema_name :=zamir.json_ext.get_string(hub.getJson(),'schema_name');   
+   log_pkg.add(p_log_type    => log_pkg.RESPONSE,
+              p_method_name => 'yyy',
+              p_log_text    =>v_schema_name||' '||v_form,
+              p_log_clob    => NULL);           
+  api_component.collectcolumnvalues(p_schema_name => v_schema_name, p_table_name  => upper(v_form), p_id => v_grid_id);
+   
+ IF upper(v_form)='UI_COMPONENTS' THEN 
+   
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => v_form||'.'||i.name_,
-                            p_values           => api_component.exec(i.ds_proc,CASE WHEN i.name_='form_list' THEN v_form ELSE api_component.getColumnValue(i.name_) END)  ,
-                            p_value            => nvl(api_component.getColumnValue(i.name_),i.default_value),
+                            p_values           => CASE 
+                                                      WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN
+                                                          CASE
+                                                              WHEN i.name_='form_list' THEN
+                                                                 CASE 
+                                                                     WHEN v_crud!='add' THEN 
+                                                                          api_component.exec(p_ds_proc=>i.ds_proc,p_value=>getFormName(v_grid_id))
+                                                                     ELSE
+                                                                          api_component.exec(p_ds_proc=>i.ds_proc,p_value=>'')
+                                                                  END              
+                                                              ELSE
+                                                                  api_component.exec(p_ds_proc=>i.ds_proc,p_value=>api_component.getColumnValue(i.name_))
+                                                           END 
+                                                      ELSE NULL 
+                                                   END,--api_component.exec(i.ds_proc,CASE WHEN i.name_='form_list' THEN v_form ELSE api_component.getColumnValue(i.name_) END)  ,
+                            p_value            => CASE 
+                                                      WHEN i.type_ NOT IN ('TCOMBOBOX','TCHECKLISTBOX') AND i.ds_proc IS NOT NULL THEN 
+                                                           CASE 
+                                                              WHEN v_crud<>'add' THEN nvl(api_component.getColumnValue(i.name_),i.default_value)
+                                                              ELSE api_component.exec_(i.ds_proc)
+                                                           END
+                                                      ELSE nvl(api_component.getColumnValue(i.name_),i.default_value)      
+                                                  END, 
                             p_label_caption    => i.label_caption,
                             p_width            => i.width_,
                             p_font_size        => i.font_size,
@@ -166,8 +205,15 @@ BEGIN
     
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => v_form||'.'||i.name_,
-                            p_values           => CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN api_component.exec(i.ds_proc,i.name_) ELSE NULL END,
-                            p_value            => CASE WHEN i.type_ NOT IN ('TCOMBOBOX','TCHECKLISTBOX') AND i.ds_proc IS NOT NULL THEN api_component.exec_(i.ds_proc) ELSE   nvl(api_component.getColumnValue(i.name_),i.default_value) END,
+                            p_values           => CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN api_component.exec(p_ds_proc=>i.ds_proc,p_value=>api_component.getColumnValue(i.name_)) ELSE NULL END,
+                            p_value            => CASE 
+                                                      WHEN i.type_ NOT IN ('TCOMBOBOX','TCHECKLISTBOX') AND i.ds_proc IS NOT NULL THEN 
+                                                           CASE 
+                                                              WHEN v_crud<>'add' THEN nvl(api_component.getColumnValue(i.name_),i.default_value)
+                                                              ELSE api_component.exec_(i.ds_proc)
+                                                            END
+                                                      ELSE nvl(api_component.getColumnValue(i.name_),i.default_value)      
+                                                  END,           
                             p_label_caption    => i.label_caption,
                             p_width            => i.width_,
                             p_font_size        => i.font_size,

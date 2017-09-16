@@ -15,6 +15,7 @@ FUNCTION test1 RETURN tt_component_obj;
 FUNCTION ui_setid RETURN VARCHAR2;
 FUNCTION onclick_calculate RETURN CLOB;
 FUNCTION setuimenuid RETURN CLOB;
+FUNCTION getid(p_session VARCHAR2) RETURN users.id%TYPE;
 end users_pkg;
 /
 create or replace package body users_pkg is
@@ -51,12 +52,15 @@ FUNCTION login RETURN CLOB IS
  v_wrong_attempt_count NUMBER; 
  v_blocked_time        users.email%TYPE;
  v_session             users.Session_%TYPE;
+ v_login               users.login%TYPE DEFAULT api_component.getvalue('edlogin');
+ v_password          users.password%TYPE DEFAULT api_component.getvalue('edpassword');
 BEGIN
+  
   IF api_component.getvalue('edlogin') IS NULL AND api_component.getvalue('edpassword') IS NULL THEN 
     RETURN uiresp('message','ERROR','Empty fields');
   END IF;
   
-  SELECT * INTO users_row FROM users WHERE login=api_component.getvalue('edlogin') AND password=api_component.getvalue('edpassword');
+  SELECT * INTO users_row FROM users WHERE login=v_login AND password=v_password;
   
   IF users_row.wrong_attempt_count>=3 THEN 
     RETURN uiresp('message','ERROR','User Locked');
@@ -74,7 +78,7 @@ BEGIN
   --set new session
   UPDATE users SET session_= v_session, logon_time=SYSDATE,wrong_attempt_count=0 WHERE id=users_row.id;
   COMMIT;
-  RETURN  uiresp('message','OK',session_pkg.getNewSession());
+  RETURN  uiresp('message','OK',v_session);
  
  EXCEPTION
    WHEN no_data_found THEN 
@@ -142,21 +146,24 @@ END del;
 
 
 FUNCTION grid_data RETURN CLOB IS
+  v_idx NUMBER DEFAULT nvl(to_number(api_component.getvalue('index')),0)+1;
+  v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),'asc');
 BEGIN
-  json_kernel.append_as_text('{"columns":["id","session","login","email","wrong_attempt_count","blocked_time","mob_phone","logon_time"],');
-  json_kernel.append_as_text('"rows":[');
-  json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@session","@login","@email","@wrong_attempt_count","@blocked_time","@mob_phone","@logon_time"]}',
+    json_kernel.append_as_text('{"columns":["id","session","login","email","wrong_attempt_count","blocked_time","mob_phone","logon_time"],');
+    json_kernel.append_as_text('"rows":[');
+    json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@session","@login","@email","@wrong_attempt_count","@blocked_time","@mob_phone","@logon_time"]}',
                             p_sql       => 'select rownum,a.id as id,a.session_ as session,a.login as login, a.email as email,a.wrong_attempt_count as wrong_attempt_count,a.blocked_time as blocked_time,a.mob_phone as mob_phone,a.logon_time as logon_time 
-                             from (select id,session_,login,email,wrong_attempt_count,blocked_time,mob_phone,to_char(logon_time,''DD-MM-YYYY HH24:MI:SS'') as logon_time from users where rownum<10 order by id asc ) a');
-  json_kernel.append_as_text(']}'); 
+                             from (select id,session_,login,email,wrong_attempt_count,blocked_time,mob_phone,to_char(logon_time,''DD-MM-YYYY HH24:MI:SS'') as logon_time from users where rownum<10 order by '||v_idx||' '||v_sort_order||' ) a');  --to_number(api_component.getvalue('index'))+1
+    json_kernel.append_as_text(']}');  
+
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-    RETURN '';
-    log_pkg.add(p_log_type    => log_pkg.RESPONSE,
+     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
                 p_method_name => 'users_pkg.grid_data',
                 p_log_text    => NULL,
                 p_log_clob    => SQLERRM);
+     RETURN '';           
 END grid_data;  
 
 FUNCTION test RETURN tt_component_obj IS
@@ -201,6 +208,13 @@ BEGIN
   api_component.setvalue(p_component=>'users.memo_test',p_value=>api_component.getvalue('id'));
   RETURN api_component.exec;
 END setuimenuid;  
+
+FUNCTION getid(p_session VARCHAR2) RETURN users.id%TYPE IS
+ v_res users.id%TYPE;
+BEGIN
+ SELECT id INTO v_res FROM users WHERE Session_=p_session; 
+ RETURN v_res;
+END getid;  
 
 BEGIN
 NULL;  

@@ -1,0 +1,51 @@
+unit uscoring;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  CheckLst, ExtCtrls, Buttons, Calendar;
+
+type
+
+  { TfrmScoring }
+
+  TfrmScoring = class(TForm)
+    CheckListBox1: TCheckListBox;
+    CheckListBox2: TCheckListBox;
+    Image1: TImage;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    LabeledEdit1: TLabeledEdit;
+    LabeledEdit2: TLabeledEdit;
+    LabeledEdit3: TLabeledEdit;
+    LabeledEdit4: TLabeledEdit;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Panel6: TPanel;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    Panel9: TPanel;
+    SpeedButton1: TSpeedButton;
+  private
+
+  public
+
+  end;
+
+var
+  frmScoring: TfrmScoring;
+
+implementation
+
+{$R *.lfm}
+
+end.
+

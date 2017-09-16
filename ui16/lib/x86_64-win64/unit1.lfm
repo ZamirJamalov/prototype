@@ -1,0 +1,21 @@
+object Form1: TForm1
+  Left = 2482
+  Height = 240
+  Top = 318
+  Width = 320
+  Caption = 'Form1'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '1.6.4.0'
+  object Memo1: TMemo
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    Align = alClient
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 0
+  end
+end

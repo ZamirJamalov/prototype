@@ -35,8 +35,7 @@ END getJson;
 FUNCTION run(p_json_in CLOB) RETURN CLOB IS
   v_json json;
   v_res CLOB;
- 
-  
+  v_user VARCHAR2(50);
 BEGIN
   log_pkg.setParentIdNull;
   log_pkg.add(p_log_type    => log_pkg.REQUEST,
@@ -44,7 +43,7 @@ BEGIN
               p_log_text    => '',
               p_log_clob    => p_json_in);
   
-  --set global json
+   --set global json
   g_json := json(p_json_in);
   
   v_json := json(p_json_in);
@@ -61,7 +60,6 @@ BEGIN
       RETURN object_pkg.GetResponseTop(p_message_type=>object_pkg.response_message_type_error,p_message_text =>  'session_key expired')||object_pkg.getResponseBottom; 
     END IF;  
   END IF;
-  
   --EXECUTE IMMEDIATE 'begin :1 :='||v_method_name||'(:2); end;' USING OUT v_res,p_json_in;
   EXECUTE IMMEDIATE 'begin :1 :='||v_method_name||'(); end;' USING OUT v_res;
   

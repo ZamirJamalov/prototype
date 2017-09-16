@@ -1,0 +1,524 @@
+object frmScoring: TfrmScoring
+  Left = 462
+  Height = 663
+  Top = 141
+  Width = 1377
+  Caption = 'Scoring'
+  ClientHeight = 663
+  ClientWidth = 1377
+  LCLVersion = '1.8.0.4'
+  object Panel1: TPanel
+    Left = 0
+    Height = 10
+    Top = 0
+    Width = 1377
+    Align = alTop
+    BevelColor = clWhite
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 0
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 222
+    Top = 441
+    Width = 1377
+    Align = alBottom
+    Caption = 'Panel2'
+    ClientHeight = 222
+    ClientWidth = 1377
+    TabOrder = 1
+    object Panel6: TPanel
+      Left = 1
+      Height = 220
+      Top = 1
+      Width = 15
+      Align = alLeft
+      BevelColor = clWhite
+      Color = clWhite
+      ParentColor = False
+      TabOrder = 0
+    end
+    object Panel7: TPanel
+      Left = 1102
+      Height = 220
+      Top = 1
+      Width = 274
+      Align = alRight
+      BevelColor = clWhite
+      ClientHeight = 220
+      ClientWidth = 274
+      Color = clWhite
+      ParentColor = False
+      TabOrder = 1
+      object Label3: TLabel
+        Left = 72
+        Height = 72
+        Top = 16
+        Width = 144
+        Alignment = taCenter
+        AutoSize = False
+        Caption = '700'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGreen
+        Font.Height = -64
+        Font.Name = 'Consolas'
+        Font.Pitch = fpFixed
+        Font.Quality = fqDraft
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label4: TLabel
+        Left = 128
+        Height = 32
+        Top = 88
+        Width = 45
+        Caption = 'Bal'
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -27
+        Font.Name = 'Consolas'
+        Font.Pitch = fpFixed
+        Font.Quality = fqDraft
+        ParentColor = False
+        ParentFont = False
+      end
+      object SpeedButton1: TSpeedButton
+        Left = 16
+        Height = 36
+        Top = 136
+        Width = 248
+        Caption = 'Düşərli kredit məhsulu sayı 8'
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -15
+        Font.Name = 'Consolas'
+        Font.Pitch = fpFixed
+        Font.Quality = fqDraft
+        ParentFont = False
+      end
+    end
+    object Panel8: TPanel
+      Left = 16
+      Height = 220
+      Top = 1
+      Width = 1086
+      Align = alClient
+      Caption = 'Panel8'
+      ClientHeight = 220
+      ClientWidth = 1086
+      TabOrder = 2
+      object Label2: TLabel
+        Left = 1
+        Height = 19
+        Top = 1
+        Width = 1084
+        Align = alTop
+        Caption = 'Cavablar'
+        Color = 6430219
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Consolas'
+        Font.Pitch = fpFixed
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        Transparent = False
+      end
+      object CheckListBox2: TCheckListBox
+        Left = 1
+        Height = 199
+        Top = 20
+        Width = 1084
+        Align = alClient
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -16
+        Font.Name = 'Consolas'
+        Font.Pitch = fpFixed
+        Font.Quality = fqDraft
+        Items.Strings = (
+          '1       aaaaaaaaaa'
+          '2       bbbbbbbbb'
+          '3       ccccccccccc'
+          '4       ddddddddddddd'
+          '5       eeeeeeeeeeeeeeeee'
+          '6       gggggggggggggg'
+          '7       hhhhhhhhhhhhhhhhhhhhhh'
+        )
+        ItemHeight = 19
+        ParentFont = False
+        TabOrder = 0
+        Data = {
+          0700000000000000000000
+        }
+      end
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Height = 431
+    Top = 10
+    Width = 16
+    Align = alLeft
+    BevelColor = clWhite
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 2
+  end
+  object Panel4: TPanel
+    Left = 1104
+    Height = 431
+    Top = 10
+    Width = 273
+    Align = alRight
+    BevelColor = clWhite
+    ClientHeight = 431
+    ClientWidth = 273
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 3
+    object Panel9: TPanel
+      Left = 1
+      Height = 151
+      Top = 1
+      Width = 271
+      Align = alTop
+      ClientHeight = 151
+      ClientWidth = 271
+      TabOrder = 0
+      object Image1: TImage
+        Left = 100
+        Height = 149
+        Top = 1
+        Width = 170
+        Align = alRight
+        Picture.Data = {
+          0954474946496D6167656C10000047494638396100010001C600000402048482
+          84444244C4C2C4242224A4A2A4646264E4E2E4141214949294545254D4D2D434
+          3234B4B2B4747274F4F2F40C0A0C8C8A8C4C4A4CCCCACC2C2A2CACAAAC6C6A6C
+          ECEAEC1C1A1C9C9A9C5C5A5CDCDADC3C3A3CBCBABC7C7A7CFCFAFC0406048486
+          84444644C4C6C4242624A4A6A4646664E4E6E4141614949694545654D4D6D434
+          3634B4B6B4747674F4F6F40C0E0C8C8E8C4C4E4CCCCECC2C2E2CACAEAC6C6E6C
+          ECEEEC1C1E1C9C9E9C5C5E5CDCDEDC3C3E3CBCBEBC7C7E7CFCFEFCFFFFFF0000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000000000000000000000000000000000000021F9040100
+          0040002C00000000000100010007FE804082838485868788898A8B8C8D8E8F90
+          9192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0
+          B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0
+          D1D2A91F371B153E1A122C1428042C123A1E292D3B0F2FD3E9C11F271D363C28
+          00F2F3F4F500281C16251B0FEAFEB61F16C45010CF9EC183F240F088B1E2C3BF
+          87AD2E94900003A1C58B086454E807B123A9052E485C1C39128488010E3DAAE4
+          74C0464192302DC2307160A54D4B0F426088C97324891937833EFAD18240CFA3
+          185B085D9AE885071048A32204912325D3AB373448DD7A104285AB571F28E04A
+          D61E8A1E60857EB050B62D3D12FE0BD2DEAC01C1AD5D001C6EC855F980C3DDBB
+          36ACEEFDD703EA5FBB2506430C71F82E8A158AD3FDB8B0436B63BB3CD0457EF6
+          A1878A6E97FF06D8ECEC838FBAA10FC318419A5902C3A90F33D0DB1AD98E9DB1
+          2F3BA88DCC45EED0386AF22676C2E8EFCB398613AB713CB408C1CA7BFDB0DCFC
+          308A1DD181DD305EFD7083ECBF1674D70DDE578AF18D05682E9F6B3AFAC3042E
+          B0D7F541E4FBBB20B0CFC775E2FEE10EFBE1D2817F7F6510E02D311078970F07
+          DA6280827619D0602D7E41D8960CD04DE80A0E16B6959986B1BC005B875B31B0
+          1E88ADEC406259247084622B33AC48160AB4BDC8CA80326E05438D36AAC25C8E
+          5BC9D7E32A2500B9957043A6FE928391526D90A42A193019D5044F2A29255203
+          54894A9457F6A49496A62CD9254F5F81598A9863C2949C99A45490664C31B049
+          CA8F6F8E349A9CA2E058E745BBE1198A9E7B2274A79F9F8817A84505100A8A88
+          872244A5A29F30D0A8413008096927264C6A0F0D275EAA099A9ACAA3C20F9E76
+          6268A8F278506A272F2080AA3C09ACCAC9073CBC0A000531582AAB251F8860AB
+          3C0CC4B56B2527D880DAAF349C30EC2427D4FA2B3D2E2C1BC907633D4B0F01CA
+          4AEB480D235A0B025ADA3652ADB5F4C41AEE22177047AE3C839E8BC80A2FAD0B
+          80AAEE26B24045F2CA1341BD896C10EFBA89F27BC805F6C90B026B021FE26BBE
+          C1257C4804F9022082C387FECC80EFBAE6524C48AFF222A09FC68434D0ADAD2A
+          806CC80BCE3E0BC2A3261332C1C8A16AD0F2210E3C0B0392330F82F2AF89E56C
+          C80E34A00A820F19FA0CC402414F0A01D14623B28304872220420B45372DC803
+          2948FA26082D746AF52137CCC0D6983854FDB521A75E59F2D98D3C90F4956BB2
+          CDC8D8573A2937232D740903A9772F72C0BF390AD037232F402D65B4832F02B1
+          9465269EC8CB5242E6782237BC9D230A2E4E7E48A646AAA7792274E668C1E789
+          DC6664DCA417F281E139B29C7A2109008942B6AF17B2C2C5247E587B213F54B8
+          629FBBC39E630DC1FF8C3B8430D85D3C21AC5BC841E6CB03E126890C464FC80B
+          EA1278B0F5852C0E210DFED05B7F02E0EFEDCB7D21092A8803EDE70B72030B0A
+          B6DBBE201DB87A5F5EF3F35EC0F1CDE1A07CFE83F881F7BAD338005ECF77CDE1
+          94010F91BEEAD86081876801CC52D33308126206C73A0EC22C3808C855E7631C
+          0482C8AA0302F671F03CD58180092D48B7E3A83084823840C18E03029C01F003
+          0728000726189B145CE0057C9B5F6568B0831464AF392888C1043610C4E8BDA0
+          001C4A81204EE002F285060432C8D20D64108015D6EE003A804A8B08B1001564
+          F03226E980553A00031A54C06C8EFB410D28300F0315E2051D58D86578D0804E
+          BD402B205080B052F700175C0C075E13C40B4A6039B7B06023881801BE101082
+          F00D6E032983D5226EFE10032B22850405E09121DC330F1664298E0DB0DF3C70
+          204A445CC001673C0A0152904843F4208320B0412BBF56C891C96F112B302352
+          7010034B228256F6A0400FE0D8B2A719E43A91F8410778C0437BE02004BA7244
+          010C02020F64D3672368E43C4CD0C4473C519CF6C080074008891BE0C61E2CD8
+          A0CF2AF0CE7A6CAF121788403DE981020748AE123640080A52C04C7E25807FF3
+          0001502EB1031BE00E021658413927E1038B80C0005E14D80F02504D00481113
+          D2C41709249A8917A0B31E345828C53E50B3913C0FA41E48A8EB2C51828ECA03
+          015F4AD80B7C0393EF5C6206AA0400F832D1BC8B50A5A0ABFA40086C3A8F105C
+          E2032AB0870B90BAFE083D92040401A8E5AE6E1081585AA480936800A5C06589
+          015E350054F5D30372A0359EFC7312263D080332FA080FC604022998A8A75E50
+          011630B51E38F826241A6890A95AE2051CEA090C2AA057425D200134F8AB3D3C
+          47891D78120010C82925748014105860976CFAC1024C70599298C0120FBA080D
+          04FB886D4685009A35D30B561082B672E5A393B82549025389186D45033348EB
+          7E6E3081100840B2249127241E90498BC616121FF02A4F20A081110857390F58
+          41090C40C7BF248F1229800A018A9A5013D48A04A06D846DA5020119D480AED1
+          095B010CC080A0FE657D9390210058B0811B34571E2278C109040080D16DD62E
+          24B0400BD21B99FE0FECA00121900009102A1B0623E207356341B67A703CB8C4
+          90015CA30461DB020212A8200513D02A535E308104E8800608406E5B04D05845
+          4C00062CF8D80F4690D87B80700724A0007C1391B7CBC0800032F0410516A062
+          887C60003E10418CFDA303497C400638782B100EC09D17921105E49444DA5203
+          02045040060E20C7028C090D1CA680221DAA1E242A800000150283F4F0292106
+          8001E245A23FFE4100031460830494E31CCDB8400E24205DFFD8F1119543DD20
+          5C3B0F7A15A2042CB021231E40E1FB2080051628C00AD8EC8B038460862B022B
+          2302E001BDB6741E131B650C786BCEEEE608042C08C004AE1BA20CF41848CF55
+          C4067490C817FE581500AC3CC4073CA0E746BC80C0520AE44C77B10119C8183D
+          A76CC40F7C90D174D50306D3BE9A0F349D88D58D09063620F52C90D6A5953D62
+          00CA25C4064616B08165A0C6AA8B6A9A64C0DA751F11483050E9221E30821A87
+          6E1E0F4CC40906B9880F70F64D22B0B02BDE97A6C738E204708CA93D3880EF1F
+          3A22B56F0A00BE5BB1ED3761809D89C0F7950D825F458C7C109C7B130204BEEE
+          465F0EE5937880ADE90181704FE2D56F4A782D785A712D53E20413ACE02502BA
+          A7A1D2E201BFEE92C531310084200E1331AF13CD6101A8314DFD12B13B88085E
+          CE08871F0AB7B2604C9D10C0F04A64BD1E149078D9A953A75FBEE2E16F0A3848
+          11580F0418FEDDCA323894D065B1DE2EF51C131FE83400ECCCAB63A74903643F
+          85E28D44D64AA8C82271BAC40BF89EA6E7CCE20187F2B3258A8C100969FEDF5D
+          2201AF4331EF40A15DC417D15D251E60732621A0C9A818C1A1EC1E89B7DB233E
+          9700F4A1868C8A83A769F094F8AF3DFF3709DF1ECAE7AB40E19E64C6ABD20220
+          D890207DA054DD0A8DEF8907AB1FC4016A0F80CC5742FA81325F2CF05E2712F4
+          BB1185198981013AA9F9C3C2F163F2982540851009E05E11E4F52612300BA8F6
+          26F1060915E513EAB60805F82624200BADD2284A27097487109552098CD22820
+          107E9DB00193C724BCE708F043126D07092B102A38A70A23407E46A200917732
+          FB8410DCFEE70845A229D8970A357828715759F685104E450940772819E30A66
+          5527F941092B0813554609D0567FB1D04281D26C90607C08C1032F48080F607D
+          57126BAF807F6F2267911076248101AB87679A820357F8093FB0738182219340
+          7424B18087C07F877233AF7001315827983309FA06137FC708BE1728DFF20A16
+          132A07C808CA871037586E27B527AFA70A12142A21D8146C78118FC808F7F22A
+          C8A70AE8D72882F36751771196F60874D8283CF00A41782810F07F84002F3CB1
+          84900072A1820372180A81872A52C80813C082F3708ACB55898D020325780A1F
+          507887028B8E1089314100912049BF227AAA7000A17828340209940613AB0809
+          45A829FE60980A85F82A33880823561229A86C89D82832D00A62652B0A80803D
+          0102D9C6082BD0839AB283AB308E938202E4860850481213A8085CF22B30F087
+          A4208BA822698AD0873131848A402DE4028DC4788E87220191D78431D18DA5A3
+          857B328AA74030CF8202CC87089B7714F6A708A5882A14A90A1E682D9768080F
+          608C17B1368B606CEBE27EAAD003E4E2799BD48017F1898BB003BCB82720308C
+          A3D089AF020187480827C0931641038DA07600A30AFDF82A0630720790871741
+          860D078CB6B289A34093E4E2778BE02F47518D8A8093F9227BA570034C192AAD
+          A60899D81308109285A090E48201C4C70940292F7809971F680F7A573A7FA929
+          5B97FE2711637E151394095579860095F9F268A5808FBF42005A3503D7166222
+          D996B6725AA6F00306492EFF3808558714B938083918311CC08A88C779D6C200
+          55A37B483183231931F20003B5880937A091368808A37914F55608DC429BF350
+          989F7082C2999A87D09B3D01993A738BC20900BF290AA7992F547108B0791497
+          38008A192A57370ADE479B426608D7D913EAA73376499B03580ACE299C3FB867
+          51D19E83A05BCF290FCC580AE7992F18C07CE3C9131C5938F3390F14600A5498
+          2F16D044CAC913DD2942FF5947A6B016FFB91A2E736D003078B3399F4BC38192
+          F0023E3098A8E286826057FC4908D7289C2CD002690852032002122A947AF68D
+          3DFE312827308DE40202025002B7E90978A400DB192804401B0B408F23617EA9
+          482E34E00229160B0E16023B44A082E08A476147CEB82E30200021300372A70A
+          2F50440AC0A15B831657891489E29F36230201D0013780A1A8F00123301038B0
+          A346420117501C48413C62A88110800122E000254052C6F0011B500301A00024
+          80026EDA213670015CE95C0BA09B1D0201DE20021660683B70A2BFE060235000
+          3EA0022C400053766E0DD08853D10001482220E00D3420031610033530023B80
+          A6C6F00327B00223500211600232C002835AA8B981AB470101F7F91E30800124
+          000E3AE00319500313B00217E0AAE9F00294B10003500231E0013A20013C4003
+          D83800A40B6A54C2CA003C20033AE0021190032D90AC3B7003AA591B1FF00237
+          700107B00313D00125900221E00226A002D64A0324800330B0A2008702244003
+          1C2002E06A01E29A021550AE1B7000277003E84AA936F203EBBAAE0FE0B027B0
+          013330001DD000059001091002F5EA002660021AA00232200122C0011CC00234
+          D0B2148003301BB3308B023050B32820B3324B012D2BB02A2B021220012AA001
+          0660020EE0023E10020990023950010DD0032330031BD0B00F700E2F30B1100B
+          43589BB55ABBB55CDBB55EFBB5601BB6623BB6645BB6D2120800
+        }
+        Stretch = True
+        Transparent = True
+      end
+    end
+    object LabeledEdit1: TLabeledEdit
+      Left = 80
+      Height = 23
+      Top = 160
+      Width = 184
+      Anchors = [akTop, akLeft, akRight]
+      Color = clActiveBorder
+      EditLabel.AnchorSideTop.Control = LabeledEdit1
+      EditLabel.AnchorSideTop.Side = asrCenter
+      EditLabel.AnchorSideRight.Control = LabeledEdit1
+      EditLabel.AnchorSideBottom.Control = LabeledEdit1
+      EditLabel.AnchorSideBottom.Side = asrBottom
+      EditLabel.Left = 56
+      EditLabel.Height = 15
+      EditLabel.Top = 164
+      EditLabel.Width = 21
+      EditLabel.Caption = 'SAA'
+      EditLabel.ParentColor = False
+      EditLabel.ParentFont = False
+      EditLabel.Font.CharSet = ANSI_CHARSET
+      EditLabel.Font.Height = -13
+      EditLabel.Font.Name = 'Consolas'
+      EditLabel.Font.Pitch = fpFixed
+      EditLabel.Font.Quality = fqDraft
+      EditLabel.Font.Style = [fsBold]
+      LabelPosition = lpLeft
+      ReadOnly = True
+      TabOrder = 1
+      Text = 'Camalov Zamir Zeynal'
+    end
+    object LabeledEdit2: TLabeledEdit
+      Left = 232
+      Height = 23
+      Top = 188
+      Width = 32
+      Alignment = taRightJustify
+      Anchors = [akTop, akLeft, akRight]
+      Color = clActiveBorder
+      EditLabel.AnchorSideTop.Control = LabeledEdit2
+      EditLabel.AnchorSideTop.Side = asrCenter
+      EditLabel.AnchorSideRight.Control = LabeledEdit2
+      EditLabel.AnchorSideBottom.Control = LabeledEdit2
+      EditLabel.AnchorSideBottom.Side = asrBottom
+      EditLabel.Left = 208
+      EditLabel.Height = 15
+      EditLabel.Top = 192
+      EditLabel.Width = 21
+      EditLabel.Caption = 'DTİ'
+      EditLabel.ParentColor = False
+      EditLabel.ParentFont = False
+      EditLabel.Font.CharSet = ANSI_CHARSET
+      EditLabel.Font.Height = -13
+      EditLabel.Font.Name = 'Consolas'
+      EditLabel.Font.Pitch = fpFixed
+      EditLabel.Font.Quality = fqDraft
+      EditLabel.Font.Style = [fsBold]
+      LabelPosition = lpLeft
+      ReadOnly = True
+      TabOrder = 2
+      Text = '25%'
+    end
+    object LabeledEdit3: TLabeledEdit
+      Left = 80
+      Height = 23
+      Top = 216
+      Width = 184
+      Anchors = [akTop, akLeft, akRight]
+      Color = clActiveBorder
+      EditLabel.AnchorSideTop.Control = LabeledEdit3
+      EditLabel.AnchorSideTop.Side = asrCenter
+      EditLabel.AnchorSideRight.Control = LabeledEdit3
+      EditLabel.AnchorSideBottom.Control = LabeledEdit3
+      EditLabel.AnchorSideBottom.Side = asrBottom
+      EditLabel.Left = 7
+      EditLabel.Height = 15
+      EditLabel.Top = 220
+      EditLabel.Width = 70
+      EditLabel.Caption = 'Zamin şəxs'
+      EditLabel.ParentColor = False
+      EditLabel.ParentFont = False
+      EditLabel.Font.CharSet = ANSI_CHARSET
+      EditLabel.Font.Height = -13
+      EditLabel.Font.Name = 'Consolas'
+      EditLabel.Font.Pitch = fpFixed
+      EditLabel.Font.Quality = fqDraft
+      EditLabel.Font.Style = [fsBold]
+      LabelPosition = lpLeft
+      ReadOnly = True
+      TabOrder = 3
+      Text = 'Əliyev Əli Əli'
+    end
+    object LabeledEdit4: TLabeledEdit
+      Left = 232
+      Height = 23
+      Top = 248
+      Width = 32
+      Alignment = taRightJustify
+      Anchors = [akTop, akLeft, akRight]
+      Color = clActiveBorder
+      EditLabel.AnchorSideTop.Control = LabeledEdit4
+      EditLabel.AnchorSideTop.Side = asrCenter
+      EditLabel.AnchorSideRight.Control = LabeledEdit4
+      EditLabel.AnchorSideBottom.Control = LabeledEdit4
+      EditLabel.AnchorSideBottom.Side = asrBottom
+      EditLabel.Left = 166
+      EditLabel.Height = 15
+      EditLabel.Top = 252
+      EditLabel.Width = 63
+      EditLabel.Caption = 'Zamin DTİ'
+      EditLabel.ParentColor = False
+      EditLabel.ParentFont = False
+      EditLabel.Font.CharSet = ANSI_CHARSET
+      EditLabel.Font.Height = -13
+      EditLabel.Font.Name = 'Consolas'
+      EditLabel.Font.Pitch = fpFixed
+      EditLabel.Font.Quality = fqDraft
+      EditLabel.Font.Style = [fsBold]
+      LabelPosition = lpLeft
+      ReadOnly = True
+      TabOrder = 4
+      Text = '10%'
+    end
+  end
+  object Panel5: TPanel
+    Left = 16
+    Height = 431
+    Top = 10
+    Width = 1088
+    Align = alClient
+    Caption = 'Panel5'
+    ClientHeight = 431
+    ClientWidth = 1088
+    TabOrder = 4
+    object Label1: TLabel
+      Left = 1
+      Height = 19
+      Top = 1
+      Width = 1086
+      Align = alTop
+      Caption = 'Suallar'
+      Color = 6430219
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -16
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = False
+    end
+    object CheckListBox1: TCheckListBox
+      Left = 1
+      Height = 410
+      Top = 20
+      Width = 1086
+      Align = alClient
+      Items.Strings = (
+        'If you didn’t have to sleep, what would you do with the extra time?'
+        'What’s your favorite piece of clothing you own / owned?'
+        'What hobby would you get into if time and money weren’t an issue?'
+        'What would your perfect room look like?'
+        'How often do you play sports?'
+        'What fictional place would you most like to go?'
+        'What job would you be terrible at?'
+        'When was the last time you climbed a tree?'
+        'If you could turn any activity into an Olympic sport, what would you have a good chance at winning medal for?'
+        'What is the most annoying habit that other people have?'
+        'What job do you think you’d be really good at?'
+        'What skill would you like to master?'
+        'What would be the most amazing adventure to go on?'
+        'If you had unlimited funds to build a house that you would live in for the rest of your life, what would the finished house be like?'
+        'What’s your favorite drink?'
+        'What state or country do you never want to go back to?'
+        'What songs have you completely memorized?'
+        'What game or movie universe would you most like to live in?'
+        'What do you consider to be your best find?'
+        'Are you usually early or late?'
+        'What pets did you have while you were growing up?'
+        'When people come to you for help, what do they usually want help with?'
+        'What takes up too much of your time?'
+        'What do you wish you knew more about?'
+      )
+      ItemHeight = 17
+      TabOrder = 0
+      Data = {
+        18000000000000000000000000000000000000000000000000000000
+      }
+    end
+  end
+end

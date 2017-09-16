@@ -1,0 +1,49 @@
+object frm: Tfrm
+  Left = 2246
+  Height = 439
+  Top = 219
+  Width = 671
+  Caption = 'frm'
+  ClientHeight = 439
+  ClientWidth = 671
+  Font.CharSet = ANSI_CHARSET
+  Font.Height = -13
+  Font.Name = 'Consolas'
+  Font.Pitch = fpFixed
+  Font.Quality = fqDraft
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  LCLVersion = '1.6.4.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 34
+    Top = 405
+    Width = 671
+    Align = alBottom
+    Caption = 'Panel1'
+    ClientHeight = 34
+    ClientWidth = 671
+    TabOrder = 0
+    object btnsavetop: TButton
+      Left = 595
+      Height = 32
+      Top = 1
+      Width = 75
+      Align = alRight
+      Caption = 'btnsavetop'
+      OnClick = btnsavetopClick
+      TabOrder = 0
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Height = 405
+    Top = 0
+    Width = 671
+    Align = alClient
+    Caption = 'Panel3'
+    TabOrder = 1
+  end
+end

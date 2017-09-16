@@ -1,0 +1,157 @@
+object frmMain: TfrmMain
+  Left = 2224
+  Height = 521
+  Top = 252
+  Width = 902
+  Caption = 'frmMain'
+  ClientHeight = 521
+  ClientWidth = 902
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  LCLVersion = '1.6.4.0'
+  object Panel1: TPanel
+    Left = 126
+    Height = 471
+    Top = 50
+    Width = 776
+    Align = alClient
+    Caption = 'Panel1'
+    ClientHeight = 471
+    ClientWidth = 776
+    TabOrder = 0
+    object Panel2: TPanel
+      Left = 1
+      Height = 39
+      Top = 1
+      Width = 774
+      Align = alTop
+      Caption = 'Panel2'
+      ClientHeight = 39
+      ClientWidth = 774
+      TabOrder = 0
+      object btnNew: TBitBtn
+        Left = 1
+        Height = 37
+        Top = 1
+        Width = 75
+        Align = alLeft
+        Caption = 'btnNew'
+        TabOrder = 0
+      end
+      object btnUpd: TBitBtn
+        Left = 76
+        Height = 37
+        Top = 1
+        Width = 75
+        Align = alLeft
+        Caption = 'btnUpd'
+        TabOrder = 1
+      end
+      object btnDel: TBitBtn
+        Left = 151
+        Height = 37
+        Top = 1
+        Width = 75
+        Align = alLeft
+        Caption = 'btnDel'
+        TabOrder = 2
+      end
+      object btnView: TBitBtn
+        Left = 226
+        Height = 37
+        Top = 1
+        Width = 75
+        Align = alLeft
+        Caption = 'btnView'
+        TabOrder = 3
+      end
+      object btnExcel: TBitBtn
+        Left = 301
+        Height = 37
+        Top = 1
+        Width = 75
+        Align = alLeft
+        Caption = 'btnExcel'
+        TabOrder = 4
+      end
+      object btnRefresh: TBitBtn
+        Left = 376
+        Height = 37
+        Top = 1
+        Width = 75
+        Align = alLeft
+        Caption = 'btnRefresh'
+        TabOrder = 5
+      end
+    end
+    object PageControl1: TPageControl
+      Left = 1
+      Height = 430
+      Top = 40
+      Width = 774
+      Align = alClient
+      TabOrder = 1
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Height = 50
+    Top = 0
+    Width = 902
+    Align = alTop
+    Caption = 'Panel3'
+    ClientHeight = 50
+    ClientWidth = 902
+    TabOrder = 1
+    object SpeedButton1: TSpeedButton
+      Left = 480
+      Height = 38
+      Top = 8
+      Width = 139
+    end
+    object Label1: TLabel
+      Left = 416
+      Height = 15
+      Top = 17
+      Width = 34
+      Caption = 'Label1'
+      ParentColor = False
+    end
+    object Image1: TImage
+      Left = 32
+      Height = 26
+      Top = 16
+      Width = 88
+    end
+  end
+  object TreeView1: TTreeView
+    Left = 0
+    Height = 471
+    Top = 50
+    Width = 121
+    Align = alLeft
+    BackgroundColor = 7611148
+    Color = 7611148
+    DefaultItemHeight = 18
+    SelectionColor = 13057558
+    TabOrder = 2
+    OnClick = TreeView1Click
+    OnKeyDown = TreeView1KeyDown
+    OnKeyPress = TreeView1KeyPress
+    OnMouseDown = TreeView1MouseDown
+  end
+  object Splitter1: TSplitter
+    Left = 121
+    Height = 471
+    Top = 50
+    Width = 5
+  end
+  object PopupMenu1: TPopupMenu
+    left = 22
+    top = 109
+  end
+  object Timer1: TTimer
+    left = 40
+    top = 176
+  end
+end
