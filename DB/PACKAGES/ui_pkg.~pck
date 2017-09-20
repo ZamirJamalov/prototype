@@ -29,7 +29,10 @@ BEGIN
   json_kernel.append_as_text('"rows":[');
   json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@root_id","@caption","@form_name","@form_caption","@schema_name","@crud","@external_form"]}',
                             p_sql       => 'select rownum,a.id as id,a.root_id as root_id,a.caption as caption,a.form_name as form_name,a.form_caption as form_caption,a.schema_name as schema_name,a.crud as crud,a.external_form as external_form
-                             from (select id,root_id,caption,form_name,form_caption,schema_name,crud,external_form from ui_menu order by sort_ asc ) a');
+                             from (select id,root_id,caption,form_name,form_caption,schema_name,crud,external_form
+  from ui_menu 
+  start with root_id is null
+  connect by prior ID = root_id  ) a'); --AND  ui_menu.id IN (SELECT ui_menu_id FROM rl_groups_menu)
   json_kernel.append_as_text(']}'); 
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
@@ -155,10 +158,6 @@ BEGIN
   v_grid_id := zamir.json_ext.get_string(hub.getJson(),'id');
   v_crud := zamir.json_ext.get_string(hub.getJson(),'crud');    
   v_schema_name :=zamir.json_ext.get_string(hub.getJson(),'schema_name');   
-   log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-              p_method_name => 'yyy',
-              p_log_text    =>v_schema_name||' '||v_form,
-              p_log_clob    => NULL);           
   api_component.collectcolumnvalues(p_schema_name => v_schema_name, p_table_name  => upper(v_form), p_id => v_grid_id);
    
  IF upper(v_form)='UI_COMPONENTS' THEN 
@@ -205,7 +204,7 @@ BEGIN
     
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => v_form||'.'||i.name_,
-                            p_values           => CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN api_component.exec(p_ds_proc=>i.ds_proc,p_value=>api_component.getColumnValue(i.name_)) ELSE NULL END,
+                            p_values           => CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN  api_component.exec(p_ds_proc=>i.ds_proc,p_value=>api_component.getColumnValue(i.name_)) ELSE NULL END,
                             p_value            => CASE 
                                                       WHEN i.type_ NOT IN ('TCOMBOBOX','TCHECKLISTBOX') AND i.ds_proc IS NOT NULL THEN 
                                                            CASE 

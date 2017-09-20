@@ -1,7 +1,7 @@
 object frmLogin: TfrmLogin
-  Left = 464
+  Left = 653
   Height = 340
-  Top = 227
+  Top = 320
   Width = 359
   AlphaBlendValue = 200
   BorderStyle = bsToolWindow

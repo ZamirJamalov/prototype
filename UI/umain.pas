@@ -56,14 +56,16 @@ type
     procedure btnViewClick(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
-    procedure showform(p_schema_name:String;p_form_name:String;p_crud:string;p_id:string;p_width,p_height:integer);
+    function showform(p_schema_name:String;p_form_name:String;p_crud:string;p_id:string;p_width,p_height:integer):string;
     procedure btnNewClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure TreeView1Changing(Sender: TObject; Node: TTreeNode;
+      var AllowChange: Boolean);
     procedure TreeView1Click(Sender: TObject);
-    procedure newTab(p_form:Rform);
+    function newTab(p_form:Rform):string;
     procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure TreeView1KeyDown(Sender: TObject; var Key: Word;
@@ -89,7 +91,7 @@ type
     procedure onPrepareCanvas(sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
     procedure onCompareCells(Sender:Tobject;ACol,ARow,BCol,BRow:Integer;var Result:integer);
     procedure headerClick(Sender :TObject;IsColumn:boolean;index:integer);
-    procedure viewgrid(form:rform;tab:ttabsheet);
+    function viewgrid(form:rform;tab:ttabsheet):string;
   end;
 
 
@@ -110,7 +112,7 @@ var
    v_grid_id:integer;
    v_grid_sort:integer;
 implementation
-uses ujson,uForm,utools,uscoring;
+uses ujson,uForm,utools,uscoring,filemanager;
 
 procedure refreshclick;
 begin
@@ -138,11 +140,18 @@ begin
   Label1.Caption:=datetostr(date)+' '+timetostr(Time);
 end;
 
+procedure TfrmMain.TreeView1Changing(Sender: TObject; Node: TTreeNode;
+  var AllowChange: Boolean);
+begin
+
+end;
+
 procedure TfrmMain.TreeView1Click(Sender: TObject);
 var
   i:integer;
   frm:Tfrm;
   frmscr:TfrmScoring;
+  v_res:String;
 begin
   IF TreeView1.Items.SelectionCount=0 THEN BEGIN
       exit;
@@ -153,7 +162,11 @@ begin
          form.form_name:=arr_menu[i].form_name;
          form.form_caption:=arr_menu[i].form_caption;
          schema_name := arr_menu[i].schema_name;
-         newTab(form);
+         v_res := newTab(form);
+         if v_res<>'' then begin
+            showmessage(v_res);
+            exit;
+         end;
          if tabexists then begin
             tabexists:=false;
             exit;
@@ -168,7 +181,11 @@ begin
          //newTab(form);
          //exit;
          //showmessage('before newtab');
-         newTab(form);
+          v_res := newTab(form);
+         if v_res<>'' then begin
+            showmessage(v_res);
+            exit;
+         end;
          if tabexists then begin
             tabexists:=false;
             exit;
@@ -200,14 +217,14 @@ begin
   end; //for
 end;
 
-procedure TfrmMain.newTab(p_form: Rform);
+function TfrmMain.newTab(p_form: Rform):string;
   var
    jData : TJSONData;
    jObject: TJSONObject;
    jArray : TJSONArray;
    i:integer;
    Tab:TTabSheet;
-
+   v_res:string;
 begin
   IF assigned(PageControl1.FindComponent('tab_'+p_form.form_name) as TTabSheet) then BEGIN
       PageControl1.ActivePage := self.PageControl1.FindComponent('tab_'+p_form.form_name) as TTabSheet;//copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name))) as TTabSheet;
@@ -229,7 +246,12 @@ begin
    Cursor:=crSQLWait;
    if utools.stringToBoolean(getRmenuByActiveTab.external_form)=false then begin
       //showmessage('external_form is false');
-      viewgrid(p_form,tab);
+      v_res:=viewgrid(p_form,tab);
+      if v_res<>'' then begin
+         tab.Free;
+         result := v_res;
+         exit;
+      end;
    end;
    Cursor:=crDefault;
    Panel2.Visible:=utools.stringToBoolean(getRmenuByActiveTab.crud);
@@ -309,8 +331,37 @@ procedure TfrmMain.loadMenu;
      jData : TJSONData;
      jObject: TJSONObject;
      jArray : TJSONArray;
-     i,j:integer;
+     i,j,v_root_id:integer;
      ujs_:ujs;
+     node:TTreeNode;
+   function getMainRootId(p_rootId:integer):integer;
+    var
+       i:integer;
+    begin
+      for i:=0 to length(arr_menu)-1 do begin
+         if strtoint(arr_menu[i].id)=p_rootid then begin
+           result := i;
+         end;
+       end;
+   end;
+   function RootIdExists(p_id:integer) :boolean;
+     var
+        i:integer;
+        v_id:string;
+    begin
+        if p_id =0 then begin
+           v_id := '';
+        end else begin
+           v_id := inttostr(p_id);
+        end;
+
+        for i:= 0 to length(arr_menu)-1 do begin
+           if arr_menu[i].root_id=v_id then
+              result := true;
+        end;
+        result := false;
+    end;
+
 begin
      ujs_ :=  ujs.Create;
      jData := GetJSON(ujs_.runHub('zamir.ui_pkg.menu_data',''));
@@ -331,11 +382,22 @@ begin
      for i:= 0 to length(arr_menu)-1 do begin
        if i=0 then begin
        TreeView1.Items.Add(nil,arr_menu[i].caption);
+      // v_root_id := strtoint(arr_menu[i].id);
        continue;
        end;
-       TreeView1.Items.AddChild(TreeView1.Items[strtoint(arr_menu[i].root_id)-1],arr_menu[i].caption);
+     //  showmessage(inttostr(getMainRootId(strtoint(arr_menu[i].root_id))));
+     if rootIdExists(strtoint(arr_menu[i].root_id)-1)=false then begin
+        TreeView1.Items.AddChild(treeview1.items[getMainRootId(strtoint(arr_menu[i].root_id))],arr_menu[i].caption);
+        continue;
+     end;
+     try
+       TreeView1.Items.AddChild(treeview1.items[strtoint(arr_menu[i].root_id)-1],arr_menu[i].caption);
+      except
+        showmessage(arr_menu[i].id+' '+inttostr(getMainRootId(strtoint(arr_menu[i].root_id))));
+        TreeView1.Items.AddChild(treeview1.items[getMainRootId(strtoint(arr_menu[i].root_id))],arr_menu[i].caption);
+      end;
       end;//for i
-
+     TreeView1.Font.Color:=clwhite;
      jData.Free;
 
 end;
@@ -450,7 +512,7 @@ end;
 
 
 
-procedure TfrmMain.viewgrid(form: rform; tab: ttabsheet);
+function TfrmMain.viewgrid(form: rform; tab: ttabsheet):string;
   var
    jData :  TJSONData;
    jObject: TJSONObject;
@@ -463,7 +525,9 @@ begin
    ujs_ :=  ujs.Create;
    s := ujs_.runHub(schema_name+'.'+form.form_name+'_pkg.grid_data','"TFORM":"","index":[],"sort_order":[]');
    if ujs_.jsonError<>'' then begin
-      Showmessage(ujs_.jsonError);
+      //Showmessage(ujs_.jsonError);
+      result := ujs_.jsonError;
+      ujs_.Free;
       exit;
    end;
    jData := GetJSON(s);
@@ -517,10 +581,11 @@ begin
   Application.terminate;
 end;
 
-procedure TfrmMain.showform(p_schema_name:String;p_form_name:String;p_crud: string;p_id:string;p_width,p_height:integer);
+function TfrmMain.showform(p_schema_name:String;p_form_name:String;p_crud: string;p_id:string;p_width,p_height:integer):string;
 var
     frm:Tfrm;
     v_width,v_height:integer;
+    v_res:string;
 begin
 
   //showmessage(p_form_name);
@@ -546,32 +611,43 @@ begin
       (application.findcomponent(p_form_name) as Tfrm).Free;
    end;
 
-   IF NOT (assigned(application.FindComponent(p_form_name) as Tfrm)) THEN BEGIN
+   frm :=  Tfrm.Create(nil);
+   frm.Name:=p_form_name;
+   frm.Width:=v_width;
+   frm.Height:=v_height;
+   frm.schemaName:=p_schema_name;
+   frm.setCrud(p_crud);
+   case p_crud  of
+         'add'   : frm.setCaption(getFormCaptionByActiveTab+'  -Yeni məlumat');
+         'upd'   : frm.setCaption(getFormCaptionByActiveTab+'  -Cari məlumatın dəyişdirilməsi');
+         'view_' : frm.setCaption(getFormCaptionByActiveTab+'  -Cari məlumata baxış');
+         'del'   : frm.setCaption(getFormCaptionByActiveTab+'  -Cari məlumatın silinməsi');
+   end;
+   v_res := frm.load_components(p_form_name,p_id);
+   if v_res='' then
+    begin
 
-       frm :=  Tfrm.Create(Application);
-       frm.Name:=p_form_name;
-       frm.Width:=v_width;
-       frm.Height:=v_height;
-       frm.schemaName:=p_schema_name;
-       frm.setCrud(p_crud);
-       frm.load_components(p_form_name,p_id);
-       case p_crud  of
-        'add'   : frm.setCaption(getFormCaptionByActiveTab+'  -Yeni məlumat');
-        'upd'   : frm.setCaption(getFormCaptionByActiveTab+'  -Cari məlumatın dəyişdirilməsi');
-        'view_' : frm.setCaption(getFormCaptionByActiveTab+'  -Cari məlumata baxış');
-        'del'   : frm.setCaption(getFormCaptionByActiveTab+'  -Cari məlumatın silinməsi');
-       end;
-       frm.ShowModal;
-    END;
+        frm.ShowModal;
+        result :='';
+    end  else begin
+        frm.FreeOnRelease;
+        result := v_res;
+    end;
 end;
 
 procedure TfrmMain.btnUpdClick(Sender: TObject);
+ var
+   v_res:string;
 begin
   if v_grid_id=0 then begin
       showmessage('Dəyişiklik ediləcək sətri seçiniz');
   end
   else begin
-      showform(getRmenuByActiveTab.schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'upd',inttostr(v_grid_id),0,0);
+      v_res := showform(getRmenuByActiveTab.schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'upd',inttostr(v_grid_id),0,0);
+      if v_res<>'' then begin
+        showmessage(v_res);
+        exit;
+     end;
       v_grid_id := 0;
       while refresh_click=0 do begin
         application.ProcessMessages;
@@ -584,12 +660,18 @@ begin
 end;
 
 procedure TfrmMain.btnDelClick(Sender: TObject);
+ var
+   v_res:string;
 begin
   if v_grid_id=0 then begin
       showmessage('Silinəcək sətri seçiniz');
   end
    else begin
-        showform(getRmenuByActiveTab.schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'del',inttostr(v_grid_id),0,0);
+        v_res := showform(getRmenuByActiveTab.schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'del',inttostr(v_grid_id),0,0);
+        if v_res<>'' then begin
+         showmessage(v_res);
+         exit;
+        end;
         v_grid_id := 0;
         while refresh_click=0 do begin
           application.ProcessMessages;
@@ -610,6 +692,7 @@ procedure TfrmMain.btnExcelClick(Sender: TObject);
     //str:TStringList;
     savedialog:TSaveDialog;
     XLApp: OLEVariant;
+    fm :TTextFileManager;
 begin
   savedialog := TSaveDialog.Create(nil);
   savedialog.Filter:='*.csv|*.csv';
@@ -618,12 +701,13 @@ begin
   tab := self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet;
   //memo :=  tmemo.Create(self);
   //str := TStringListUTF8.create;
- // str.Delimiter:=',';
+  //str.Delimiter:=',';
   //str.StrictDelimiter:=true;
 
 
+  fm := TTextFileManager.Create(self);
   with (self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet).FindComponent('grid_'+active_pagename) as TStringGrid do begin
-  (* for i:=0 to colcount-1 do begin
+   for i:=0 to colcount-1 do begin
     s := s + addcomma(i)+columns[i].Title.Caption;
    end;
    s := s+#13#10;
@@ -633,7 +717,7 @@ begin
          end; //for j
          s:= s+#13#10;
    end; //for i
-   *)
+
    (*
    try
    XLApp := CreateOleObject('Excel.Application'); // requires comobj in uses
@@ -652,12 +736,14 @@ begin
    end;
    XLApp.ActiveWorkBook.Save;
    *)
-  SaveToCSVFile(savedialog.FileName,',');
+  //SaveToCSVFile(savedialog.FileName,',');
   //str.Add(s);
   //str.text := AnsiToUtf8(str.text);
   //str.save
  // str.SaveToFile(savedialog.FileName);
  // str.Free;
+
+ fm.Save(savedialog.FileName,s,ffUTF8);
  end;
   end;
 
@@ -712,12 +798,18 @@ begin
 end;
 
 procedure TfrmMain.btnViewClick(Sender: TObject);
+ var
+  v_res:string;
 begin
   if v_grid_id=0 then begin
       showmessage('Baxmaq istədiyiniz sətri seçiniz');
   end
   else begin
-     showform(getRmenuByActiveTab.schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'view_',inttostr(v_grid_id),0,0);
+     v_res:=showform(getRmenuByActiveTab.schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'view_',inttostr(v_grid_id),0,0);
+     if v_res<>'' then begin
+        showmessage(v_res);
+        exit;
+     end;
      v_grid_id := 0;
   end;
 end;
@@ -735,13 +827,20 @@ begin
 end;
 
 procedure TfrmMain.btnNewClick(Sender: TObject);
+ var
+   v_res:string;
 begin
-  showform(getRmenuByActiveTab.schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'add','',0,0);
+  v_res := showform(getRmenuByActiveTab.schema_name,copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)),'add','',0,0);
+  if v_res<>'' then begin
+        showmessage(v_res);
+        exit;
+     end;
   while refresh_click=0 do begin
       application.ProcessMessages;
   end;
   btnRefresh.Click;
   refresh_click:=0;
+
 end;
 
 end.

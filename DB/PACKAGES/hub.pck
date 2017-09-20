@@ -36,6 +36,7 @@ FUNCTION run(p_json_in CLOB) RETURN CLOB IS
   v_json json;
   v_res CLOB;
   v_user VARCHAR2(50);
+  v_cnt NUMBER DEFAULT 0;
 BEGIN
   log_pkg.setParentIdNull;
   log_pkg.add(p_log_type    => log_pkg.REQUEST,
@@ -60,6 +61,16 @@ BEGIN
       RETURN object_pkg.GetResponseTop(p_message_type=>object_pkg.response_message_type_error,p_message_text =>  'session_key expired')||object_pkg.getResponseBottom; 
     END IF;  
   END IF;
+  --check permission
+  BEGIN
+    SELECT COUNT(*) INTO v_cnt FROM users a, rl_groups_actions b,rl_actions c WHERE a.rl_groups_id=b.rl_groups_id AND b.rl_actions_id=c.id AND a.session_=v_session_key AND c.name=v_method_name;
+  END;
+    IF nvl(v_cnt,0)=0 THEN 
+      NULL;
+       --RETURN object_pkg.GetResponseTop(p_message_type=>object_pkg.response_message_type_error,p_message_text =>  'Permission denied')||object_pkg.getResponseBottom; 
+    END IF;
+  
+  
   --EXECUTE IMMEDIATE 'begin :1 :='||v_method_name||'(:2); end;' USING OUT v_res,p_json_in;
   EXECUTE IMMEDIATE 'begin :1 :='||v_method_name||'(); end;' USING OUT v_res;
   

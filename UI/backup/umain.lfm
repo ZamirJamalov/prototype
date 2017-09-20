@@ -1,39 +1,37 @@
 object frmMain: TfrmMain
-  Left = 105
-  Height = 441
-  Top = 149
-  Width = 1252
+  Left = 387
+  Height = 369
+  Top = 111
+  Width = 908
   AlphaBlendValue = 200
-  BorderStyle = bsSingle
   Caption = 'Scoring'
-  ClientHeight = 441
-  ClientWidth = 1252
+  ClientHeight = 369
+  ClientWidth = 908
   DefaultMonitor = dmMainForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  Position = poDesktopCenter
+  Position = poScreenCenter
   LCLVersion = '1.8.0.4'
-  WindowState = wsMaximized
   object TreeView1: TTreeView
     Left = 0
-    Height = 369
+    Height = 297
     Top = 72
     Width = 307
     Align = alLeft
     AutoExpand = True
     BackgroundColor = 10183983
     Color = 10183983
-    ExpandSignColor = clWhite
+    ExpandSignColor = clBlack
     ExpandSignSize = 15
     ExpandSignType = tvestArrow
     Font.CharSet = ANSI_CHARSET
-    Font.Color = clWhite
+    Font.Color = clNavy
     Font.Height = -19
     Font.Name = 'Times New Roman'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
     HideSelection = False
-    Indent = 15
+    Indent = 25
     MultiSelectStyle = [msControlSelect, msVisibleOnly]
     ParentFont = False
     ReadOnly = True
@@ -44,6 +42,7 @@ object frmMain: TfrmMain
     ShowRoot = False
     SortType = stText
     TabOrder = 0
+    OnChanging = TreeView1Changing
     OnClick = TreeView1Click
     OnCustomDrawItem = TreeView1CustomDrawItem
     OnKeyDown = TreeView1KeyDown
@@ -56,31 +55,31 @@ object frmMain: TfrmMain
       0000000009000000437573746F6D657273FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FF000000000000000000050000005573657273
     }
-    TreeLineColor = clWhite
+    TreeLineColor = clBlack
     TreeLinePenStyle = psSolid
   end
   object Panel1: TPanel
     Left = 314
-    Height = 369
+    Height = 297
     Top = 72
-    Width = 938
+    Width = 594
     Align = alClient
     BevelColor = 10183983
     Caption = 'Panel1'
-    ClientHeight = 369
-    ClientWidth = 938
+    ClientHeight = 297
+    ClientWidth = 594
     TabOrder = 1
     object Panel2: TPanel
       Left = 1
       Height = 47
       Top = 1
-      Width = 936
+      Width = 592
       Align = alTop
       BevelColor = clNone
       BevelInner = bvRaised
       BevelOuter = bvLowered
       ClientHeight = 47
-      ClientWidth = 936
+      ClientWidth = 592
       Color = 10183983
       ParentColor = False
       TabOrder = 0
@@ -530,7 +529,7 @@ object frmMain: TfrmMain
         TabOrder = 2
       end
       object btnExcel: TBitBtn
-        Left = 602
+        Left = 590
         Height = 43
         Top = 2
         Width = 150
@@ -678,7 +677,7 @@ object frmMain: TfrmMain
         TabOrder = 3
       end
       object btnRefresh: TBitBtn
-        Left = 752
+        Left = 590
         Height = 43
         Top = 2
         Width = 150
@@ -976,9 +975,9 @@ object frmMain: TfrmMain
     end
     object PageControl1: TPageControl
       Left = 1
-      Height = 320
+      Height = 248
       Top = 48
-      Width = 936
+      Width = 592
       Align = alClient
       Font.CharSet = ANSI_CHARSET
       Font.Height = -13
@@ -996,16 +995,16 @@ object frmMain: TfrmMain
     Left = 0
     Height = 72
     Top = 0
-    Width = 1252
+    Width = 908
     Align = alTop
     BevelColor = 10183983
     ClientHeight = 72
-    ClientWidth = 1252
+    ClientWidth = 908
     Color = 10183983
     ParentColor = False
     TabOrder = 2
     object SpeedButton1: TSpeedButton
-      Left = 1163
+      Left = 819
       Height = 70
       Top = 1
       Width = 88
@@ -1538,7 +1537,7 @@ object frmMain: TfrmMain
       ParentFont = False
     end
     object Label1: TLabel
-      Left = 892
+      Left = 548
       Height = 70
       Top = 1
       Width = 271
@@ -1981,7 +1980,7 @@ object frmMain: TfrmMain
   end
   object Splitter1: TSplitter
     Left = 307
-    Height = 369
+    Height = 297
     Top = 72
     Width = 7
     Beveled = True

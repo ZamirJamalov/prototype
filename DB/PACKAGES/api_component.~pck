@@ -6,13 +6,6 @@ create or replace package api_component is
 
 
 
-TYPE tttvalues IS RECORD
-(id VARCHAR2(4000),
- NAME VARCHAR2(4000),
- checked CHAR(1));
-
-TYPE ttvalues IS TABLE OF tttvalues;
-
 
 
 
@@ -78,7 +71,7 @@ create or replace package body api_component is
  v_value VARCHAR2(4000);
  
 
- tvalues ttvalues := ttvalues(); 
+ --tvalues ttvalues := ttvalues(); 
  rows_all CLOB;
  rows CLOB; 
  
@@ -254,10 +247,6 @@ PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_i
  v_json json;
  v_json_list json_list;
 BEGIN
-  log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-              p_method_name => 'zz',
-              p_log_text    =>p_schema_name||' '||p_table_name,
-              p_log_clob    => NULL);      
   FOR i IN (SELECT column_name FROM all_tab_columns WHERE upper(owner)=upper(p_schema_name) AND upper(table_name)=upper(p_table_name)) LOOP
     v_json_string := v_json_string||CASE WHEN n>0 THEN ',' ELSE NULL END||'"'||i.column_name||'":"@'||i.column_name||'"';
     v_sql_string := v_sql_string||CASE WHEN n>0 THEN ',' ELSE NULL END||i.column_name;
@@ -303,7 +292,7 @@ END exec;
 
 FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2) RETURN  CLOB IS
  v_res CLOB;
- v_tt_values ttvalues := ttvalues();
+ --v_tt_values ttvalues := ttvalues();
  v_tt_component_obj tt_component_obj := tt_component_obj();
 BEGIN
   dbms_lob.createtemporary(v_res,TRUE);
@@ -341,21 +330,21 @@ PROCEDURE setJsonHeadMessageError(p_message VARCHAR2) IS
 BEGIN
   JsonHeadMessageType := 'ERROR';
   JsonHeadMessage := REPLACE(p_message,'"','<_400'); --lazarus-da iki dirnaqi json parse eda bilmadiyi uchun replace olunur
-  JsonHeadMessage := REPLACE(p_message,':','<_401'); --lazarus-da iki dirnaqi json parse eda bilmadiyi uchun replace olunur   
+  JsonHeadMessage := REPLACE(JsonHeadMessage,':','<_401'); --lazarus-da iki dirnaqi json parse eda bilmadiyi uchun replace olunur   
 END;  
 
 PROCEDURE setModifyCmbChecked(p_coll IN OUT tt_component_obj,p_id VARCHAR2,p_checked VARCHAR2 DEFAULT '1') IS
  idx INTEGER DEFAULT 0;
 BEGIN
+  IF p_id IS NOT NULL THEN 
   FOR i IN p_coll.first..p_coll.last LOOP
     idx := idx + 1;
     IF upper(p_coll(i).id)=upper(p_id) THEN 
        p_coll(i).checked := idx;
-      
-       
        EXIT;
     END IF;   
   END LOOP;
+  END IF;   
 END setModifyCmbChecked;  
 
 FUNCTION  action_loadForm(p_form VARCHAR2,p_call_proc_name VARCHAR2) RETURN CLOB IS

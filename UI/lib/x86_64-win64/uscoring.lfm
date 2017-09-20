@@ -1,7 +1,7 @@
 object frmScoring: TfrmScoring
-  Left = 549
+  Left = -7
   Height = 663
-  Top = 135
+  Top = 43
   Width = 1362
   Caption = 'Scoring'
   ClientHeight = 663

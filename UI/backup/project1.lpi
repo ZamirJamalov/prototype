@@ -109,7 +109,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -173,6 +173,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="filemanager.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FileManager"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

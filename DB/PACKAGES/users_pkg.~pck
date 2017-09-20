@@ -52,12 +52,15 @@ FUNCTION login RETURN CLOB IS
  v_wrong_attempt_count NUMBER; 
  v_blocked_time        users.email%TYPE;
  v_session             users.Session_%TYPE;
+ v_login               users.login%TYPE DEFAULT api_component.getvalue('edlogin');
+ v_password          users.password%TYPE DEFAULT api_component.getvalue('edpassword');
 BEGIN
+  
   IF api_component.getvalue('edlogin') IS NULL AND api_component.getvalue('edpassword') IS NULL THEN 
     RETURN uiresp('message','ERROR','Empty fields');
   END IF;
   
-  SELECT * INTO users_row FROM users WHERE login=api_component.getvalue('edlogin') AND password=api_component.getvalue('edpassword');
+  SELECT * INTO users_row FROM users WHERE login=v_login AND password=v_password;
   
   IF users_row.wrong_attempt_count>=3 THEN 
     RETURN uiresp('message','ERROR','User Locked');
@@ -96,9 +99,9 @@ END login;
 
 FUNCTION add RETURN CLOB IS
 BEGIN
-  IF nvl(api_component.getvalue('test1'),0)!=1 THEN 
-    RETURN uiresp('message','ERROR','test 1 olmalidir');
-  END IF;
+ -- IF nvl(api_component.getvalue('test1'),0)!=1 THEN 
+ --   RETURN uiresp('message','ERROR','test 1 olmalidir');
+  --END IF;
   INSERT INTO users(id,
                     session_,
                     login,
@@ -106,7 +109,8 @@ BEGIN
                     wrong_attempt_count,
                     blocked_time,
                     email,
-                    mob_phone)
+                    mob_phone,
+                    rl_groups_id)
              VALUES (users_seq.nextval,
                      NULL,
                      api_component.getvalue('login'),
@@ -114,9 +118,10 @@ BEGIN
                      0,
                      NULL,
                      api_component.getvalue('email'),
-                     api_component.getvalue('mob_phone'));
+                     api_component.getvalue('mob_phone'),
+                     api_component.getvalue('rl_groups_id'));
   COMMIT;                          
-  RETURN uiresp('message1','OK');
+  RETURN uiresp('message','OK');
  EXCEPTION
    WHEN OTHERS THEN 
      ROLLBACK;
@@ -124,19 +129,26 @@ BEGIN
 END add;  
 
 FUNCTION upd RETURN CLOB IS
+  v_id users.id%TYPE DEFAULT api_component.getvalue('id'); 
 BEGIN
  UPDATE users a SET a.wrong_attempt_count=CASE WHEN api_component.getvalue('users.blocked')='Y' THEN 3 ELSE 0 END, 
                     a.blocked_time=CASE WHEN api_component.getvalue('users.blocked')='Y' THEN SYSDATE ELSE NULL END,
                     a.email=api_component.getvalue('users.email'),
-                    a.mob_phone=api_component.getvalue('users.mob_phone')
-        WHERE    a.login=api_component.getvalue('users.login');
+                    a.mob_phone=api_component.getvalue('users.mob_phone'),
+                    a.rl_groups_id=api_component.getvalue('users.rl_groups_id')
+        WHERE    a.id=v_id;
  COMMIT;
  RETURN uiresp('message','OK'); 
+ EXCEPTION
+   WHEN OTHERS THEN 
+     ROLLBACK;
+     RETURN uiresp('message','ERROR',SQLERRM);
 END upd;  
 
 FUNCTION del RETURN CLOB IS
+  v_login users.login%TYPE DEFAULT api_component.getvalue('users.login'); 
 BEGIN
-  DELETE FROM users WHERE login=api_component.getvalue('users.login');
+  DELETE FROM users WHERE login=v_login;
   COMMIT;
   RETURN uiresp('message','OK');
 END del;  
@@ -146,11 +158,11 @@ FUNCTION grid_data RETURN CLOB IS
   v_idx NUMBER DEFAULT nvl(to_number(api_component.getvalue('index')),0)+1;
   v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),'asc');
 BEGIN
-    json_kernel.append_as_text('{"columns":["id","session","login","email","wrong_attempt_count","blocked_time","mob_phone","logon_time"],');
+    json_kernel.append_as_text('{"columns":["id","group name","session","login","email","wrong_attempt_count","blocked_time","mob_phone","logon_time"],');
     json_kernel.append_as_text('"rows":[');
-    json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@session","@login","@email","@wrong_attempt_count","@blocked_time","@mob_phone","@logon_time"]}',
-                            p_sql       => 'select rownum,a.id as id,a.session_ as session,a.login as login, a.email as email,a.wrong_attempt_count as wrong_attempt_count,a.blocked_time as blocked_time,a.mob_phone as mob_phone,a.logon_time as logon_time 
-                             from (select id,session_,login,email,wrong_attempt_count,blocked_time,mob_phone,to_char(logon_time,''DD-MM-YYYY HH24:MI:SS'') as logon_time from users where rownum<10 order by '||v_idx||' '||v_sort_order||' ) a');  --to_number(api_component.getvalue('index'))+1
+    json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@group_name","@session","@login","@email","@wrong_attempt_count","@blocked_time","@mob_phone","@logon_time"]}',
+                            p_sql       => 'select rownum,a.id as id,a.group_name as group_name,a.session_ as session,a.login as login, a.email as email,a.wrong_attempt_count as wrong_attempt_count,a.blocked_time as blocked_time,a.mob_phone as mob_phone,a.logon_time as logon_time 
+                             from (select a.id,b.name as group_name,a.session_,a.login,a.email,a.wrong_attempt_count,a.blocked_time,a.mob_phone,to_char(a.logon_time,''DD-MM-YYYY HH24:MI:SS'') as logon_time  from users a left join rl_groups b on a.rl_groups_id=b.id order by '||v_idx||' '||v_sort_order||' ) a');  --to_number(api_component.getvalue('index'))+1
     json_kernel.append_as_text(']}');  
 
   RETURN api_component.exec(p_json_part=>json_kernel.response);   

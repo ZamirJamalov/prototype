@@ -11,11 +11,14 @@ FUNCTION root_list RETURN tt_component_obj;
 FUNCTION add RETURN CLOB;
 FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;
+FUNCTION ui_menu_list RETURN tt_component_obj;
+FUNCTION getRootId(p_id ui_menu.id%TYPE) RETURN ui_menu.root_id%TYPE;
 end ui_menu_pkg;
 /
 create or replace package body ui_menu_pkg is
 
-v_res  api_component.ttvalues := api_component.ttvalues();
+--v_res  api_component.ttvalues := api_component.ttvalues();
+v_res tt_component_obj := tt_component_obj();
 
 
 FUNCTION UiResp(p_message_type VARCHAR2,p_rp_message_type VARCHAR2,p_message VARCHAR2 DEFAULT NULL) RETURN CLOB IS
@@ -146,17 +149,31 @@ FUNCTION setid RETURN VARCHAR2 IS
  v_res NUMBER DEFAULT 0;
 BEGIN
   SELECT COUNT(*) INTO v_res FROM ui_menu;
-  RETURN  v_res+1;
+  v_res := nvl(v_res,0) +2;
+  RETURN  v_res;
 END;  
 
 FUNCTION root_list RETURN tt_component_obj IS
-  v_res tt_component_obj := tt_component_obj();
 BEGIN
   SELECT t_component_obj(id,caption,'') BULK COLLECT INTO v_res FROM ui_menu ORDER BY id ASC;
   RETURN v_res;
 END root_list;  
 
+FUNCTION ui_menu_list RETURN tt_component_obj IS
+BEGIN
+ SELECT t_component_obj(id,caption,'') BULK COLLECT INTO v_res FROM ui_menu WHERE ui_menu.form_name IS NOT NULL ORDER BY ui_menu.caption ASC;
+  RETURN v_res;
+END;  
 
+FUNCTION getRootId(p_id ui_menu.id%TYPE) RETURN ui_menu.root_id%TYPE IS
+ v_res ui_menu.root_id%TYPE;
+BEGIN
+  SELECT root_id INTO v_res FROM ui_menu WHERE id=p_id;
+  RETURN v_res;
+ EXCEPTION
+   WHEN OTHERS THEN 
+     RETURN -1; 
+END getRootId;  
 
 begin
  NULL;

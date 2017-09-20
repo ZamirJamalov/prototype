@@ -54,7 +54,7 @@ type
   public
     { public declarations }
     property schemaName :String write setSchemaName;
-    procedure load_components(p_form:String;p_id:string);
+    function load_components(p_form:String;p_id:string):string;
     procedure setCrud(p_crud:string);
     procedure setCaption(p_caption:string);
     function  getClosedParam:boolean;
@@ -77,7 +77,8 @@ procedure Tfrm.btnSaveTopClick(Sender: TObject);
   ujs_1:ujs;
   s:widestring;
 begin
- if  usession.call_proc_name=''  then begin
+
+if  usession.call_proc_name=''  then begin
 
   ujs_1 :=  ujs.Create;
   ujs_1.clear;
@@ -149,18 +150,20 @@ begin
    schema_name:=p_schema_name;
 end;
 
-procedure Tfrm.load_components(p_form: String;p_id:string);
+function Tfrm.load_components(p_form: String;p_id:string):string;
 var
   v_json :widestring;
 begin
      v_json := ujs_.runHub('zamir.ui_pkg.get_ui_comps','"form":"'+p_form+'","crud":"'+v_crud+'","id":"'+p_id+'",'+'"schema_name":"'+schema_name+'"');
      if ujs_.jsonError<>'' then begin
-        showmessage(ujs_.jsonError);
+        //showmessage(ujs_.jsonError);
+        result := ujs_.jsonError;
         exit;
      end;
      ujs_ :=  ujs.Create;
      ujs_.parseResponse(v_json);
      ujs_.newform(self,v_json,Panel3);
+     result := '';
 end;
 
 procedure Tfrm.setCrud(p_crud: string);

@@ -1,4 +1,4 @@
-create or replace package ui_menu_pkg is
+﻿create or replace package ui_menu_pkg is
 
   -- Author  : USER
   -- Created : 8/10/2017 9:52:16 9:52:16 
@@ -11,11 +11,14 @@ FUNCTION root_list RETURN tt_component_obj;
 FUNCTION add RETURN CLOB;
 FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;
+FUNCTION ui_menu_list RETURN tt_component_obj;
+FUNCTION getRootId(p_id ui_menu.id%TYPE) RETURN ui_menu.root_id%TYPE;
 end ui_menu_pkg;
 /
 create or replace package body ui_menu_pkg is
 
-v_res  api_component.ttvalues := api_component.ttvalues();
+--v_res  api_component.ttvalues := api_component.ttvalues();
+v_res tt_component_obj := tt_component_obj();
 
 
 FUNCTION UiResp(p_message_type VARCHAR2,p_rp_message_type VARCHAR2,p_message VARCHAR2 DEFAULT NULL) RETURN CLOB IS
@@ -47,11 +50,11 @@ FUNCTION grid_data RETURN CLOB IS
   v_idx NUMBER DEFAULT nvl(to_number(api_component.getvalue('index')),0)+1;
   v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),' asc ');
 BEGIN
-  json_kernel.append_as_text('{"columns":["id","root_id","caption","form_name","form_caption","schema_name","crud","external_form"],');
+  json_kernel.append_as_text('{"columns":["id","root_id","caption","form_name","form_caption","schema_name","crud","external_form","Sıralama"],');
   json_kernel.append_as_text('"rows":[');
-  json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@root_id","@caption","@form_name","@form_caption","@schema_name","@crud","@external_form"]}',
-                            p_sql       => 'select rownum,a.id as id,a.root_id as root_id,a.caption as caption,a.form_name as form_name,a.form_caption as form_caption,a.schema_name as schema_name,a.crud as crud,a.external_form as external_form from
-                                           (select id,root_id,caption,form_name,form_caption,schema_name,crud,external_form from ui_menu where root_id is not null order by '||v_idx||' '||v_sort_order||') a');  
+  json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@root_id","@caption","@form_name","@form_caption","@schema_name","@crud","@external_form","@sort_"]}',
+                            p_sql       => 'select rownum,a.id as id,a.root_id as root_id,a.caption as caption,a.form_name as form_name,a.form_caption as form_caption,a.schema_name as schema_name,a.crud as crud,a.external_form as external_form,a.sort_ as sort_ from
+                                           (select id,root_id,caption,form_name,form_caption,schema_name,crud,external_form,sort_ from ui_menu where root_id is not null order by '||v_idx||' '||v_sort_order||') a');  
                             
   json_kernel.append_as_text(']}'); 
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
@@ -150,13 +153,26 @@ BEGIN
 END;  
 
 FUNCTION root_list RETURN tt_component_obj IS
-  v_res tt_component_obj := tt_component_obj();
 BEGIN
   SELECT t_component_obj(id,caption,'') BULK COLLECT INTO v_res FROM ui_menu ORDER BY id ASC;
   RETURN v_res;
 END root_list;  
 
+FUNCTION ui_menu_list RETURN tt_component_obj IS
+BEGIN
+ SELECT t_component_obj(id,caption,'') BULK COLLECT INTO v_res FROM ui_menu WHERE ui_menu.form_name IS NOT NULL ORDER BY ui_menu.caption ASC;
+  RETURN v_res;
+END;  
 
+FUNCTION getRootId(p_id ui_menu.id%TYPE) RETURN ui_menu.root_id%TYPE IS
+ v_res ui_menu.root_id%TYPE;
+BEGIN
+  SELECT root_id INTO v_res FROM ui_menu WHERE id=p_id;
+  RETURN v_res;
+ EXCEPTION
+   WHEN OTHERS THEN 
+     RETURN -1; 
+END getRootId;  
 
 begin
  NULL;

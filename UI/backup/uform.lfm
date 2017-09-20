@@ -1,10 +1,10 @@
 object frm: Tfrm
-  Left = 387
+  Left = 388
   Height = 484
-  Top = 226
+  Top = 222
   Width = 800
   HorzScrollBar.Page = 208
-  VertScrollBar.Page = 70
+  VertScrollBar.Page = 41
   AlphaBlend = True
   AlphaBlendValue = 253
   AutoScroll = True
@@ -21,17 +21,17 @@ object frm: Tfrm
   LCLVersion = '1.8.0.4'
   object Panel1: TPanel
     Left = 5
-    Height = 60
-    Top = 419
+    Height = 31
+    Top = 448
     Width = 790
     Align = alBottom
     BevelOuter = bvNone
-    ClientHeight = 60
+    ClientHeight = 31
     ClientWidth = 790
     TabOrder = 0
     object btnSaveTop: TButton
       Left = 592
-      Height = 60
+      Height = 31
       Top = 0
       Width = 198
       Align = alRight
@@ -48,7 +48,7 @@ object frm: Tfrm
     end
     object Button1: TButton
       Left = 0
-      Height = 60
+      Height = 31
       Top = 0
       Width = 198
       Align = alLeft
@@ -66,7 +66,7 @@ object frm: Tfrm
   end
   object Panel3: TPanel
     Left = 5
-    Height = 414
+    Height = 443
     Top = 5
     Width = 790
     Align = alClient
