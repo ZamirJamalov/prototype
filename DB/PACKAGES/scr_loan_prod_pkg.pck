@@ -9,6 +9,7 @@ FUNCTION add RETURN CLOB;
 FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;
 FUNCTION setid RETURN VARCHAR2;
+FUNCTION prod_list RETURN tt_component_obj;
 
   
 end scr_loan_prod_pkg;
@@ -100,7 +101,13 @@ END del;
 FUNCTION setid RETURN VARCHAR2 IS
 BEGIN
   RETURN scr_loan_prod_seq.nextval;
-END setid;  
+END setid;
+
+FUNCTION prod_list RETURN tt_component_obj IS
+BEGIN
+  SELECT t_component_obj(id,NAME,'')  BULK COLLECT INTO v_res FROM scr_loan_prod;
+  RETURN v_res;
+END prod_list;    
 begin
   NULL;
 end scr_loan_prod_pkg;
