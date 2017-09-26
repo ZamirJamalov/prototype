@@ -1,17 +1,21 @@
 object frm: Tfrm
-  Left = 388
+  Left = 287
   Height = 484
-  Top = 222
+  Top = 144
   Width = 800
-  HorzScrollBar.Page = 208
-  VertScrollBar.Page = 41
-  AlphaBlend = True
-  AlphaBlendValue = 253
+  HorzScrollBar.Page = 240
+  VertScrollBar.Page = 44
+  AlphaBlendValue = 200
   AutoScroll = True
-  BorderIcons = [biSystemMenu]
-  BorderWidth = 5
+  BorderIcons = []
   ClientHeight = 484
   ClientWidth = 800
+  Color = 7237230
+  Font.CharSet = ANSI_CHARSET
+  Font.Height = -16
+  Font.Name = 'Calibri Light'
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
   FormStyle = fsStayOnTop
   OnActivate = FormActivate
   OnClose = FormClose
@@ -20,58 +24,57 @@ object frm: Tfrm
   Position = poScreenCenter
   LCLVersion = '1.8.0.4'
   object Panel1: TPanel
-    Left = 5
-    Height = 31
-    Top = 448
-    Width = 790
+    Left = 0
+    Height = 44
+    Top = 440
+    Width = 800
     Align = alBottom
+    BevelColor = clWhite
     BevelOuter = bvNone
-    ClientHeight = 31
-    ClientWidth = 790
+    ClientHeight = 44
+    ClientWidth = 800
+    Color = clNone
+    ParentColor = False
     TabOrder = 0
-    object btnSaveTop: TButton
-      Left = 592
-      Height = 31
+    object btnSaveTop: TBCMaterialDesignButton
+      Left = 680
+      Height = 44
       Top = 0
-      Width = 198
+      Width = 120
+      RoundBorders = 2
+      NormalColor = 16445675
+      ShadowColor = clBlack
+      TextShadowSize = 100
+      TextFont = 'Calibri'
       Align = alRight
-      Caption = 'İcra Et'
-      Font.CharSet = ANSI_CHARSET
-      Font.Height = -21
-      Font.Name = 'Times New Roman'
-      Font.Pitch = fpVariable
-      Font.Quality = fqDraft
-      Font.Style = [fsBold]
+      Caption = 'Yadda saxla'
       OnClick = btnSaveTopClick
-      ParentFont = False
-      TabOrder = 0
     end
-    object Button1: TButton
-      Left = 0
-      Height = 31
+    object button1: TBCMaterialDesignButton
+      Left = 560
+      Height = 44
       Top = 0
-      Width = 198
-      Align = alLeft
+      Width = 120
+      RoundBorders = 2
+      NormalColor = 16445675
+      ShadowColor = clBlack
+      TextShadowSize = 100
+      TextFont = 'Calibri'
+      Align = alRight
       Caption = 'İmtina'
-      Font.CharSet = ANSI_CHARSET
-      Font.Height = -21
-      Font.Name = 'Times New Roman'
-      Font.Pitch = fpVariable
-      Font.Quality = fqDraft
-      Font.Style = [fsBold]
       OnClick = Button1Click
-      ParentFont = False
-      TabOrder = 1
     end
   end
   object Panel3: TPanel
-    Left = 5
-    Height = 443
-    Top = 5
-    Width = 790
+    Left = 0
+    Height = 440
+    Top = 0
+    Width = 800
     Align = alClient
+    AutoSize = True
+    BevelColor = clWhite
     BevelOuter = bvNone
-    Color = clForm
+    Color = clWhite
     ParentColor = False
     TabOrder = 1
   end

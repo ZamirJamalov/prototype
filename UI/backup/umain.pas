@@ -7,7 +7,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, ExtCtrls, grids, Buttons, Menus, fpjson, jsonparser, MTProcs,
-  LazUTF8Classes,comobj,LCLType;
+  LazUTF8Classes, RTTICtrls, comobj, LCLType, ActnList, BCImageButton,
+  BGRAShape, BGRAImageManipulation, dtthemedclock, DTAnalogClock, BCButton,
+  DTAnalogGauge, BCMaterialDesignButton, usession;
 type
   Rmenu=record
     id:string;
@@ -31,46 +33,57 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
-    btnNew: TBitBtn;
-    btnDel: TBitBtn;
-    btnExcel: TBitBtn;
-    btnRefresh: TBitBtn;
-    btnView: TBitBtn;
-    btnUpd: TBitBtn;
-    Image1: TImage;
+    btnCustomeDetails: TBCMaterialDesignButton;
+    btnCustomerSearch: TBCMaterialDesignButton;
+    Button1: TBitBtn;
+    btnExcel: TBCMaterialDesignButton;
+    btnRefresh: TBCMaterialDesignButton;
+    btnView: TBCMaterialDesignButton;
+    btnDel: TBCMaterialDesignButton;
+    btnUpd: TBCMaterialDesignButton;
+    btnNew: TBCMaterialDesignButton;
+    edcustomer_code: TEdit;
+    edcustomer_name: TEdit;
     Label1: TLabel;
     MenuItem1: TMenuItem;
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Panel6: TPanel;
+    Panel7: TPanel;
     PopupMenu1: TPopupMenu;
-    SpeedButton1: TSpeedButton;
     Splitter1: TSplitter;
     Timer1: TTimer;
     TreeView1: TTreeView;
+    procedure btnCustomeDetailsClick(Sender: TObject);
+    procedure btnCustomerSearchClick(Sender: TObject);
+    procedure btnexitClick(Sender: TObject);
+    procedure btnnew_clickExecute(Sender: TObject);
     procedure btnDelClick(Sender: TObject);
     procedure btnExcelClick(Sender: TObject);
     procedure btnRefreshClick(Sender: TObject);
     procedure btnUpdClick(Sender: TObject);
     procedure btnViewClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure edcustomer_codeKeyPress(Sender: TObject; var Key: char);
+    procedure FormActivate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MenuItem1Click(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
+    procedure Panel5Click(Sender: TObject);
     function showform(p_schema_name:String;p_form_name:String;p_crud:string;p_id:string;p_width,p_height:integer):string;
     procedure btnNewClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-    procedure TreeView1Changing(Sender: TObject; Node: TTreeNode;
-      var AllowChange: Boolean);
     procedure TreeView1Click(Sender: TObject);
     function newTab(p_form:Rform):string;
-    procedure TreeView1CustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
-      State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure TreeView1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure TreeView1KeyPress(Sender: TObject; var Key: char);
     procedure TreeView1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
 
@@ -80,11 +93,15 @@ type
     { private declarations }
     Fnode :TTreeNode;
     tabexists:boolean;
+    v_login_name:string;
     function getFormCaptionByActiveTab:String;
     function getRmenuByActiveTab:Rmenu;
     function addcomma(p_val :integer):string;
+    procedure setLoginName(p_loginname :string);
   public
     { public declarations }
+    property LoginName: string write setLoginName;
+
     procedure loadMenu;
     procedure onGridClick(Sender:Tobject);
     procedure onSelectCell(sender:tobject;acol,arow:integer;var CanSelect :boolean);
@@ -92,6 +109,7 @@ type
     procedure onCompareCells(Sender:Tobject;ACol,ARow,BCol,BRow:Integer;var Result:integer);
     procedure headerClick(Sender :TObject;IsColumn:boolean;index:integer);
     function viewgrid(form:rform;tab:ttabsheet):string;
+
   end;
 
 
@@ -112,7 +130,7 @@ var
    v_grid_id:integer;
    v_grid_sort:integer;
 implementation
-uses ujson,uForm,utools,uscoring;
+uses ujson,uForm,utools,uscoring,filemanager,uClientSearch,uncustomerdetails;
 
 procedure refreshclick;
 begin
@@ -132,16 +150,10 @@ end;
 
 procedure TfrmMain.SpeedButton1Click(Sender: TObject);
 begin
-  Application.Terminate;
+
 end;
 
 procedure TfrmMain.Timer1Timer(Sender: TObject);
-begin
-  Label1.Caption:=datetostr(date)+' '+timetostr(Time);
-end;
-
-procedure TfrmMain.TreeView1Changing(Sender: TObject; Node: TTreeNode;
-  var AllowChange: Boolean);
 begin
 
 end;
@@ -175,6 +187,14 @@ begin
   end; //for
  for i:=0 to length(arr_menu)-1 do begin
       if (TreeView1.Selected=Fnode) and (arr_menu[i].caption=TreeView1.Selected.Text) and (arr_menu[i].form_name<>'')  and (utools.stringToBoolean(arr_menu[i].external_form)=true) then  begin
+
+         if arr_menu[i].form_name='frmScoring' then begin
+           if usession.customer_code='' then begin
+              showmessage('Müştərini seçin');
+              exit;
+           end;
+         end;
+
          form.form_name:=arr_menu[i].form_name;
          form.form_caption:=arr_menu[i].form_caption;
          schema_name := arr_menu[i].schema_name;
@@ -198,6 +218,7 @@ begin
             frmscr.Parent:= PageControl1.ActivePage;
             frmscr.Show;
             exit;
+
          end;
          //showmessage('after newtab');
          frm :=  Tfrm.Create(nil);
@@ -257,12 +278,6 @@ begin
    Panel2.Visible:=utools.stringToBoolean(getRmenuByActiveTab.crud);
 end;
 
-procedure TfrmMain.TreeView1CustomDrawItem(Sender: TCustomTreeView;
-  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-begin
-
-end;
-
 procedure TfrmMain.TreeView1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -270,12 +285,6 @@ begin
     loadMenu;
  end;
 end;
-
-procedure TfrmMain.TreeView1KeyPress(Sender: TObject; var Key: char);
-begin
-
-end;
-
 
 procedure TfrmMain.TreeView1MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -324,6 +333,11 @@ end;
 function TfrmMain.addcomma(p_val: integer): string;
 begin
   if p_val>0 then result := ',' else result := '';
+end;
+
+procedure TfrmMain.setLoginName(p_loginname: string);
+begin
+   v_login_name:=p_loginname;
 end;
 
 procedure TfrmMain.loadMenu;
@@ -397,7 +411,7 @@ begin
         TreeView1.Items.AddChild(treeview1.items[getMainRootId(strtoint(arr_menu[i].root_id))],arr_menu[i].caption);
       end;
       end;//for i
-     TreeView1.Font.Color:=clwhite;
+     //TreeView1.Font.Color:=clWindowText;
      jData.Free;
 
 end;
@@ -548,20 +562,24 @@ begin
    stringGrid.OnHeaderClick:=@HeaderClick;
    stringGrid.Options:=[goColSizing,goColMoving,goVertLine,goSmoothScroll,goHorzLine,goFixedVertLine,goFixedHorzLine,goHeaderPushedLook,goRowHighlight];
    stringGrid.DoubleBuffered:=true;
-   stringGrid.SelectedColor:=clGray;//$00CA8D51;
+   stringGrid.SelectedColor:=$00F0FCED;//clGray;//$00CA8D51;
+   stringGrid.Font.Name:='Calibri Light';
+   stringGrid.Font.Size:=13;
    for i:=0 to  jdata.FindPath('Response.Components[0].columns').Count-1  do   begin
           stringGrid.Columns.Add;
           stringGrid.Columns[i].Title.Alignment:=taCenter;
           //stringGrid.Columns[i].Title.Font.Style:=[fsBold];
           stringGrid.Columns[i].Title.Caption := jdata.FindPath('Response.Components[0].columns['+inttostr(i)+']').AsString;
           if i=0 then begin
-             stringGrid.Columns[i].Width:=130;//round((tab.Width/jdata.FindPath('Response.Components[0].columns').Count));
+            // stringGrid.Columns[i].Width:=round((tab.Width/jdata.FindPath('Response.Components[0].columns').Count)); //130;//
           end else begin
              stringGrid.Columns[i].Width:=250;
           end;
-          stringGrid.Columns[i].Title.Font.Color:=clwhite;
+          stringGrid.Columns[i].Title.Font.Color:=$003C3C3C;
+          stringGrid.Columns[i].Title.Font.Style:=[fsBold];
+          stringGrid.Columns[i].Title.Font.Name:='Calibri Light';
           stringGrid.Columns[i].Title.Font.Size:=13;
-          stringGrid.Columns[i].Title.Color:=$009B652F;
+          stringGrid.Columns[i].Title.Color:=$00F4F4F4;//$009B652F;
           //stringGrid.Columns[i].Color:=$00FFD3CA;
     end;
     for i:=0 to  jdata.FindPath('Response.Components[0].rows').Count-1  do begin
@@ -653,7 +671,7 @@ begin
         application.ProcessMessages;
       end;
       if refresh_click=1 then begin
-         btnRefresh.Click;
+         Button1.Click;
       end;
       refresh_click:=0;
   end;
@@ -676,9 +694,52 @@ begin
         while refresh_click=0 do begin
           application.ProcessMessages;
         end;
-        btnRefresh.Click;
+        Button1.Click;
         refresh_click:=0;
    end;
+end;
+
+procedure TfrmMain.btnnew_clickExecute(Sender: TObject);
+begin
+   btnNewClick(Sender);
+end;
+
+procedure TfrmMain.btnCustomerSearchClick(Sender: TObject);
+ var
+ frmcls:Tfrmclientsearch;
+begin
+  frmcls := Tfrmclientsearch.Create(nil);
+  frmcls.ShowModal;
+  while frmcls.v_form_active=0 do begin
+      Application.ProcessMessages;
+  end;
+  if frmcls.v_form_active=2 then begin
+    edcustomer_code.Text:=frmcls.cs_data.customer_code;
+    edcustomer_name.Text:=frmcls.cs_data.customer_name;
+    if edcustomer_code.Text<>'' then begin
+       edcustomer_code.Visible:=true;
+       edcustomer_name.Visible:=true;
+       btnCustomeDetails.Visible:=true;
+    end else begin
+       edcustomer_code.Visible:=false;
+       edcustomer_name.Visible:=false;
+       btnCustomeDetails.Visible:=false;
+    end;
+  end;
+
+end;
+
+procedure TfrmMain.btnexitClick(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmMain.btnCustomeDetailsClick(Sender: TObject);
+ var
+   frm : Tfrmcustomerdetails;
+begin
+  frm := Tfrmcustomerdetails.Create(nil);
+  frm.ShowModal;
 end;
 
 procedure TfrmMain.btnExcelClick(Sender: TObject);
@@ -692,6 +753,7 @@ procedure TfrmMain.btnExcelClick(Sender: TObject);
     //str:TStringList;
     savedialog:TSaveDialog;
     XLApp: OLEVariant;
+    fm :TTextFileManager;
 begin
   savedialog := TSaveDialog.Create(nil);
   savedialog.Filter:='*.csv|*.csv';
@@ -700,12 +762,13 @@ begin
   tab := self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet;
   //memo :=  tmemo.Create(self);
   //str := TStringListUTF8.create;
- // str.Delimiter:=',';
+  //str.Delimiter:=',';
   //str.StrictDelimiter:=true;
 
 
+  fm := TTextFileManager.Create(self);
   with (self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet).FindComponent('grid_'+active_pagename) as TStringGrid do begin
-  (* for i:=0 to colcount-1 do begin
+   for i:=0 to colcount-1 do begin
     s := s + addcomma(i)+columns[i].Title.Caption;
    end;
    s := s+#13#10;
@@ -715,7 +778,7 @@ begin
          end; //for j
          s:= s+#13#10;
    end; //for i
-   *)
+
    (*
    try
    XLApp := CreateOleObject('Excel.Application'); // requires comobj in uses
@@ -734,12 +797,14 @@ begin
    end;
    XLApp.ActiveWorkBook.Save;
    *)
-  SaveToCSVFile(savedialog.FileName,',');
+  //SaveToCSVFile(savedialog.FileName,',');
   //str.Add(s);
   //str.text := AnsiToUtf8(str.text);
   //str.save
  // str.SaveToFile(savedialog.FileName);
  // str.Free;
+
+ fm.Save(savedialog.FileName,s,ffUTF8);
  end;
   end;
 
@@ -810,6 +875,106 @@ begin
   end;
 end;
 
+procedure TfrmMain.Button1Click(Sender: TObject);
+ var
+    jData :  TJSONData;
+    jObject: TJSONObject;
+    jArray : TJSONArray;
+    i,j:integer;
+    ujs_:ujs;
+    s:widestring;
+    active_pagename:String;
+    tab :TTabSheet;
+ begin
+    active_pagename :=  copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name));
+
+    ujs_ :=  ujs.Create;
+    s := ujs_.runHub(getRmenuByActiveTab.schema_name+'.'+active_pagename+'_pkg.grid_data','');
+    if ujs_.jsonError<>'' then begin
+       Showmessage(ujs_.jsonError);
+       exit;
+    end;
+    jData := GetJSON(s);
+    ujs_.Free;
+
+    tab := self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet;
+    with (self.PageControl1.FindComponent('tab_'+active_pagename) as TTabSheet).FindComponent('grid_'+active_pagename) as TStringGrid do begin
+     Clear;
+     FixedCols:=0;
+     RowCount:=1;
+     for i:=0 to  jdata.FindPath('Response.Components[0].columns').Count-1  do   begin
+           //Columns.Add;
+           //Columns[i].Title.Alignment:=taCenter;
+          // Columns[i].Title.Font.Style:=[fsBold];
+          // Columns[i].Title.Caption := jdata.FindPath('Response.Components[0].columns['+inttostr(i)+']').AsString;
+          // Columns[i].Width:=round(tab.Width/jdata.FindPath('Response.Components[0].columns').Count);
+          // Columns[i].Title.Font.Color:=clwhite;
+          // Columns[i].Title.Color:=$00621E0B;
+           //stringGrid.Columns[i].Color:=$00FFD3CA;
+       end;
+       for i:=0 to  jdata.FindPath('Response.Components[0].rows').Count-1  do begin
+          RowCount:=RowCount+1;
+         for j:=0 to jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)).Count-1 do begin
+            Cells[j,i+1]:=jdata.FindPath('Response.Components[0].rows['+inttostr(i)+'].row'+inttostr(i+1)+'['+inttostr(j)+']').AsString;
+         end;//for j
+       end;//for i
+     jData.Free;
+    end; //with
+
+
+end;
+
+procedure TfrmMain.edcustomer_codeKeyPress(Sender: TObject; var Key: char);
+begin
+end;
+
+procedure TfrmMain.FormActivate(Sender: TObject);
+ var
+   i:integer;
+begin
+    Label1.Caption:=uppercase(v_login_name)+#13+'Xoş gəlmişsiniz';
+    TreeView1.Font.Color:=$00FAF9F7;
+    Label1.Font.Color:=$00ECDFD1;
+    Splitter1.Color:=$006A3B03;
+    for i:=0 to Self.ComponentCount-1 do begin
+      if self.Components[i] is TPanel  then begin
+        with (self.Components[i] as TPanel) do begin
+          case name of
+                'Panel3',
+                'Panel4',
+                'Panel5': begin
+                           BevelColor:=$00CE7205   ;
+                           Color:=$00CE7205   ;//$00DEC4B0;
+                          end;
+                 'Panel7': begin
+                            BevelColor:=$00925104;
+                            Color:=$00925104;
+                           end;
+                 'Panel2': begin
+                            BevelColor:=clWhite;
+                            Color:=clWhite;
+                           end
+                 else begin
+
+                        BevelColor:=$006A3B03;
+                        Color:=$006A3B03;//$00DEC4B0;
+                      end;
+         end;
+       end;
+    end;
+end;
+end;
+procedure TfrmMain.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Shift=[ssCtrl])  then begin
+     case key of
+           ord('n'),
+           ord('N'): btnNewClick(sender);
+     end;
+  end;
+end;
+
 procedure TfrmMain.MenuItem1Click(Sender: TObject);
 begin
   PageControl1.ActivePage.Free;
@@ -820,6 +985,11 @@ end;
 procedure TfrmMain.PageControl1Change(Sender: TObject);
 begin
   Panel2.Visible:=utools.stringToBoolean(getRmenuByActiveTab.crud);
+end;
+
+procedure TfrmMain.Panel5Click(Sender: TObject);
+begin
+
 end;
 
 procedure TfrmMain.btnNewClick(Sender: TObject);
@@ -834,7 +1004,7 @@ begin
   while refresh_click=0 do begin
       application.ProcessMessages;
   end;
-  btnRefresh.Click;
+  Button1.Click;
   refresh_click:=0;
 
 end;

@@ -7,7 +7,7 @@ create or replace package ui_components_forms_pkg is
 
   
 FUNCTION grid_data RETURN CLOB;
-FUNCTION ui_setid RETURN CLOB;  
+FUNCTION ui_setid RETURN VARCHAR2;  
 FUNCTION add RETURN CLOB;  
 FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;
@@ -66,10 +66,9 @@ BEGIN
                 p_log_clob    => SQLERRM);
 END grid_data;    
 
-FUNCTION ui_setid RETURN  CLOB IS
+FUNCTION ui_setid RETURN  VARCHAR2 IS
 BEGIN
-  SELECT t_component_obj('',ui_components_forms_seq.nextval,'')  BULK COLLECT INTO v_res FROM dual;
-  RETURN api_component.component_values_to_json(v_res);
+  RETURN ui_components_forms_seq.nextval;
 END ui_setid;  
 
 FUNCTION add RETURN CLOB IS

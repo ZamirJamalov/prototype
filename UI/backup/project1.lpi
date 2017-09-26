@@ -98,18 +98,27 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="MultiThreadProcsLaz"/>
+        <PackageName Value="bgracontrols"/>
       </Item1>
       <Item2>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="DateTimeCtrls"/>
       </Item3>
+      <Item4>
+        <PackageName Value="MultiThreadProcsLaz"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="LazControls"/>
+      </Item5>
+      <Item6>
+        <PackageName Value="LCL"/>
+      </Item6>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="13">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -178,6 +187,21 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="FileManager"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="uclientsearch.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmclientsearch"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uClientSearch"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="uncustomerdetails.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmcustomerdetails"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -64,11 +64,7 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'scoring.questions_pkg.grid_data',
-                p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
-     RETURN '';           
+    RETURN uiresp('message','ERROR',SQLERRM);      
 END grid_data;    
 
 FUNCTION setid RETURN VARCHAR2 IS
@@ -124,24 +120,32 @@ END del;
 
 FUNCTION questions_list RETURN tt_component_obj IS
 BEGIN
-  SELECT t_component_obj(id,NAME,'') BULK COLLECT INTO v_res FROM questions a WHERE EXISTS (SELECT 1 FROM questions_params b WHERE a.id=b.questions_id);
+  SELECT t_component_obj(a.id,a.NAME,CASE WHEN b.client_id IS NOT NULL THEN a.sort_ ELSE NULL END) BULK COLLECT INTO v_res FROM questions a LEFT JOIN questions_answers b ON a.id=b.questions_id  WHERE EXISTS (SELECT 1 FROM questions_params b WHERE a.id=b.questions_id);
   RETURN v_res;
 END questions_list;  
 
 FUNCTION questions_list_clob RETURN CLOB IS
+ v_client_id NUMBER DEFAULT api_component.getvalue('client_id');
+  v_clob CLOB;
 BEGIN
-  RETURN api_component.exec(p_ds_proc=>'scoring.questions_pkg.questions_list',p_value=>'');
+ -- RETURN api_component.exec(p_ds_proc=>'scoring.questions_pkg.questions_list',p_value=>'');
+ SELECT t_component_obj(a.id,a.NAME,CASE WHEN b.client_id IS NOT NULL THEN rownum ELSE NULL END) BULK COLLECT INTO v_res FROM questions a LEFT JOIN questions_answers b ON a.id=b.questions_id  AND b.client_id=v_client_id  WHERE EXISTS (SELECT 1 FROM questions_params b WHERE a.id=b.questions_id);
+  api_component.setvalue(p_component=>'frmscoring.questions', p_values=>api_component.component_values_to_json(v_res));  
+  RETURN api_component.exec;  
 END questions_list_clob;  
 
 FUNCTION onchange RETURN CLOB IS 
   v_questions_id questions_params.questions_id%TYPE DEFAULT api_component.getvalue('questions');
+  v_client_id    NUMBER DEFAULT api_component.getvalue('client_id');
+  v_checked      CHAR(1) DEFAULT api_component.getvalue('checked');
 BEGIN
-  log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-              p_method_name => 'question_pkg.onchange',
-              p_log_text    => 'galir'||v_questions_id,
-              p_log_clob    => NULL);
-  SELECT t_component_obj(nvl(ID,0),NAME,'') BULK COLLECT INTO v_res FROM questions_params WHERE questions_id=v_questions_id; --questions_id=(SELECT id FROM questions WHERE name=api_component.getvalue('questions'));
+  IF v_checked='N' THEN 
+    DELETE FROM questions_answers a WHERE a.client_id=v_client_id AND a.questions_id=v_questions_id;
+    COMMIT;
+  END IF;
+  SELECT t_component_obj(nvl(a.ID,0),a.NAME,CASE WHEN b.questions_params_id IS NOT NULL THEN rownum ELSE NULL END) BULK COLLECT INTO v_res FROM questions_params a LEFT JOIN questions_answers b ON a.questions_id=b.questions_id AND a.id=b.questions_params_id AND b.client_id=v_client_id WHERE a.questions_id=v_questions_id; --questions_id=(SELECT id FROM questions WHERE name=api_component.getvalue('questions'));
   api_component.setvalue(p_component=>'frmscoring.questions_params',p_values=>api_component.component_values_to_json(v_res));
+  
   RETURN api_component.exec; 
 END onchange;  
 

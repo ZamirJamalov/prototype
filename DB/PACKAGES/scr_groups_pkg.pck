@@ -47,9 +47,9 @@ FUNCTION grid_data RETURN CLOB IS
   v_idx NUMBER DEFAULT nvl(to_number(api_component.getvalue('index')),0)+1;
   v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),' desc');
 BEGIN
-    json_kernel.append_as_text('{"columns":["Sıra nömrəsi","Adı"],');
+    json_kernel.append_as_text('{"columns":["Sıra nömrəsi","Adı","Xüsusi çəki"],');
     json_kernel.append_as_text('"rows":[');
-    json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@name"]}',
+    json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@name","@spec_w"]}',
                             p_sql       => 'select rownum,a.id as id,a.name as name,a.spec_w as spec_w 
                              from (select a.id,a.name,a.spec_w from scoring.scr_groups a order by '||v_idx||' '||v_sort_order||' ) a');  
     json_kernel.append_as_text(']}');  
@@ -57,11 +57,7 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'scoring.scr_groups_pkg.grid_data',
-                p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
-     RETURN '';           
+    RETURN uiresp('message','ERROR',SQLERRM);         
 END grid_data;  
 
 FUNCTION setid RETURN VARCHAR2 IS

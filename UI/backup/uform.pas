@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls,fpjson,jsonparser,ujson,umain;
+  StdCtrls, BCMaterialDesignButton,fpjson,jsonparser,ujson,umain;
 
 
 TYPE
@@ -37,8 +37,8 @@ type
   { Tfrm }
 
   Tfrm = class(TForm)
-    btnSaveTop: TButton;
-    Button1: TButton;
+    button1: TBCMaterialDesignButton;
+    btnSaveTop: TBCMaterialDesignButton;
     Panel1: TPanel;
     Panel3: TPanel;
     procedure btnSaveTopClick(Sender: TObject);

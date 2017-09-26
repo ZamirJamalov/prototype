@@ -268,7 +268,7 @@ begin
    if (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TEDIT') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TCHECKBOX') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TCOMBOBOX') or (jdata.FindPath('Response.Components['+inttostr(k)+'].type').AsString='TMEMO') then begin
 
      if p_form.FindComponent('lbl_'+jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) is TLabel then begin
-       WITH (p_component.FindComponent('lbl_'+jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TLabel) DO BEGIN
+       WITH (p_form.FindComponent('lbl_'+jdata.FindPath('Response.Components['+inttostr(k)+'].name').AsString) AS TLabel) DO BEGIN
            if jdata.FindPath('Response.Components['+inttostr(k)+'].required').AsString='Y' then begin
               color := clRed;
            end else begin
@@ -455,7 +455,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
    jArray: TJSONArray;
    cmbItemIndex :integer;
  begin
-  v_top := 10;
+  v_top := 70;
   jData := GetJSON(p_json);
   jObject := TJsonObject(jData);
   click_form :=p_form;
@@ -482,21 +482,22 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
             component := TLabel.Create(p_component);
             with (component as TLabel) do begin
                 parent:=p_component;
+                Alignment:=taCenter;
                 Name:='lbl_'+jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
                 caption := jdata.FindPath('Response.Components['+inttostr(i)+'].label_caption').AsString;
-                Font.Size:=15;
-                left := 10;
+                Font.Size:=12;
+
                 top := v_top;
                 width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
-
+                left := 50;
                 if jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString='' then font.Color:=clblack else font.color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].font_color').AsString);
                 if jdata.FindPath('Response.Components['+inttostr(i)+'].background_color').AsString='' then Color:= clWhite else color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].background_color').AsString);
                 enabled:=  stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].enabled').AsString);
                 visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].visible').AsString);
                 if jdata.FindPath('Response.Components['+inttostr(i)+'].required').AsString='Y' then begin
-                   color := clRed;
+                   color := $00B3B3FF;
                 end else begin
-                   color := clForm;
+                   color := clNone;
                 end;
             end; //with
            end; //if
@@ -511,7 +512,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                           ShowHint:=true;
                           Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
                           click_button_name :=  name;
-                          left := 200;
+                          left := 250;
                           top := v_top;
                           width := strtoint(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
                           Caption := jdata.FindPath('Response.Components['+inttostr(i)+'].label_caption').AsString;
@@ -534,8 +535,8 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     Name:=jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
                                     ShowHint:=true;
                                     Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
-                                    Font.Size:=15;
-                                    left := 200;
+                                    Font.Size:=12;
+                                    left := 250;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
                                     text := jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString;
@@ -553,9 +554,10 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
                                     ShowHint:=true;
                                     Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
+                                    Font.Size:=12;
                                     checked := stringToBoolean(jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString);
                                     Caption:=''; //label var ona gore lazim deyil
-                                    left := 200;
+                                    left := 244;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
                                     Alignment:=taLeftJustify;
@@ -572,10 +574,10 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     name := jdata.FindPath('Response.Components['+inttostr(i)+'].name').AsString;
                                     ShowHint:=true;
                                     Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
-                                    Font.Size:=15;
+                                    Font.Size:=12;
                                     style := csDropDownList;
                                     Text := '';
-                                    left := 200;
+                                    left := 250;
                                     top := v_top;
                                     width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
 
@@ -587,7 +589,8 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     FOR j := 0 TO jdata.FindPath('Response.Components['+inttostr(i)+'].values').count - 1 DO BEGIN
                                       items.add(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].name').asString);
                                        if  jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].checked').asString<>'' then begin
-                                        cmbItemIndex:= StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].checked').asString);
+                                        //cmbItemIndex:= StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].checked').asString);
+                                         cmbItemIndex:= StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].index').asString);
                                        end;
 
                                     END;//FOR j
@@ -602,7 +605,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                 ShowHint:=true;
                                 Hint:=jdata.FindPath('Response.Components['+inttostr(i)+'].hint').AsString;
                                 Text := jdata.FindPath('Response.Components['+inttostr(i)+'].value').AsString;;
-                                left := 200;
+                                left := 250;
                                 Height:=200;
                                 top := v_top;
                                 width := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].width').AsString);
@@ -612,7 +615,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                end; //with
                             end;//TMEMO
            end;  //case end
-           v_top := v_top+50;
+           v_top := v_top+28
        end; //for
 
 end;

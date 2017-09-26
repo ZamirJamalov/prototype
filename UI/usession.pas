@@ -12,6 +12,8 @@ uses
     call_proc_result:widestring;
     form_closed:boolean;
     form_closed_by_user:boolean;
+    customer_code :string;
+
 implementation
 
 end.

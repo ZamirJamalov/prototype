@@ -1,4 +1,4 @@
-create or replace package users_pkg is
+﻿create or replace package users_pkg is
 
   -- Author  : USER
   -- Created : 5/31/2017 8:44:23 8:44:23 
@@ -57,7 +57,7 @@ FUNCTION login RETURN CLOB IS
 BEGIN
   
   IF api_component.getvalue('edlogin') IS NULL AND api_component.getvalue('edpassword') IS NULL THEN 
-    RETURN uiresp('message','ERROR','Empty fields');
+    RETURN uiresp('message','ERROR','İstifadəçi adını və şifrəni daxil ediniz.');
   END IF;
   
   SELECT * INTO users_row FROM users WHERE login=v_login AND password=v_password;
@@ -83,12 +83,12 @@ BEGIN
  EXCEPTION
    WHEN no_data_found THEN 
     UPDATE users SET wrong_attempt_count=nvl(wrong_attempt_count,0)+1 
-       WHERE login=users_row.login 
-        AND blocked_time IS NULL RETURNING wrong_attempt_count, blocked_time 
+       WHERE login=api_component.getvalue('edlogin')
+        AND blocked_time IS NULL 
+        RETURNING wrong_attempt_count, blocked_time 
       INTO v_wrong_attempt_count,v_blocked_time;
     IF SQL%ROWCOUNT>0 AND v_wrong_attempt_count>=3 AND v_blocked_time IS NULL THEN 
-      UPDATE users SET blocked_time=SYSDATE WHERE login=users.login; 
-      
+      UPDATE users SET blocked_time=SYSDATE WHERE login=api_component.getvalue('edlogin'); 
     END IF;
     COMMIT;
     RETURN  uiResp('user_or_password_is_invalid','ERROR','user_or_password_is_invalid');
@@ -131,11 +131,11 @@ END add;
 FUNCTION upd RETURN CLOB IS
   v_id users.id%TYPE DEFAULT api_component.getvalue('id'); 
 BEGIN
- UPDATE users a SET a.wrong_attempt_count=CASE WHEN api_component.getvalue('users.blocked')='Y' THEN 3 ELSE 0 END, 
-                    a.blocked_time=CASE WHEN api_component.getvalue('users.blocked')='Y' THEN SYSDATE ELSE NULL END,
-                    a.email=api_component.getvalue('users.email'),
-                    a.mob_phone=api_component.getvalue('users.mob_phone'),
-                    a.rl_groups_id=api_component.getvalue('users.rl_groups_id')
+ UPDATE users a SET a.wrong_attempt_count=CASE WHEN api_component.getvalue('blocked')='Y' THEN 3 ELSE 0 END, 
+                    a.blocked_time=CASE WHEN api_component.getvalue('blocked')='Y' THEN SYSDATE ELSE NULL END,
+                    a.email=api_component.getvalue('email'),
+                    a.mob_phone=api_component.getvalue('mob_phone'),
+                    a.rl_groups_id=api_component.getvalue('rl_groups_id')
         WHERE    a.id=v_id;
  COMMIT;
  RETURN uiresp('message','OK'); 
@@ -168,11 +168,7 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'users_pkg.grid_data',
-                p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
-     RETURN '';           
+    RETURN uiresp('message','ERROR',SQLERRM);
 END grid_data;  
 
 FUNCTION test RETURN tt_component_obj IS

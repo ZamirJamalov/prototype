@@ -54,11 +54,7 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'rl_groups_pkg.grid_data',
-                p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
-     RETURN '';           
+     RETURN uiresp('message','ERROR',SQLERRM);         
 END grid_data;    
  
 FUNCTION setid RETURN VARCHAR2 IS

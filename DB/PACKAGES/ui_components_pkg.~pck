@@ -50,7 +50,7 @@ END READ;
 
 FUNCTION grid_data RETURN CLOB IS 
   v_idx NUMBER DEFAULT to_number(nvl(api_component.getvalue('index'),0))+1;
-  v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),'asc');
+  v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),' desc');
 BEGIN
    log_pkg.add(p_log_type    => log_pkg.RESPONSE,
                 p_method_name => 'ui_components_pkg.grid_data',
@@ -67,11 +67,7 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-    RETURN '';
-    log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'ui_components_pkg.grid_data',
-                p_log_text    => v_idx||v_sort_order,
-                p_log_clob    => SQLERRM);
+    RETURN uiresp('message','ERROR',SQLERRM);
 END grid_data;   
 
 FUNCTION list_component_types RETURN tt_component_obj IS --api_component.ttvalues IS 

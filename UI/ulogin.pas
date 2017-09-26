@@ -6,20 +6,27 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  CheckLst, ExtCtrls, Buttons, UJson,windows;
+  CheckLst, ExtCtrls, Buttons, BCButton, BCButtonFocus, BCImageButton,
+  BCMaterialDesignButton, BCDefaultThemeManager, BGRACustomDrawn, BCLabel,
+  BCNumericKeyboard, BGRASpeedButton, BGRAKnob, BCPanel, UJson, windows;
 
 type
 
   { TfrmLogin }
 
   TfrmLogin = class(TForm)
+    BCMaterialDesignButton1: TBCMaterialDesignButton;
+    BCMaterialDesignButton2: TBCMaterialDesignButton;
+    label3: TBCLabel;
     btnLogin: TButton;
     edLogin: TEdit;
     edPassword: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     Panel1: TPanel;
+    procedure btnCancelClick(Sender: TObject);
     procedure btnLoginClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
     procedure edLoginChange(Sender: TObject);
     procedure edPasswordKeyPress(Sender: TObject; var Key: char);
     procedure FormActivate(Sender: TObject);
@@ -82,9 +89,14 @@ begin
      ujs_.existsform(self,s,self);
      if ujs_.errorexists then begin exit; end;
      frmMain := umain.TfrmMain.Create(nil);
+     frmMain.LoginName:=frmLogin.edLogin.Text;
      frmMain.ShowInTaskBar:= stAlways;
-     frmMain.Show;
      frmLogin.Hide;
+     frmMain.Show;
+     frmMain.WindowState:=wsMaximized;
+     //frmMain.BorderStyle:=bsnone;
+
+
      //frmMain.Visible:= true;
 
    end;
@@ -94,13 +106,25 @@ begin
  end;
 end;
 
+procedure TfrmLogin.btnCancelClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+
+
+procedure TfrmLogin.Button1Click(Sender: TObject);
+begin
+
+end;
+
 procedure TfrmLogin.FormCreate(Sender: TObject);
 begin
-    ShowWindow(FindWindow('Shell_TrayWnd', nil), SW_SHOW);
-  ShowWindow(
-      FindWindowEx(0, 0, MAKEINTATOM($C017), 'Start'),
-      SW_SHOW);
-
+ Label3.Font.Color:=$00621E0B;
+ //edLogin.TextHintFontStyle:=Self.Font.Style;
+ //edPassword.TextHintFontStyle:=Self.Font.Style;
+ ShowWindow(FindWindow('Shell_TrayWnd', nil), SW_SHOW);
+ ShowWindow(FindWindowEx(0, 0, MAKEINTATOM($C017), 'Start'),SW_SHOW);
 end;
 
 end.

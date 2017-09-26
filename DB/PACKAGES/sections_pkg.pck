@@ -8,6 +8,7 @@ FUNCTION grid_data RETURN CLOB;
 FUNCTION setid RETURN VARCHAR2;
 FUNCTION sections_list RETURN tt_component_obj;
 FUNCTION add RETURN CLOB;
+FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;
 end sections_pkg;
 /
@@ -53,11 +54,7 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'scoring.categories_pkg.grid_data',
-                p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
-     RETURN '';           
+     RETURN uiresp('message','ERROR',SQLERRM);          
 END grid_data;  
 
 FUNCTION setid RETURN VARCHAR2 IS
@@ -88,6 +85,21 @@ BEGIN
     ROLLBACK;
     RETURN uiresp('message','ERROR',SQLERRM);                           
 END add;  
+
+FUNCTION upd RETURN CLOB IS
+ v_id sections.id%TYPE DEFAULT api_component.getvalue('id');
+BEGIN
+  UPDATE sections a SET a.categories_id=api_component.getvalue('categories_id'),
+                        a.name=api_component.getvalue('name'),
+                        a.spec_w=api_component.getvalue('spec_w')
+                WHERE   a.id=v_id;
+  COMMIT;
+  RETURN uiresp('message','OK');
+ EXCEPTION
+   WHEN OTHERS THEN 
+     ROLLBACK;
+     RETURN uiresp('message','ERROR',SQLERRM);                         
+END upd;   
  
 FUNCTION del RETURN CLOB IS 
 BEGIN

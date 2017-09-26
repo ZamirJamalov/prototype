@@ -1,4 +1,4 @@
-create or replace package users_pkg is
+﻿create or replace package users_pkg is
 
   -- Author  : USER
   -- Created : 5/31/2017 8:44:23 8:44:23 
@@ -57,13 +57,13 @@ FUNCTION login RETURN CLOB IS
 BEGIN
   
   IF api_component.getvalue('edlogin') IS NULL AND api_component.getvalue('edpassword') IS NULL THEN 
-    RETURN uiresp('message','ERROR','Empty fields');
+    RETURN uiresp('message','ERROR','İstifadəçi adını və şifrəni daxil ediniz.');
   END IF;
   
   SELECT * INTO users_row FROM users WHERE login=v_login AND password=v_password;
   
   IF users_row.wrong_attempt_count>=3 THEN 
-    RETURN uiresp('message','ERROR','User Locked');
+    RETURN uiresp('message','ERROR','İstifadəçi blokdadır.');
   END IF;
   v_session := session_pkg.getNewSession;
   --backup  current session
@@ -91,7 +91,7 @@ BEGIN
       UPDATE users SET blocked_time=SYSDATE WHERE login=api_component.getvalue('edlogin'); 
     END IF;
     COMMIT;
-    RETURN  uiResp('user_or_password_is_invalid','ERROR','user_or_password_is_invalid');
+    RETURN  uiResp('user_or_password_is_invalid','ERROR','İstifadəçi adı və ya şifrə yanlışdır.');
   WHEN OTHERS THEN 
     RETURN  uiResp('message','ERROR',SQLERRM);
     
@@ -168,11 +168,7 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'users_pkg.grid_data',
-                p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
-     RETURN '';           
+    RETURN uiresp('message','ERROR',SQLERRM);
 END grid_data;  
 
 FUNCTION test RETURN tt_component_obj IS

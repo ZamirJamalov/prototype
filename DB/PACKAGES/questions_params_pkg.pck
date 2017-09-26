@@ -3,13 +3,14 @@
   -- Author  : USER
   -- Created : 9/12/2017 2:34:07 PM
   -- Purpose : 
-  
+FUNCTION getQuestionsId(p_questions_params_id questions_params.id%TYPE) RETURN questions.id%TYPE;  
 FUNCTION grid_data RETURN CLOB;
 FUNCTION setid RETURN VARCHAR2;
 FUNCTION add RETURN CLOB;
 FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;  
 FUNCTION onchange RETURN CLOB;
+FUNCTION showScore RETURN CLOB;
 end questions_params_pkg;
 /
 create or replace package body questions_params_pkg IS
@@ -40,6 +41,13 @@ BEGIN
  RETURN  api_component.exec; 
 END uiresp;
 
+FUNCTION getQuestionsId(p_questions_params_id questions_params.id%TYPE) RETURN questions.id%TYPE IS
+ v_res questions.id%TYPE;
+BEGIN
+  SELECT id INTO v_res FROM questions a WHERE a.id=(SELECT b.questions_id FROM questions_params b WHERE b.id=p_questions_params_id); 
+  RETURN v_res;
+END getQuestionsId;  
+
 FUNCTION grid_data RETURN CLOB IS
   v_idx NUMBER DEFAULT nvl(to_number(api_component.getvalue('index')),0)+1;
   v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),' desc');
@@ -54,11 +62,7 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'scoring.questions_params_pkg.grid_data',
-                p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
-     RETURN '';           
+     RETURN uiresp('message','ERROR',SQLERRM);  
 END grid_data; 
 
 FUNCTION setid RETURN VARCHAR2 IS
@@ -117,23 +121,39 @@ FUNCTION onchange RETURN CLOB IS
   v_qa   NUMBER DEFAULT 0;
   v_sb   NUMBER DEFAULT 0;
   v_curr NUMBER DEFAULT 0;
+  v_questions_id questions.id%TYPE DEFAULT api_component.getvalue('questions');
   v_questions_params_id questions_params.id%TYPE DEFAULT api_component.getvalue('questions_params');
   v_client_id zamir.users.id%TYPE DEFAULT api_component.getvalue('client_id');
   v_user_id NUMBER DEFAULT zamir.users_pkg.getid(hub.getSession);
 BEGIN
-  SELECT a.spec_w,b.spec_w,c.spec_w,d.spec_w INTO v_cat,v_sec,v_que,v_qa FROM categories a, sections b, questions c, questions_params d WHERE a.id=b.categories_id AND b.id=c.sections_id AND c.id=d.questions_id AND d.id=v_questions_params_id;
+  SELECT a.spec_w,b.spec_w,c.spec_w,d.spec_w INTO v_cat,v_sec,v_que,v_qa FROM categories a, sections b, questions c, questions_params d WHERE a.id=b.categories_id AND b.id=c.sections_id AND c.id=d.questions_id AND d.id=v_questions_params_id ;
   
   v_sb :=((v_cat/100)*(v_sec/100)*(v_que/100)*(v_qa/100))*100;
-  INSERT INTO questions_answers(user_id, questions_params_id,client_id,sb) VALUES (zamir.users_pkg.getid(hub.getSession),api_component.getvalue('questions_params'),api_component.getvalue('client_id'),v_sb);
+  
+  UPDATE questions_answers a SET a.sb=v_sb, a.questions_params_id=v_questions_params_id WHERE  a.questions_id=v_questions_id AND a.client_id=v_client_id;
+  IF SQL%NOTFOUND THEN   
+   INSERT INTO questions_answers(user_id, questions_params_id,client_id,sb,questions_id) VALUES (v_user_id,v_questions_params_id,v_client_id,v_sb,v_questions_id);
+  END IF;  
+  
   COMMIT;
-  SELECT SUM(sb) INTO v_curr FROM questions_answers WHERE user_id=v_user_id AND client_id=v_client_id; 
-  api_component.setvalue(p_component=>'frmscoring.score_val',p_value =>nvl(v_curr,0),p_font_color => CASE WHEN v_curr<5 THEN '$0000FF' ELSE '$008000' END);
+  
+  -- SELECT SUM(sb) INTO v_curr FROM questions_answers WHERE user_id=v_user_id AND client_id=v_client_id; 
+  --api_component.setvalue(p_component=>'frmscoring.score_val',p_value =>nvl(v_curr,0),p_font_color => CASE WHEN v_curr<5 THEN '$0000FF' ELSE '$008000' END);
   RETURN api_component.exec;
  EXCEPTION
    WHEN OTHERS THEN 
      ROLLBACK;
-     RETURN uiresp('message','ERROR');   
+     RETURN uiresp('message','ERROR',SQLERRM);   
 END onchange;    
+
+FUNCTION showScore RETURN CLOB IS
+ v_client_id NUMBER DEFAULT api_component.getvalue('client_id');
+ v_res NUMBER(22,2);
+BEGIN
+  SELECT SUM(sb) INTO v_res FROM questions_answers WHERE client_id=v_client_id;  
+  api_component.setvalue(p_component=>'frmcustomerdetails.edscore',p_value => v_res);
+  RETURN api_component.exec;
+END showScore;  
 begin
   NULL;
 end questions_params_pkg;

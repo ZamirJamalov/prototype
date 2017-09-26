@@ -7,8 +7,9 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, lazcontrols, uLogin, UJson, umain,usession,
-  uthread, uUsers, uForm, utools, uscoring, Unit1, unit2;
+  Forms, lazcontrols, datetimectrls, runtimetypeinfocontrols, uLogin, UJson,
+  umain, usession, uthread, uUsers, uForm, utools, uscoring, Unit1, filemanager,
+  uClientSearch;
 
 {$R *.res}
 
@@ -20,6 +21,7 @@ begin
   Application.CreateForm(TfrmLogin, frmLogin);
   //Application.CreateForm(TfrmScoring, frmScoring);
   Application.CreateForm(TForm1, Form1);
+  //Application.CreateForm(Tfrmclientsearch, frmclientsearch);
  // Application.CreateForm(TfrmMain, frmMain);
   //Application.CreateForm(TForm2, Form2);
  // Application.CreateForm(TUsers, Users);

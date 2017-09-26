@@ -6,6 +6,7 @@ create or replace package utils_pkg is
   
 FUNCTION asVarchar2(p_value CLOB) RETURN  VARCHAR2; 
 FUNCTION bool_text_to_yn(p_value VARCHAR2) RETURN CHAR;
+FUNCTION yn_to_bool(p_value VARCHAR2) RETURN BOOLEAN;
 PROCEDURE log_point(p_text VARCHAR2);
 end utils_pkg;
 /
@@ -22,6 +23,10 @@ BEGIN
   IF p_value='FALSE' THEN RETURN 'N'; END IF;
   IF p_value='TRUE' THEN RETURN 'Y'; END IF;
   RETURN p_value;
+END;  
+FUNCTION yn_to_bool(p_value VARCHAR2) RETURN BOOLEAN IS
+BEGIN
+  IF upper(p_value)='Y' THEN RETURN TRUE; ELSE RETURN FALSE; END IF;
 END;  
 
 PROCEDURE log_point(p_text VARCHAR2) IS

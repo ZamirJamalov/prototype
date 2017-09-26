@@ -13,38 +13,22 @@ type
   { TfrmScoring }
 
   TfrmScoring = class(TForm)
-    client_id: TComboBox;
-    score_val: TEdit;
-    Image2: TImage;
-    Image3: TImage;
-    Label3: TLabel;
     questions: TCheckListBox;
     questions_params: TCheckListBox;
     Label1: TLabel;
     Label2: TLabel;
-    Label4: TLabel;
-    LabeledEdit1: TLabeledEdit;
-    LabeledEdit2: TLabeledEdit;
-    LabeledEdit3: TLabeledEdit;
-    LabeledEdit4: TLabeledEdit;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
-    Panel4: TPanel;
     Panel5: TPanel;
     Panel6: TPanel;
-    Panel7: TPanel;
     Panel8: TPanel;
-    Panel9: TPanel;
-    SpeedButton1: TSpeedButton;
-    procedure client_idChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure questionsItemClick(Sender: TObject; Index: integer);
     procedure questionsSelectionChange(Sender: TObject; User: boolean);
     procedure questions_paramsItemClick(Sender: TObject; Index: integer);
-    procedure questions_paramsSelectionChange(Sender: TObject; User: boolean);
   private
 
   public
@@ -56,74 +40,32 @@ var
   ujs_, ujs_1:ujs;
   question_click_event:boolean;
   qa_finished:boolean;
+  v_question_index:integer;
 implementation
-uses unit1;
+uses unit1,uclientsearch,usession;
 {$R *.lfm}
 
 { TfrmScoring }
 
-procedure TfrmScoring.FormActivate(Sender: TObject);
-begin
+procedure TfrmScoring.FormShow(Sender: TObject);
+ begin
+   //questions.Selected[0]:=true;
+  //questions.Checked[0]:=true;
+  //questions.OnItemClick(sender,0);
+ // questions.Enabled:=false;
 
-end;
 
-procedure TfrmScoring.client_idChange(Sender: TObject);
-begin
 
-  if (client_id.Items[client_id.ItemIndex] ='000008') or (client_id.Items[client_id.ItemIndex] ='000010')  or (client_id.Items[client_id.ItemIndex] ='000012') then begin
-     Image3.Visible:=false;
-     Image2.Visible:=true;
-  end
-  else begin
-     Image2.Visible:=false;
-     Image3.Visible:=true;
-  end;
-  case client_id.Items[client_id.ItemIndex] of
-    '000008': begin
-                LabeledEdit1.Text:='Camalov Zamir Zeynal';
-                LabeledEdit2.Text:='10%';
-                LabeledEdit3.Text:='Hasanov İmran Əli';
-                LabeledEdit4.Text:='21%';
-     end;
-    '000009': begin
-                LabeledEdit1.Text:='Həsənova Həmidə İkram';
-                LabeledEdit2.Text:='50%';
-                LabeledEdit3.Text:='Əliyeva Ceyran Həsən';
-                LabeledEdit4.Text:='40%';
-     end;
-    '000010': begin
-                LabeledEdit1.Text:='Telamov Teymur Toğrul';
-                LabeledEdit2.Text:='0%';
-                LabeledEdit3.Text:='Cənnətov İzzət Faiq';
-                LabeledEdit4.Text:='21%';
-     end;
-    '000011': begin
-                LabeledEdit1.Text:='İvanova Yelena İvan';
-                LabeledEdit2.Text:='32%';
-                LabeledEdit3.Text:='Mirəli Yusifov Zakir';
-                LabeledEdit4.Text:='45%';
-     end;
-    '000012': begin
-                LabeledEdit1.Text:='Sakin Əliyev Cavad';
-                LabeledEdit2.Text:='80%';
-                LabeledEdit3.Text:='Cavidan Axundov Soltan';
-                LabeledEdit4.Text:='78%';
-     end;
-  end;
 end;
 
 procedure TfrmScoring.FormCreate(Sender: TObject);
-begin
-
-end;
-
-procedure TfrmScoring.FormShow(Sender: TObject);
 var
    s:widestring;
    frm :TForm1;
 begin
   //s := ujs_.runHub('scoring.questions_pkg.questions_list_clob','"TFORM":"'+self.name+'"');
- s := ujs_.runHub('zamir.ui_pkg.get_ui_comps','"form":"frmscoring","crud":"add","id":"",'+'"schema_name":"scoring"');
+// s := ujs_.runHub('scoring.questions_pkg.questions_list_clob','"form":"frmscoring","crud":"add","id":"",'+'"schema_name":"scoring"'+',"client_id":"'+usession.customer_code+'"');
+  s := ujs_.runHub('scoring.questions_pkg.questions_list_clob','"form":"frmscoring",'+'"client_id":["'+usession.customer_code+'"]');
  if ujs_.jsonError<>'' then begin
     Showmessage(ujs_.jsonError);
     exit;
@@ -136,13 +78,12 @@ begin
 
   ujs_.existsform(self,s,frmScoring as TWinControl);
 
-  questions.Selected[0]:=true;
-  questions.Checked[0]:=true;
-  questions.OnItemClick(sender,0);
-  questions.Enabled:=false;
 
 
+end;
 
+procedure TfrmScoring.FormActivate(Sender: TObject);
+begin
 
 end;
 
@@ -150,11 +91,35 @@ procedure TfrmScoring.questionsItemClick(Sender: TObject; Index: integer);
 var
    s:widestring;
    frm :TForm1;
-
+   ch:string;
+   i:integer;
+   f:boolean;
 begin
+ if questions.Checked[index]=true then begin
+ f:= false;
+ for i := 0 to questions_params.Items.Count-1 do begin
+     if questions_params.Checked[i]=true then begin
+        f:=true;
+        exit;
+      end;
+ end;
+ if not f then begin
+     questions.Checked[index]:=false;
+     showmessage('Cavab seçilməyib.');
+     exit;
+ end;
+ end;
+
+ if questions.Checked[index]=true then begin
+     ch := 'Y';
+     questions_params.Enabled:=false;
+  end else begin
+     ch := 'N';
+     questions_params.Enabled:=true;
+  end;
 
  //s := ujs_.runHub('scoring.questions_pkg.questions_list_clob','"TFORM":"'+self.name+'"');
- s := ujs_1.runHub('scoring.questions_pkg.onchange','"form":"frmscoring","crud":["add"],"id":[""],'+'"schema_name":["scoring"],"questions":["'+ujs_.getIdByIndex('questions',index)+'"]');
+ s := ujs_1.runHub('scoring.questions_pkg.onchange','"form":"frmscoring","crud":["add"],"id":[""],'+'"schema_name":["scoring"],"questions":["'+ujs_.getIdByIndex('questions',index)+'"]'+',"client_id":["'+usession.customer_code+'"]'+',"checked":["'+ch+'"]');
  if ujs_1.jsonError<>'' then begin
     Showmessage(ujs_1.jsonError);
     exit;
@@ -162,33 +127,39 @@ begin
  // frm := TForm1.Create(nil);
  // frm.setlog(s);
  // frm.ShowModal;
+  v_question_index:=index;
   ujs_1 :=  ujs.Create;
   ujs_1.parseResponse(s);
 
   ujs_1.existsform(self,s,frmScoring as TWinControl);
 
+  if questions.Checked[questions.ItemIndex]=true then begin
+     questions_params.Enabled:=false;
+  end else begin
+     questions_params.Enabled:=true;
+  end;
 end;
 
 procedure TfrmScoring.questionsSelectionChange(Sender: TObject; User: boolean);
-begin
-// if question_click_event=true then
-// questions.OnItemClick(sender,questions.ItemIndex);
- questions_params.SetFocus;
-end;
-
-procedure TfrmScoring.questions_paramsItemClick(Sender: TObject; Index: integer);
 var
    s:widestring;
    frm :TForm1;
-   i:integer;
+   ch:string;
 
 begin
-  //s := ujs_.runHub('scoring.questions_pkg.questions_list_clob','"TFORM":"'+self.name+'"');
-  if client_id.ItemIndex<0 then begin
-    showmessage('Müştərini seçin');
-    exit;
- end;
- s := ujs_1.runHub('scoring.questions_params_pkg.onchange','"form":"frmscoring","crud":["add"],"id":[""],'+'"schema_name":["scoring"],"questions_params":["'+ujs_1.getIdByIndex('questions_params',index)+'"],"client_id":["'+client_id.Items[client_id.ItemIndex]+'"]');
+  if questions.ItemIndex<0 then begin
+     exit;
+  end;
+ if questions.Checked[questions.ItemIndex]=true then begin
+     ch := 'Y';
+   //  questions_params.Enabled:=false;
+  end else begin
+     ch := 'N';
+   //  questions_params.Enabled:=true;
+  end;
+ //showmessage(ch);
+ //s := ujs_.runHub('scoring.questions_pkg.questions_list_clob','"TFORM":"'+self.name+'"');
+ s := ujs_1.runHub('scoring.questions_pkg.onchange','"form":"frmscoring","crud":["add"],"id":[""],'+'"schema_name":["scoring"],"questions":["'+ujs_.getIdByIndex('questions',questions.ItemIndex)+'"]'+',"client_id":["'+usession.customer_code+'"]'+',"checked":["'+ch+'"]');
  if ujs_1.jsonError<>'' then begin
     Showmessage(ujs_1.jsonError);
     exit;
@@ -196,31 +167,43 @@ begin
  // frm := TForm1.Create(nil);
  // frm.setlog(s);
  // frm.ShowModal;
-  //ujs_ :=  ujs.Create;
-  //ujs_.parseResponse(s);
+  v_question_index:=questions.ItemIndex;
+  ujs_1 :=  ujs.Create;
+  ujs_1.parseResponse(s);
 
   ujs_1.existsform(self,s,frmScoring as TWinControl);
-   //question_click_event:=true;
 
-  if questions.ItemIndex<questions.Items.Count-1 then begin
-     // showmessage(inttostr(questions.ItemIndex)+' '+inttostr(questions.Items.count));
-      questions.Selected[questions.ItemIndex+1]:=true;
-      questions.Checked[questions.ItemIndex]:=true;
-     questions.OnItemClick(sender,questions.ItemIndex);
-  end
-  else begin
-    questions.Enabled:=false;
-    questions_params.Enabled:=false;
+  if questions.Checked[questions.ItemIndex]=true then begin
+     questions_params.Enabled:=false;
+  end else begin
+     questions_params.Enabled:=true;
   end;
-
-
-
-
+ //questions_params.SetFocus;
 end;
 
-procedure TfrmScoring.questions_paramsSelectionChange(Sender: TObject;
-  User: boolean);
+procedure TfrmScoring.questions_paramsItemClick(Sender: TObject; Index: integer);
+var
+   s:widestring;
 begin
+  if usession.customer_code='' then begin
+    showmessage('Müştərini seçin');
+    questions_params.Checked[index]:=false;
+    exit;
+ end;
+  if questions_params.Checked[index]=false then begin
+     exit;
+  end else begin
+      questions_params.Enabled:=false;
+  end;
+
+ s := ujs_1.runHub('scoring.questions_params_pkg.onchange','"form":"frmscoring","crud":["add"],"id":[""],'+'"schema_name":["scoring"],"questions_params":["'+ujs_1.getIdByIndex('questions_params',index)+'"],"client_id":["'+usession.customer_code+'"],'+'"questions":["'+ujs_.getIdByIndex('questions',v_question_index)+'"]');
+ if ujs_1.jsonError<>'' then begin
+    Showmessage(ujs_1.jsonError);
+    exit;
+ end;
+  ujs_1.existsform(self,s,frmScoring as TWinControl);
+  questions.Checked[questions.ItemIndex]:=true;
+  questions.OnItemClick(sender,questions.ItemIndex);
 
 end;
 

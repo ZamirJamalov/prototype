@@ -1,0 +1,146 @@
+object frmclientsearch: Tfrmclientsearch
+  Left = 720
+  Height = 532
+  Top = 34
+  Width = 457
+  AlphaBlendValue = 200
+  BorderStyle = bsToolWindow
+  Caption = 'Müştəri axtarışı'
+  ClientHeight = 532
+  ClientWidth = 457
+  Font.CharSet = ANSI_CHARSET
+  Font.Height = -16
+  Font.Name = 'Calibri Light'
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '1.8.0.4'
+  object code: TEdit
+    Left = 16
+    Height = 27
+    Top = 34
+    Width = 432
+    OnKeyPress = codeKeyPress
+    OnKeyUp = codeKeyUp
+    TabOrder = 0
+    TextHint = 'Kod\VÖEN\Şəxsiyyət vəsiqəsinin pinkodu'
+  end
+  object docno: TEdit
+    Left = 16
+    Height = 27
+    Top = 72
+    Width = 432
+    TabOrder = 1
+    TextHint = 'Sənədin nömrəsi'
+  end
+  object clientname: TEdit
+    Left = 16
+    Height = 27
+    Top = 112
+    Width = 432
+    TabOrder = 2
+    TextHint = 'Soyad    Ad     Ata adı'
+  end
+  object phonenumber: TEdit
+    Left = 16
+    Height = 27
+    Top = 152
+    Width = 432
+    TabOrder = 3
+    TextHint = 'Mobil telefon'
+  end
+  object btnaccept: TButton
+    Left = 373
+    Height = 25
+    Top = 498
+    Width = 75
+    Caption = 'Qəbul et'
+    Default = True
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -16
+    Font.Name = 'Calibri'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    OnClick = btnacceptClick
+    ParentFont = False
+    TabOrder = 4
+  end
+  object btncancel: TButton
+    Left = 280
+    Height = 25
+    Top = 498
+    Width = 75
+    Cancel = True
+    Caption = 'İmtina'
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -16
+    Font.Name = 'Calibri'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    OnClick = btncancelClick
+    ParentFont = False
+    TabOrder = 5
+  end
+  object StringGrid1: TStringGrid
+    Left = 16
+    Height = 280
+    Top = 210
+    Width = 432
+    ColCount = 3
+    Columns = <    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Kod'
+        Width = 88
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'SAA'
+        Width = 230
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Doğum tarixi'
+        Width = 110
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
+    RowCount = 3
+    TabOrder = 6
+    TitleFont.CharSet = ANSI_CHARSET
+    TitleFont.Height = -16
+    TitleFont.Name = 'Times New Roman'
+    TitleFont.Pitch = fpVariable
+    TitleFont.Quality = fqDraft
+    OnClick = StringGrid1Click
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object btnclearall: TSpeedButton
+    Left = 328
+    Height = 22
+    Top = 10
+    Width = 120
+    Caption = 'Xanaları təmizlə'
+    OnClick = btnclearallClick
+  end
+  object Label1: TLabel
+    Left = 16
+    Height = 19
+    Top = 186
+    Width = 115
+    Caption = 'Axtarışın nəticəsi:'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Height = -16
+    Font.Name = 'Calibri Light'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsUnderline]
+    ParentColor = False
+    ParentFont = False
+  end
+end

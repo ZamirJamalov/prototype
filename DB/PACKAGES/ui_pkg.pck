@@ -23,6 +23,31 @@ end ui_pkg;
 /
 create or replace package body ui_pkg is
 
+FUNCTION UiResp(p_message_type VARCHAR2,p_rp_message_type VARCHAR2,p_message VARCHAR2 DEFAULT NULL) RETURN CLOB IS
+ v_res CLOB;
+BEGIN
+  IF p_rp_message_type='OK' THEN 
+     api_component.setJsonHeadMessageOk(p_message);
+  ELSE
+     api_component.setJsonHeadMessageError(p_message);
+  END IF;  
+   
+  CASE p_message_type 
+    WHEN 'user_or_password_is_invalid' THEN 
+     NULL;
+    WHEN 'message'THEN 
+      NULL; 
+    WHEN 'message1' THEN 
+      api_component.setvalue(p_component=>'users.email',p_required=>'Y');  
+    ELSE
+      NULL;  
+  END CASE;   
+ 
+ 
+ RETURN  api_component.exec; 
+
+END;  
+
 FUNCTION menu_data RETURN CLOB IS
 BEGIN
   json_kernel.append_as_text('{');
@@ -32,16 +57,12 @@ BEGIN
                              from (select id,root_id,caption,form_name,form_caption,schema_name,crud,external_form
   from ui_menu 
   start with root_id is null
-  connect by prior ID = root_id  ) a'); --AND  ui_menu.id IN (SELECT ui_menu_id FROM rl_groups_menu)
+  connect by prior ID = root_id AND  ui_menu.id IN (SELECT ui_menu_id FROM rl_groups_menu a, users b where a.rl_groups_id=b.rl_groups_id and b.session_=hub.getSession)  ) a'); --AND  ui_menu.id IN (SELECT ui_menu_id FROM rl_groups_menu)
   json_kernel.append_as_text(']}'); 
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-    RETURN '';
-    log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'ui_pkg.menu_data',
-                p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
+   RETURN uiresp('message','ERROR',SQLERRM);
 END menu_data;  
 
 FUNCTION get_id(p_type ui_components.type_%TYPE,p_name ui_components.name_%TYPE) RETURN ui_components.root_id%TYPE IS
@@ -204,7 +225,7 @@ BEGIN
     
   FOR i IN (SELECT * FROM ui_components WHERE root_id=(SELECT ID FROM ui_components WHERE type_='TFORM' AND upper(NAME_)=upper(v_form)) ORDER BY sort_ ASC) LOOP
      api_component.setvalue(p_component        => v_form||'.'||i.name_,
-                            p_values           => CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN  api_component.exec(p_ds_proc=>i.ds_proc,p_value=>api_component.getColumnValue(i.name_)) ELSE NULL END,
+                            p_values           => CASE WHEN i.type_ IN ('TCOMBOBOX','TCHECKLISTBOX') THEN  api_component.exec(p_ds_proc=>i.ds_proc,p_value=>api_component.getColumnValue(i.name_),p_required=>utils_pkg.yn_to_bool(i.required))  ELSE NULL END,
                             p_value            => CASE 
                                                       WHEN i.type_ NOT IN ('TCOMBOBOX','TCHECKLISTBOX') AND i.ds_proc IS NOT NULL THEN 
                                                            CASE 

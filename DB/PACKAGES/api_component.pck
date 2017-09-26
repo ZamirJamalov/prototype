@@ -14,7 +14,8 @@ create or replace package api_component is
 
 PROCEDURE parse_component_params(p_json json); 
 
-FUNCTION component_values_to_json(p_coll tt_component_obj,p_comma_param_renew BOOLEAN DEFAULT TRUE) RETURN CLOB;
+FUNCTION component_values_to_json(p_coll tt_component_obj,p_comma_param_renew BOOLEAN DEFAULT TRUE,p_required BOOLEAN DEFAULT FALSE) RETURN CLOB;
+FUNCTION component_values_to_json_(p_coll tt_component_obj,p_comma_param_renew BOOLEAN DEFAULT TRUE) RETURN CLOB;
 
 PROCEDURE setvalue(p_component         VARCHAR2,
                    p_values            CLOB DEFAULT NULL,
@@ -40,7 +41,7 @@ FUNCTION getColumnValue(p_column_name  VARCHAR2) RETURN VARCHAR2;
 PROCEDURE collectcolumnvalues(p_schema_name VARCHAR2, p_table_name VARCHAR2, p_id VARCHAR2 DEFAULT 0);
 FUNCTION exec_(p_func_name VARCHAR2) RETURN VARCHAR2;
 FUNCTION exec RETURN CLOB;
-FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2) RETURN CLOB;
+FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2,p_required BOOLEAN DEFAULT FALSE) RETURN CLOB;
 FUNCTION exec(p_json_part CLOB,p_action CLOB DEFAULT NULL) RETURN CLOB;
 PROCEDURE setJsonHeadMessageOk(p_message VARCHAR2 DEFAULT 'SUCCESS');
 PROCEDURE setJsonHeadMessageError(p_message VARCHAR2);
@@ -124,7 +125,7 @@ BEGIN
   END LOOP;
 END parse_component_params;   
 
-FUNCTION component_values_to_json(p_coll tt_component_obj,p_comma_param_renew BOOLEAN DEFAULT TRUE) RETURN CLOB IS 
+FUNCTION component_values_to_json(p_coll tt_component_obj,p_comma_param_renew BOOLEAN DEFAULT TRUE,p_required BOOLEAN DEFAULT FALSE) RETURN CLOB IS 
  v_res CLOB;
  n NUMBER DEFAULT 1;
 BEGIN
@@ -137,7 +138,7 @@ BEGIN
   END IF;
   
   IF p_coll IS NOT NULL THEN  
-     dbms_lob.append(v_res,add_comma(v_add_comma2)||'{"index":"0","id":"","name":"","checked":""}');
+   IF p_required=FALSE THEN   dbms_lob.append(v_res,add_comma(v_add_comma2)||'{"index":"0","id":"","name":"","checked":""}'); ELSE n:=0; END IF;
      FOR i IN p_coll.first..p_coll.last LOOP
         dbms_lob.append(v_res,add_comma(v_add_comma2)||'{"index":"'||n||'","id":"'||p_coll(i).id||'","name":"'||p_coll(i).name||'","checked":"'||p_coll(i).checked||'"}');  
         n := n + 1;        
@@ -146,6 +147,30 @@ BEGIN
     --dbms_output.put_line(v_res);
    RETURN v_res;  
 END component_values_to_json;  
+
+
+FUNCTION component_values_to_json_(p_coll tt_component_obj,p_comma_param_renew BOOLEAN DEFAULT TRUE) RETURN CLOB IS 
+ v_res CLOB;
+ n NUMBER DEFAULT 0;
+BEGIN
+  IF (v_add_comma2 =0) OR (p_comma_param_renew=TRUE) THEN 
+       dbms_lob.createtemporary(v_res,TRUE);
+    END IF;   
+    
+  IF p_comma_param_renew=TRUE THEN 
+      v_add_comma2 := 0;
+  END IF;
+  
+  IF p_coll IS NOT NULL THEN  
+    -- dbms_lob.append(v_res,add_comma(v_add_comma2)||'{"index":"0","id":"","name":"","checked":""}');
+     FOR i IN p_coll.first..p_coll.last LOOP
+        dbms_lob.append(v_res,add_comma(v_add_comma2)||'{"index":"'||n||'","id":"'||p_coll(i).id||'","name":"'||p_coll(i).name||'","checked":"'||p_coll(i).checked||'"}');  
+        n := n + 1;        
+     END LOOP;
+    END IF;
+    --dbms_output.put_line(v_res);
+   RETURN v_res;  
+END component_values_to_json_;  
 
 PROCEDURE setvalue(p_component         VARCHAR2,
                    p_values            CLOB DEFAULT NULL,
@@ -291,7 +316,7 @@ BEGIN
    RETURN rows_all;
 END exec;
 
-FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2) RETURN  CLOB IS
+FUNCTION exec(p_ds_proc VARCHAR2,p_value VARCHAR2,p_required BOOLEAN DEFAULT FALSE) RETURN  CLOB IS
  v_res CLOB;
  --v_tt_values ttvalues := ttvalues();
  v_tt_component_obj tt_component_obj := tt_component_obj();
@@ -300,7 +325,7 @@ BEGIN
   IF length(p_ds_proc)>0 THEN 
     EXECUTE IMMEDIATE  'begin :1:='||p_ds_proc||'; end;' USING OUT v_tt_component_obj;
     setModifyCmbChecked(v_tt_component_obj,p_value);
-    v_res := component_values_to_json(v_tt_component_obj);
+    v_res := component_values_to_json(p_coll => v_tt_component_obj,p_required => p_required);
   ELSE
     --v_res := '{"index":"0","id":"'||chr(1760)||'","name":"'||chr(1760)||'","checked":"'||chr(1760)||'"}';  
     v_res := NULL;

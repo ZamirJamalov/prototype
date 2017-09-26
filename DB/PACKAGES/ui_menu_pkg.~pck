@@ -149,7 +149,8 @@ FUNCTION setid RETURN VARCHAR2 IS
  v_res NUMBER DEFAULT 0;
 BEGIN
   SELECT COUNT(*) INTO v_res FROM ui_menu;
-  RETURN  v_res+1;
+  v_res := nvl(v_res,0) +2;
+  RETURN  v_res;
 END;  
 
 FUNCTION root_list RETURN tt_component_obj IS

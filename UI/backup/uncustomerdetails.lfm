@@ -1,0 +1,43 @@
+object frmcustomerdetails: Tfrmcustomerdetails
+  Left = 439
+  Height = 441
+  Top = 166
+  Width = 686
+  BorderStyle = bsToolWindow
+  Caption = 'Əlavə məlumat'
+  ClientHeight = 441
+  ClientWidth = 686
+  LCLVersion = '1.8.0.4'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 441
+    Top = 0
+    Width = 686
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Scoring'
+      ClientHeight = 413
+      ClientWidth = 678
+      object edscore: TEdit
+        Left = 8
+        Height = 23
+        Top = 8
+        Width = 136
+        ReadOnly = True
+        TabOrder = 0
+      end
+      object btnshowscore: TButton
+        Left = 152
+        Height = 25
+        Top = 8
+        Width = 104
+        Caption = 'Toplanmış bal'
+        OnClick = btnshowscoreClick
+        TabOrder = 1
+      end
+    end
+  end
+end

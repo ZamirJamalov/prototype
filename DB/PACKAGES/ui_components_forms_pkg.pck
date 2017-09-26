@@ -59,11 +59,12 @@ BEGIN
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
    WHEN OTHERS THEN 
-    RETURN '';
+     RETURN uiresp('message','ERROR',SQLERRM);
+    /*RETURN '';
     log_pkg.add(p_log_type    => log_pkg.RESPONSE,
                 p_method_name => 'ui_components_forms_pkg.grid_data',
                 p_log_text    => NULL,
-                p_log_clob    => SQLERRM);
+                p_log_clob    => SQLERRM);*/
 END grid_data;    
 
 FUNCTION ui_setid RETURN  VARCHAR2 IS
