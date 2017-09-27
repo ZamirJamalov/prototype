@@ -9,6 +9,7 @@ FUNCTION setid RETURN VARCHAR2;
 FUNCTION add RETURN CLOB;
 FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;
+FUNCTION questions_list_ui RETURN tt_component_obj;
 FUNCTION questions_list RETURN tt_component_obj;
 FUNCTION questions_list_clob RETURN CLOB;
 FUNCTION onchange RETURN CLOB;
@@ -117,6 +118,12 @@ BEGIN
     ROLLBACK;
     RETURN uiresp('message','ERROR',SQLERRM);
 END del;  
+
+FUNCTION questions_list_ui RETURN tt_component_obj IS 
+BEGIN
+  SELECT t_component_obj(id,NAME,'') BULK COLLECT INTO v_res FROM questions;
+  RETURN v_res;
+END questions_list_ui;  
 
 FUNCTION questions_list RETURN tt_component_obj IS
 BEGIN
