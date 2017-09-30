@@ -52,11 +52,6 @@ FUNCTION grid_data RETURN CLOB IS
   v_idx NUMBER DEFAULT to_number(nvl(api_component.getvalue('index'),0))+1;
   v_sort_order VARCHAR2(10) DEFAULT nvl(api_component.getvalue('sort_order'),' desc');
 BEGIN
-   log_pkg.add(p_log_type    => log_pkg.RESPONSE,
-                p_method_name => 'ui_components_pkg.grid_data',
-                p_log_text    => 'before'||v_idx||v_sort_order,
-                p_log_clob    => SQLERRM);
-                
   json_kernel.append_as_text('{"columns":["id","root_id","type_","name_","default_value","label_caption","width_","font_size","font_color","background_color","enabled_","visible_","hint","sort_","onclick","onchange","ds_proc","top_","upd_enabled_","upd_visible_"],');
   json_kernel.append_as_text('"rows":[');
   json_kernel.append_as_sql(p_json_part => '{"row@rownum":["@id","@root_id","@type_","@name_","@default_value","@label_caption","@width_","@font_size","@font_color","@background_color","@enabled_","@visible_","@hint","@sort_","@onclick","@onchange","@ds_proc","@top_","@upd_enabled_","@upd_visible_"]}',

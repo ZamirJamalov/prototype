@@ -262,7 +262,8 @@ begin
    Tab.Name:='tab_'+p_form.form_name;
    Tab.Caption:=p_form.form_caption;
    tab.Font.Size:=13;
-   tab.Font.Name:='Courier New';
+   tab.Font.Name:='Verdana Light';
+   tab.BorderWidth:=0;
    PageControl1.ActivePage:=tab;
    Cursor:=crSQLWait;
    if utools.stringToBoolean(getRmenuByActiveTab.external_form)=false then begin
@@ -565,12 +566,14 @@ begin
    stringGrid.SelectedColor:=$00F0FCED;//clGray;//$00CA8D51;
    stringGrid.Font.Name:='Calibri Light';
    stringGrid.Font.Size:=13;
+   stringGrid.BorderStyle:=bsNone;
    for i:=0 to  jdata.FindPath('Response.Components[0].columns').Count-1  do   begin
           stringGrid.Columns.Add;
           stringGrid.Columns[i].Title.Alignment:=taCenter;
           //stringGrid.Columns[i].Title.Font.Style:=[fsBold];
           stringGrid.Columns[i].Title.Caption := jdata.FindPath('Response.Components[0].columns['+inttostr(i)+']').AsString;
           if i=0 then begin
+             stringGrid.Columns[i].Width:=130;
             // stringGrid.Columns[i].Width:=round((tab.Width/jdata.FindPath('Response.Components[0].columns').Count)); //130;//
           end else begin
              stringGrid.Columns[i].Width:=250;

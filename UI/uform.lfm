@@ -1,7 +1,7 @@
 object frm: Tfrm
-  Left = 403
+  Left = 408
   Height = 484
-  Top = 203
+  Top = 207
   Width = 800
   HorzScrollBar.Page = 240
   VertScrollBar.Page = 44
@@ -36,33 +36,39 @@ object frm: Tfrm
     Color = clNone
     ParentColor = False
     TabOrder = 0
-    object btnSaveTop: TBCMaterialDesignButton
+    object btnSaveTop: TButton
       Left = 680
       Height = 44
       Top = 0
       Width = 120
-      RoundBorders = 2
-      NormalColor = 16445675
-      ShadowColor = clBlack
-      TextShadowSize = 100
-      TextFont = 'Calibri'
       Align = alRight
       Caption = 'Yadda saxla'
+      Default = True
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -19
+      Font.Name = 'Calibri'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
       OnClick = btnSaveTopClick
+      ParentFont = False
+      TabOrder = 0
     end
-    object button1: TBCMaterialDesignButton
+    object Button1: TButton
       Left = 560
       Height = 44
       Top = 0
       Width = 120
-      RoundBorders = 2
-      NormalColor = 16445675
-      ShadowColor = clBlack
-      TextShadowSize = 100
-      TextFont = 'Calibri'
       Align = alRight
+      Cancel = True
       Caption = 'İmtina'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -19
+      Font.Name = 'Calibri'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
       OnClick = Button1Click
+      ParentFont = False
+      TabOrder = 1
     end
   end
   object Panel3: TPanel

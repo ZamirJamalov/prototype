@@ -16,6 +16,8 @@ end questions_params_pkg;
 create or replace package body questions_params_pkg IS
 
 v_res tt_component_obj := tt_component_obj();
+
+
  
 FUNCTION UiResp(p_message_type VARCHAR2,p_rp_message_type VARCHAR2,p_message VARCHAR2 DEFAULT NULL) RETURN CLOB IS
  v_res CLOB;
@@ -72,6 +74,9 @@ END setid;
 
 FUNCTION add RETURN CLOB IS
 BEGIN
+  IF questions_pkg.READ(api_component.getvalue('questions_id')).answer_as_list='N' AND zamir.utils_pkg.is_num_interval(api_component.getvalue('name'))=FALSE THEN 
+     RETURN uiresp('message','ERROR','Ad interval olmalıdır');
+  END IF;
   INSERT INTO questions_params(id,
                                questions_id,
                                name,
@@ -91,6 +96,9 @@ END add;
 
 FUNCTION upd RETURN CLOB IS
 BEGIN
+  IF questions_pkg.READ(api_component.getvalue('questions_id')).answer_as_list='N' AND zamir.utils_pkg.is_num_interval(api_component.getvalue('name'))=FALSE THEN 
+     RETURN uiresp('message','ERROR','Ad interval olmalıdır');
+  END IF;
   UPDATE questions_params a SET a.questions_id=api_component.getvalue('questions_id'),
                                 a.name=api_component.getvalue('name'),
                                 a.spec_w=api_component.getvalue('spec_w')
@@ -115,25 +123,51 @@ BEGIN
 END del;
 
 FUNCTION onchange RETURN CLOB IS
-  v_cat  NUMBER DEFAULT 0;
-  v_sec  NUMBER DEFAULT 0;
-  v_que  NUMBER DEFAULT 0;
-  v_qa   NUMBER DEFAULT 0;
-  v_sb   NUMBER DEFAULT 0;
-  v_curr NUMBER DEFAULT 0;
-  v_questions_id questions.id%TYPE DEFAULT api_component.getvalue('questions');
+  v_cat                 NUMBER DEFAULT 0;
+  v_sec                 NUMBER DEFAULT 0;
+  v_que                 NUMBER DEFAULT 0;
+  v_qa                  NUMBER DEFAULT 0;
+  v_sb                  NUMBER DEFAULT 0;
+  v_curr                NUMBER DEFAULT 0;
+  v_questions_id        questions.id%TYPE DEFAULT api_component.getvalue('questions');
   v_questions_params_id questions_params.id%TYPE DEFAULT api_component.getvalue('questions_params');
-  v_client_id zamir.users.id%TYPE DEFAULT api_component.getvalue('client_id');
-  v_user_id NUMBER DEFAULT zamir.users_pkg.getid(hub.getSession);
+  v_client_id           zamir.users.id%TYPE DEFAULT api_component.getvalue('client_id');
+  v_user_id             NUMBER DEFAULT zamir.users_pkg.getid(hub.getSession);
+  v_append_value        NUMBER DEFAULT api_component.getvalue('append_value');
+  v_interval_1          NUMBER;
+  v_interval_2          NUMBER;
+  v_interval_found  BOOLEAN DEFAULT FALSE;
 BEGIN
-  SELECT a.spec_w,b.spec_w,c.spec_w,d.spec_w INTO v_cat,v_sec,v_que,v_qa FROM categories a, sections b, questions c, questions_params d WHERE a.id=b.categories_id AND b.id=c.sections_id AND c.id=d.questions_id AND d.id=v_questions_params_id ;
+  IF questions_pkg.READ(v_questions_id).answer_as_list='N' THEN 
+     FOR i IN (SELECT id,NAME FROM questions_params a WHERE a.questions_id=v_questions_id) LOOP
+       IF v_append_value >= substr(i.name,1,instr(i.name,'-')-1) AND v_append_value <= substr(i.name,instr(i.name,'-')+1,length(i.name)) THEN 
+          v_questions_params_id := i.id;
+          v_interval_found := TRUE;
+          EXIT; 
+       END IF;   
+     END LOOP;
+  END IF; 
+  IF v_interval_found = FALSE THEN 
+     RETURN uiresp('message','ERROR','Daxil edilən məlumat interval aralığlarına düşmür.');
+  END IF;
+  --Eger el ile melumat daxil edilmeyibse onda bu haqda melumat qaytar
+  IF v_questions_params_id IS NULL THEN 
+    RETURN uiresp('message','ERROR','Cavabı daxil edin');
+  END IF;
+  SELECT a.spec_w,b.spec_w,c.spec_w,d.spec_w
+     INTO v_cat,v_sec,v_que,v_qa
+   FROM categories a, sections b, questions c, questions_params d 
+     WHERE a.id=b.categories_id AND b.id=c.sections_id AND c.id=d.questions_id AND d.id=v_questions_params_id ;
   
   v_sb :=((v_cat/100)*(v_sec/100)*(v_que/100)*(v_qa/100))*100;
   
-  UPDATE questions_answers a SET a.sb=v_sb, a.questions_params_id=v_questions_params_id WHERE  a.questions_id=v_questions_id AND a.client_id=v_client_id;
+
+  UPDATE questions_answers a SET a.sb=v_sb, a.questions_params_id=v_questions_params_id,a.append_value=v_append_value WHERE  a.questions_id=v_questions_id AND a.client_id=v_client_id;
   IF SQL%NOTFOUND THEN   
-   INSERT INTO questions_answers(user_id, questions_params_id,client_id,sb,questions_id) VALUES (v_user_id,v_questions_params_id,v_client_id,v_sb,v_questions_id);
+   INSERT INTO questions_answers(user_id, questions_params_id,client_id,sb,questions_id,append_value)
+           VALUES (v_user_id,v_questions_params_id,v_client_id,v_sb,v_questions_id,v_append_value);
   END IF;  
+
   
   COMMIT;
   

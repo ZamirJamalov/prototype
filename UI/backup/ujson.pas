@@ -68,7 +68,7 @@ type
     function retParseResponse: TResponse_array;
     procedure clear;
     procedure existsform(p_form:tform;p_json:widestring;p_component:TWinControl);
-    procedure newform(p_form:tform;p_json:widestring;p_component:Twincontrol);
+    procedure newform(p_form:tform;p_json:widestring;p_component:Twincontrol;p_crud:string);
     function getIdByIndex(p_component_name:String;p_index:integer):string;
   end;
 
@@ -136,6 +136,10 @@ begin
                     comma_ := comma_ + 1;
                     v_json := v_json + addcomma(comma_, 1) + '"' + (p_component AS TEDIT).Name + '":["' +(p_component AS TEDIT).Text + '"]';
                   END; //TEDIT
+        'TMEMO':  BEGIN
+                    comma_ := comma_ + 1;
+                    v_json := v_json + addcomma(comma_, 1) + '"' + (p_component AS TMEMO).Name + '":["' +(p_component AS TMEMO).Text + '"]';
+                  END; //TMEMO
      'TCHECKBOX':  BEGIN
                     comma_ := comma_ + 1;
                     if (p_component AS TCHECKBOX).Checked then a := 'Y' ELSE BEGIN a := 'N'; END;
@@ -145,7 +149,17 @@ begin
                     comma_ := comma_ + 1;
                     FOR j := 0 to LENGTH(Response_array) - 1 DO BEGIN
                        IF (p_component AS TCOMBOBOX).Name = Response_array[j].name_ THEN BEGIN
-                          v_json := v_json + addComma(comma_, 1) + '"' + (p_component AS TCOMBOBOX).Name + '":["' + Response_array[j].values[(p_component AS TCOMBOBOX).ItemIndex].id + '"]';
+
+
+                        case   (p_component AS TCOMBOBOX).ItemIndex of
+                          -1:   begin
+                                  v_json := v_json + addComma(comma_, 1) + '"' + (p_component AS TCOMBOBOX).Name + '":[""]';
+                                end;
+                          else  begin
+                                  v_json := v_json + addComma(comma_, 1) + '"' + (p_component AS TCOMBOBOX).Name + '":["' + Response_array[j].values[(p_component AS TCOMBOBOX).ItemIndex].id + '"]';
+                                end;
+                        end;
+                         EXIT;
                        END; //IF
                     END; //FOR
                   END;//TCOMBOBOX
@@ -445,7 +459,7 @@ end;
 
 
 
-procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol);
+procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol;p_crud:string);
  var
    component:TComponent;
    v_top, i, j, n : integer;
@@ -472,6 +486,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
     exit;
   end;
   //set session
+
   if lowercase(p_form.Name) = lowercase('frmLogin') then begin
     usession.session_var := jdata.FindPath('Response.Message.Text').AsString;
   end;
@@ -568,6 +583,7 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                end; //with
                            end;//tcheckbox
            'TCOMBOBOX':    begin
+
                               component:=TComboBox.Create(p_component);
                               with (component as TComboBox) do begin
                                     parent := p_component;
@@ -585,15 +601,23 @@ procedure ujs.newform(p_form: tform; p_json: widestring;p_component: Twincontrol
                                     if jdata.FindPath('Response.Components['+inttostr(i)+'].background_color').AsString='' then Color:= clWhite else color := StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].background_color').AsString);
                                     enabled:=  stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].enabled').AsString);
                                     visible := stringtoboolean(jdata.FindPath('Response.Components['+inttostr(i)+'].visible').AsString);
-                                    cmbItemIndex := 0;
+                                    cmbItemIndex := -1;
                                     FOR j := 0 TO jdata.FindPath('Response.Components['+inttostr(i)+'].values').count - 1 DO BEGIN
                                       items.add(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].name').asString);
                                        if  jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].checked').asString<>'' then begin
-                                        cmbItemIndex:= StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].checked').asString);
+                                        //cmbItemIndex:= StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].checked').asString);
+                                         cmbItemIndex:= StrToInt(jdata.FindPath('Response.Components['+inttostr(i)+'].values['+inttostr(j)+'].index').asString);
                                        end;
 
                                     END;//FOR j
-                                    itemindex := cmbItemIndex;
+                                    if (p_crud='add') and(cmbItemIndex=-1) then begin
+                                      cmbItemIndex :=0;
+                                    end;
+                                    if (p_crud<>'add') and (cmbItemIndex=-1) then begin
+                                      cmbItemIndex := -1;
+                                    end else begin
+                                     ItemIndex:=cmbItemIndex;
+                                    end;
                               end; //with
                             end;//TCOMBOBOX
            'TMEMO':         begin

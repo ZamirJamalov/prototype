@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = -7
+  Left = 337
   Height = 706
-  Top = 30
+  Top = 0
   Width = 1020
   AlphaBlendValue = 200
   Caption = 'Scoring'
@@ -30,7 +30,7 @@ object frmMain: TfrmMain
       Top = 1
       Width = 744
       Align = alTop
-      BevelColor = clNone
+      BevelColor = clWhite
       BevelInner = bvRaised
       BevelOuter = bvLowered
       ClientHeight = 39
@@ -302,7 +302,7 @@ object frmMain: TfrmMain
       ReadOnly = True
       RowSelect = True
       ScrollBars = ssAutoVertical
-      SelectionColor = 16118015
+      SelectionColor = 9588996
       SeparatorColor = clWhite
       ShowLines = False
       ShowRoot = False

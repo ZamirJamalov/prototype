@@ -1,7 +1,7 @@
 object frmcustomerdetails: Tfrmcustomerdetails
-  Left = 439
+  Left = 442
   Height = 441
-  Top = 166
+  Top = 169
   Width = 686
   BorderStyle = bsToolWindow
   Caption = 'Əlavə məlumat'

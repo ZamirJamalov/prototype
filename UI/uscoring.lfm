@@ -1,7 +1,7 @@
 object frmScoring: TfrmScoring
-  Left = -7
+  Left = 562
   Height = 551
-  Top = 218
+  Top = 156
   Width = 1020
   Caption = 'Scoring'
   ClientHeight = 551
@@ -87,9 +87,20 @@ object frmScoring: TfrmScoring
         Font.Pitch = fpVariable
         Font.Quality = fqDraft
         ItemHeight = 0
+        OnExit = questions_paramsExit
         OnItemClick = questions_paramsItemClick
         ParentFont = False
         TabOrder = 0
+      end
+      object edquestions_params: TEdit
+        Left = 1
+        Height = 192
+        Top = 27
+        Width = 1001
+        Align = alClient
+        OnExit = edquestions_paramsExit
+        TabOrder = 1
+        Visible = False
       end
     end
   end

@@ -1,7 +1,7 @@
 object frmLogin: TfrmLogin
-  Left = 773
+  Left = 777
   Height = 437
-  Top = 128
+  Top = 132
   Width = 384
   AlphaBlendValue = 200
   BorderStyle = bsNone
@@ -173,6 +173,7 @@ object frmLogin: TfrmLogin
       Height = 33
       Top = 314
       Width = 123
+      RoundBorders = 2
       NormalColor = 14062185
       ShadowColor = clBlack
       TextSize = 20
@@ -186,6 +187,7 @@ object frmLogin: TfrmLogin
       Height = 33
       Top = 314
       Width = 123
+      RoundBorders = 2
       NormalColor = 14062185
       ShadowColor = clBlack
       TextSize = 20

@@ -37,8 +37,8 @@ type
   { Tfrm }
 
   Tfrm = class(TForm)
-    button1: TBCMaterialDesignButton;
-    btnSaveTop: TBCMaterialDesignButton;
+    btnSaveTop: TButton;
+    Button1: TButton;
     Panel1: TPanel;
     Panel3: TPanel;
     procedure btnSaveTopClick(Sender: TObject);
@@ -162,7 +162,7 @@ begin
      end;
      ujs_ :=  ujs.Create;
      ujs_.parseResponse(v_json);
-     ujs_.newform(self,v_json,Panel3);
+     ujs_.newform(self,v_json,Panel3,v_crud);
      result := '';
 end;
 

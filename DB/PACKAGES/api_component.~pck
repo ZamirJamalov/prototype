@@ -137,14 +137,16 @@ BEGIN
       v_add_comma2 := 0;
   END IF;
   
-  IF p_coll IS NOT NULL THEN  
-   IF p_required=FALSE THEN   dbms_lob.append(v_res,add_comma(v_add_comma2)||'{"index":"0","id":"","name":"","checked":""}'); END IF;
+  IF p_coll.count>0 THEN
+   IF p_required=FALSE THEN   dbms_lob.append(v_res,add_comma(v_add_comma2)||'{"index":"0","id":"","name":"","checked":""}'); ELSE n:=0; END IF;
      FOR i IN p_coll.first..p_coll.last LOOP
         dbms_lob.append(v_res,add_comma(v_add_comma2)||'{"index":"'||n||'","id":"'||p_coll(i).id||'","name":"'||p_coll(i).name||'","checked":"'||p_coll(i).checked||'"}');  
         n := n + 1;        
      END LOOP;
+    ELSE
+      dbms_lob.append(v_res,'{"index":"0","id":"","name":"","checked":""}'); 
     END IF;
-    --dbms_output.put_line(v_res);
+ 
    RETURN v_res;  
 END component_values_to_json;  
 

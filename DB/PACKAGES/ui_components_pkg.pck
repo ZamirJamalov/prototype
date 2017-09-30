@@ -76,7 +76,9 @@ BEGIN
   UNION  ALL
   SELECT 'TCHECKLISTBOX' AS id,'TCHECKLISTBOX' AS NAME,'' AS checked FROM dual
   UNION ALL 
-  SELECT 'TLABEL' AS id,'TLABEL' AS NAME,'' AS checked FROM dual) p;
+  SELECT 'TLABEL' AS id,'TLABEL' AS NAME,'' AS checked FROM dual
+  UNION ALL
+  SELECT 'TMEMO' AS id,'TMEMO' AS NAME,'' AS checked FROM dual) p;
   RETURN  v_res;
 END list_component_types;  
 
