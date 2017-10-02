@@ -16,6 +16,7 @@ FUNCTION ui_setid RETURN VARCHAR2;
 FUNCTION onclick_calculate RETURN CLOB;
 FUNCTION setuimenuid RETURN CLOB;
 FUNCTION getid(p_session VARCHAR2) RETURN users.id%TYPE;
+FUNCTION READ(p_session VARCHAR2) RETURN users%ROWTYPE;
 end users_pkg;
 /
 create or replace package body users_pkg is
@@ -110,7 +111,8 @@ BEGIN
                     blocked_time,
                     email,
                     mob_phone,
-                    rl_groups_id)
+                    rl_groups_id,
+                    scr_groups_id)
              VALUES (users_seq.nextval,
                      NULL,
                      api_component.getvalue('login'),
@@ -119,7 +121,8 @@ BEGIN
                      NULL,
                      api_component.getvalue('email'),
                      api_component.getvalue('mob_phone'),
-                     api_component.getvalue('rl_groups_id'));
+                     api_component.getvalue('rl_groups_id'),
+                     api_component.getvalue('scr_groups_id'));
   COMMIT;                          
   RETURN uiresp('message','OK');
  EXCEPTION
@@ -135,7 +138,8 @@ BEGIN
                     a.blocked_time=CASE WHEN api_component.getvalue('blocked')='Y' THEN SYSDATE ELSE NULL END,
                     a.email=api_component.getvalue('email'),
                     a.mob_phone=api_component.getvalue('mob_phone'),
-                    a.rl_groups_id=api_component.getvalue('rl_groups_id')
+                    a.rl_groups_id=api_component.getvalue('rl_groups_id'),
+                    a.scr_groups_id=api_component.getvalue('scr_groups_id')
         WHERE    a.id=v_id;
  COMMIT;
  RETURN uiresp('message','OK'); 
@@ -220,6 +224,13 @@ BEGIN
  SELECT id INTO v_res FROM users WHERE Session_=p_session; 
  RETURN v_res;
 END getid;  
+
+FUNCTION READ(p_session VARCHAR2) RETURN users%ROWTYPE IS
+ v_res users%ROWTYPE;  
+BEGIN
+  SELECT * INTO v_res FROM users a WHERE a.session_=p_session;
+  RETURN v_res;
+END READ;
 
 BEGIN
 NULL;  

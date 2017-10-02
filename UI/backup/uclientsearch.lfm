@@ -1,13 +1,14 @@
 object frmclientsearch: Tfrmclientsearch
-  Left = 515
+  Left = 1046
   Height = 532
-  Top = 27
+  Top = 53
   Width = 457
   AlphaBlendValue = 200
   BorderStyle = bsToolWindow
   Caption = 'Müştəri axtarışı'
   ClientHeight = 532
   ClientWidth = 457
+  Color = clWhite
   Font.CharSet = ANSI_CHARSET
   Font.Height = -16
   Font.Name = 'Calibri Light'

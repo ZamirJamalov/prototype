@@ -450,6 +450,7 @@ begin
 
                          END;//WITH
                      END;//TCHECKLISTBOX
+
    END; //case
 
  end;

@@ -1,0 +1,8 @@
+{"version":1,"strings":[
+{"hash":257389054,"name":"nsxpcomglue.sgetcomponentmanagererror","sourcebytes":[67,97,110,110,111,116,32,103,101,116,32,116,104,101,32,67,111,109,112,111,110,101,110,116,32,77,97,110,97,103,101,114,46],"value":"Cannot get the Component Manager."},
+{"hash":194119278,"name":"nsxpcomglue.sgetservicemanagererror","sourcebytes":[67,97,110,110,111,116,32,103,101,116,32,116,104,101,32,83,101,114,118,105,99,101,32,77,97,110,97,103,101,114,46],"value":"Cannot get the Service Manager."},
+{"hash":208895648,"name":"nsxpcomglue.screateinstanceerror","sourcebytes":[67,97,110,110,111,116,32,103,101,116,32,116,104,101,32,105,110,115,116,97,110,99,101,32,111,102,32,67,73,68,32,39,37,115,46,39,32],"value":"Cannot get the instance of CID '%s.' "},
+{"hash":113598512,"name":"nsxpcomglue.sgetserviceerror","sourcebytes":[67,97,110,110,111,116,32,103,101,116,32,116,104,101,32,115,101,114,118,105,99,101,32,111,102,32,67,73,68,32,39,37,115,46,39,32],"value":"Cannot get the service of CID '%s.' "},
+{"hash":38183280,"name":"nsxpcomglue.snosuchspecialdir","sourcebytes":[67,97,110,110,111,116,32,103,101,116,32,116,104,101,32,83,112,101,99,105,97,108,32,68,105,114,101,99,116,111,114,121,32,39,37,115,46,39,32],"value":"Cannot get the Special Directory '%s.' "},
+{"hash":255724992,"name":"nsxpcomglue.snosuchinterface","sourcebytes":[67,97,110,110,111,116,32,103,101,116,32,116,104,101,32,73,110,116,101,114,102,97,99,101,32,39,37,115,46,39,32],"value":"Cannot get the Interface '%s.' "}
+]}

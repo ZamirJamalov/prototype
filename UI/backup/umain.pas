@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, ExtCtrls, grids, Buttons, Menus, fpjson, jsonparser, MTProcs,
-  LazUTF8Classes, RTTICtrls, comobj, LCLType, ActnList, BCImageButton,
+  LazUTF8Classes, RTTICtrls, IpHtml, comobj, LCLType, ActnList, BCImageButton,
   BGRAShape, BGRAImageManipulation, dtthemedclock, DTAnalogClock, BCButton,
   DTAnalogGauge, BCMaterialDesignButton, usession;
 type
@@ -109,6 +109,7 @@ type
     procedure onCompareCells(Sender:Tobject;ACol,ARow,BCol,BRow:Integer;var Result:integer);
     procedure headerClick(Sender :TObject;IsColumn:boolean;index:integer);
     function viewgrid(form:rform;tab:ttabsheet):string;
+
 
   end;
 
@@ -595,6 +596,8 @@ begin
     stringGrid.Visible:=true;
     jData.Free;
 end;
+
+
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin

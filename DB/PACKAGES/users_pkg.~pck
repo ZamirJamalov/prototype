@@ -16,6 +16,7 @@ FUNCTION ui_setid RETURN VARCHAR2;
 FUNCTION onclick_calculate RETURN CLOB;
 FUNCTION setuimenuid RETURN CLOB;
 FUNCTION getid(p_session VARCHAR2) RETURN users.id%TYPE;
+FUNCTION READ(p_session VARCHAR2) RETURN users%ROWTYPE;
 end users_pkg;
 /
 create or replace package body users_pkg is
@@ -63,7 +64,7 @@ BEGIN
   SELECT * INTO users_row FROM users WHERE login=v_login AND password=v_password;
   
   IF users_row.wrong_attempt_count>=3 THEN 
-    RETURN uiresp('message','ERROR','User Locked');
+    RETURN uiresp('message','ERROR','İstifadəçi blokdadır.');
   END IF;
   v_session := session_pkg.getNewSession;
   --backup  current session
@@ -91,7 +92,7 @@ BEGIN
       UPDATE users SET blocked_time=SYSDATE WHERE login=api_component.getvalue('edlogin'); 
     END IF;
     COMMIT;
-    RETURN  uiResp('user_or_password_is_invalid','ERROR','user_or_password_is_invalid');
+    RETURN  uiResp('user_or_password_is_invalid','ERROR','İstifadəçi adı və ya şifrə yanlışdır.');
   WHEN OTHERS THEN 
     RETURN  uiResp('message','ERROR',SQLERRM);
     
@@ -220,6 +221,13 @@ BEGIN
  SELECT id INTO v_res FROM users WHERE Session_=p_session; 
  RETURN v_res;
 END getid;  
+
+FUNCTION READ(p_session VARCHAR2) RETURN users%ROWTYPE IS
+ v_res users%ROWTYPE;  
+BEGIN
+  SELECT * INTO v_res FROM users a WHERE a.session_=p_session;
+  RETURN v_res;
+END READ;
 
 BEGIN
 NULL;  

@@ -149,8 +149,6 @@ begin
                     comma_ := comma_ + 1;
                     FOR j := 0 to LENGTH(Response_array) - 1 DO BEGIN
                        IF (p_component AS TCOMBOBOX).Name = Response_array[j].name_ THEN BEGIN
-
-
                         case   (p_component AS TCOMBOBOX).ItemIndex of
                           -1:   begin
                                   v_json := v_json + addComma(comma_, 1) + '"' + (p_component AS TCOMBOBOX).Name + '":[""]';

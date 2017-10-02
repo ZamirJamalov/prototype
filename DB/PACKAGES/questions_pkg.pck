@@ -155,17 +155,25 @@ FUNCTION onchange RETURN CLOB IS
   v_questions_id  questions_params.questions_id%TYPE DEFAULT api_component.getvalue('questions');
   v_client_id     NUMBER DEFAULT api_component.getvalue('client_id');
   v_checked       CHAR(1) DEFAULT api_component.getvalue('checked');
-  v_questions_row questions%ROWTYPE;
+  v_questions_row questions%ROWTYPE DEFAULT READ(v_questions_id);
   v_append_value  questions_answers.append_value%TYPE;
+  v_cnt           NUMBER DEFAULT 0;
 BEGIN
+  --zamir.utils_pkg.log_point(v_questions_row.scr_groups_id||' '||v_client_id||' '||scr_groups_pkg.getParentRoot(v_questions_id)||' '||v_questions_id);
   IF v_checked='N' THEN 
-    DELETE FROM questions_answers a WHERE a.client_id=v_client_id AND a.questions_id=v_questions_id;
-    COMMIT;
+     SELECT COUNT(*) INTO v_cnt FROM cs_scoring a ,customers b
+            WHERE a.customers_id=b.id 
+             AND b.code=v_client_id AND a.scr_groups_id=scr_groups_pkg.getParentRoot(v_questions_row.scr_groups_id); 
+    IF v_cnt>0 THEN 
+       RETURN uiresp('message','ERROR','Neticeler testiqlenmishdir. Deyishmek mumkun deyil');
+    END IF;
+     DELETE FROM questions_answers a WHERE a.client_id=v_client_id AND a.questions_id=v_questions_id;
+     COMMIT;
   END IF;
   IF READ(v_questions_id).answer_as_list='Y' THEN
      SELECT t_component_obj(nvl(a.ID,0),a.NAME,CASE WHEN b.questions_params_id IS NOT NULL THEN rownum ELSE NULL END) BULK COLLECT INTO v_res FROM questions_params a LEFT JOIN questions_answers b ON a.questions_id=b.questions_id AND a.id=b.questions_params_id AND b.client_id=v_client_id WHERE a.questions_id=v_questions_id; --questions_id=(SELECT id FROM questions WHERE name=api_component.getvalue('questions'));
-     api_component.setvalue(p_component=>'frmscoring.questions_params',p_values=>api_component.component_values_to_json(v_res));
-     api_component.setvalue(p_component=>'frmscoring.edquestions_params',p_value=>'',p_visible => 'N',p_enabled => CASE WHEN v_checked='N' THEN 'Y' ELSE 'N' END);
+     api_component.setvalue(p_component=>'frmscoring.questions_params',p_values=>api_component.component_values_to_json(v_res),p_visible => 'Y',p_enabled => CASE WHEN v_checked='N' THEN 'Y' ELSE 'N' END);
+     api_component.setvalue(p_component=>'frmscoring.edquestions_params',p_visible=>'N');
      api_component.setvalue(p_component=>'frmscoring.label2',p_value=>'Cavabı seçiniz');
   ELSE
     BEGIN 

@@ -153,6 +153,12 @@ begin
  if (ujs_1.jsonError<>'') then begin
    if (ujs_1.jsonError<>'editable_activate')  then begin
        Showmessage(ujs_1.jsonError);
+       if  ch='N' then begin
+         questions.Checked[index]:=true;
+       end
+       else  begin
+         questions.Checked[index]:=false;
+       end;
       EXIT;
     end;
  end;
@@ -224,6 +230,7 @@ begin
   ujs_1.existsform(self,s,frmScoring as TWinControl);
   questions.Checked[questions.ItemIndex]:=true;
   questions.OnItemClick(sender,questions.ItemIndex);
+  questions_params.Enabled:=false;
 
 end;
 

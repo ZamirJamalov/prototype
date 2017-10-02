@@ -7,9 +7,9 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, lazcontrols, datetimectrls, runtimetypeinfocontrols, uLogin, UJson,
-  umain, usession, uthread, uUsers, uForm, utools, uscoring, Unit1, filemanager,
-  uClientSearch, uncustomerdetails;
+  Forms, lazcontrols, datetimectrls, runtimetypeinfocontrols, printer4lazarus,
+  uLogin, UJson, umain, usession, uthread, uUsers, uForm, utools, uscoring,
+  Unit1, filemanager, uClientSearch, uncustomerdetails, ucomponents;
 
 {$R *.res}
 

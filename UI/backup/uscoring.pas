@@ -153,6 +153,12 @@ begin
  if (ujs_1.jsonError<>'') then begin
    if (ujs_1.jsonError<>'editable_activate')  then begin
        Showmessage(ujs_1.jsonError);
+       if  ch='N' then begin
+         questions.Checked[index]:=true;
+       end
+       else  begin
+         questions.Checked[index]:=false;
+       end;
       EXIT;
     end;
  end;
@@ -209,12 +215,13 @@ begin
     questions_params.Checked[index]:=false;
     exit;
  end;
+  (*
   if questions_params.Checked[index]=false then begin
      exit;
   end else begin
       questions_params.Enabled:=false;
   end;
-
+    *)
  s := ujs_1.runHub('scoring.questions_params_pkg.onchange','"form":"frmscoring","crud":["add"],"id":[""],'+'"schema_name":["scoring"],"questions_params":["'+ujs_1.getIdByIndex('questions_params',index)+'"],"client_id":["'+usession.customer_code+'"],'+'"questions":["'+ujs_.getIdByIndex('questions',v_question_index)+'"]'+',"append_value":[""]');
  if ujs_1.jsonError<>'' then begin
     Showmessage(ujs_1.jsonError);

@@ -1,0 +1,7 @@
+{"version":1,"strings":[
+{"hash":240817182,"name":"geckobrowser.sgeckobrowseriniterror","sourcebytes":[70,97,105,108,101,100,32,116,111,32,105,110,105,116,105,97,108,105,122,101,32,84,71,101,99,107,111,66,114,111,119,115,101,114,46],"value":"Failed to initialize TGeckoBrowser."},
+{"hash":197709054,"name":"geckobrowser.sgeckobrowsercannotgoback","sourcebytes":[70,97,105,108,101,100,32,116,111,32,103,111,32,98,97,99,107,32,104,105,115,116,111,114,121,46],"value":"Failed to go back history."},
+{"hash":169675006,"name":"geckobrowser.sgeckobrowsercannotgoforward","sourcebytes":[70,97,105,108,101,100,32,116,111,32,103,111,32,102,111,114,119,97,114,100,32,104,105,115,116,111,114,121,46],"value":"Failed to go forward history."},
+{"hash":248036432,"name":"geckobrowser.sgeckobrowserloadurierror","sourcebytes":[70,97,105,108,101,100,32,116,111,32,108,111,97,100,32,85,82,73,32,39,37,115,46,39,32],"value":"Failed to load URI '%s.' "},
+{"hash":55368478,"name":"geckobrowser.sgeckobrowsercannotreload","sourcebytes":[70,97,105,108,101,100,32,116,111,32,114,101,108,111,97,100,32,112,97,103,101,46],"value":"Failed to reload page."}
+]}

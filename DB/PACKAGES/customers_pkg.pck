@@ -4,6 +4,7 @@
   -- Created : 9/21/2017 4:15:48 PM
   -- Purpose : 
   
+FUNCTION READ(p_customer_code customers.code%TYPE) RETURN customers%ROWTYPE;
 FUNCTION grid_data RETURN CLOB;
 FUNCTION setid RETURN VARCHAR2;
 FUNCTION add RETURN CLOB;
@@ -37,6 +38,8 @@ BEGIN
  RETURN  api_component.exec; 
 
 END; 
+
+  
 
 FUNCTION grid_data RETURN CLOB IS
   v_idx NUMBER DEFAULT nvl(to_number(api_component.getvalue('index')),0)+1;
@@ -110,6 +113,14 @@ BEGIN
      ROLLBACK;
      RETURN uiresp('message','ERROR',SQLERRM); 
 END del;
+
+FUNCTION READ(p_customer_code customers.code%TYPE) RETURN customers%ROWTYPE IS
+ v_res customers%ROWTYPE;
+ v_customer_code customers.code%TYPE DEFAULT p_customer_code;
+BEGIN 
+  SELECT * INTO v_res FROM customers  a WHERE a.code=v_customer_code;
+  RETURN v_res; 
+END READ;
 begin
  NULL;
 end customers_pkg;

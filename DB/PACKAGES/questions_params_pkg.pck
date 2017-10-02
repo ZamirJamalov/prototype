@@ -147,7 +147,7 @@ BEGIN
        END IF;   
      END LOOP;
   END IF; 
-  IF v_interval_found = FALSE THEN 
+  IF v_interval_found = FALSE AND questions_pkg.READ(v_questions_id).answer_as_list='N' THEN 
      RETURN uiresp('message','ERROR','Daxil edilən məlumat interval aralığlarına düşmür.');
   END IF;
   --Eger el ile melumat daxil edilmeyibse onda bu haqda melumat qaytar

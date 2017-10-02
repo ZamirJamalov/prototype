@@ -78,7 +78,9 @@ BEGIN
   UNION ALL 
   SELECT 'TLABEL' AS id,'TLABEL' AS NAME,'' AS checked FROM dual
   UNION ALL
-  SELECT 'TMEMO' AS id,'TMEMO' AS NAME,'' AS checked FROM dual) p;
+  SELECT 'TMEMO' AS id,'TMEMO' AS NAME,'' AS checked FROM dual
+  UNION ALL 
+  SELECT 'TSTRINGLIST' AS id,'TSTRINGLIST' AS NAME, '' AS checked FROM dual) p;
   RETURN  v_res;
 END list_component_types;  
 

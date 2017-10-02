@@ -1,41 +1,170 @@
 object frmcustomerdetails: Tfrmcustomerdetails
-  Left = 621
-  Height = 441
-  Top = 238
-  Width = 686
-  BorderStyle = bsToolWindow
+  Left = 396
+  Height = 552
+  Top = 143
+  Width = 768
   Caption = 'Əlavə məlumat'
-  ClientHeight = 441
-  ClientWidth = 686
+  ClientHeight = 552
+  ClientWidth = 768
   LCLVersion = '1.8.0.4'
   object PageControl1: TPageControl
     Left = 0
-    Height = 441
+    Height = 552
     Top = 0
-    Width = 686
+    Width = 768
     ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
-    object TabSheet1: TTabSheet
-      Caption = 'Scoring'
-      ClientHeight = 413
-      ClientWidth = 678
-      object edscore: TEdit
-        Left = 8
-        Height = 23
-        Top = 8
-        Width = 136
-        ReadOnly = True
+    object TabSheet2: TTabSheet
+      Caption = 'Skoringin təstiqi'
+      ClientHeight = 524
+      ClientWidth = 760
+      object Panel3: TPanel
+        Left = 0
+        Height = 40
+        Top = 0
+        Width = 760
+        Align = alTop
+        ClientHeight = 40
+        ClientWidth = 760
         TabOrder = 0
+        object btnscoring_approve: TButton
+          Left = 0
+          Height = 25
+          Top = 0
+          Width = 200
+          Caption = 'Skoring nəticəsini təstiq et'
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = -16
+          Font.Name = 'Calibri'
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          OnClick = btnscoring_approveClick
+          ParentFont = False
+          TabOrder = 0
+        end
+        object btnToExcel: TButton
+          Left = 208
+          Height = 25
+          Top = 0
+          Width = 104
+          Caption = 'Excel Export'
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = -16
+          Font.Name = 'Calibri'
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          OnClick = btnToExcelClick
+          ParentFont = False
+          TabOrder = 1
+        end
       end
-      object btnshowscore: TButton
-        Left = 152
-        Height = 25
-        Top = 8
-        Width = 104
-        Caption = 'Toplanmış bal'
-        OnClick = btnshowscoreClick
+      object gridScoreResult: TStringGrid
+        Left = 0
+        Height = 484
+        Top = 40
+        Width = 760
+        Align = alClient
+        TabOrder = 1
+        Visible = False
+      end
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'Skoring'
+      ClientHeight = 524
+      ClientWidth = 760
+      object Panel1: TPanel
+        Left = 0
+        Height = 40
+        Top = 0
+        Width = 760
+        Align = alTop
+        ClientHeight = 40
+        ClientWidth = 760
+        TabOrder = 0
+        object edscore: TEdit
+          Left = 8
+          Height = 23
+          Top = 8
+          Width = 136
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object btnshowscore: TButton
+          Left = 152
+          Height = 25
+          Top = 8
+          Width = 104
+          Caption = 'Toplanmış bal'
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = -16
+          Font.Name = 'Calibri'
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          OnClick = btnshowscoreClick
+          ParentFont = False
+          TabOrder = 1
+        end
+        object btnshowscore_details: TButton
+          Left = 264
+          Height = 25
+          Top = 8
+          Width = 128
+          Caption = 'Ballar və Suallar'
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = -16
+          Font.Name = 'Calibri'
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          ParentBidiMode = False
+          ParentFont = False
+          TabOrder = 2
+        end
+      end
+      object Panel2: TPanel
+        Left = 0
+        Height = 484
+        Top = 40
+        Width = 760
+        Align = alClient
+        TabOrder = 1
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Kredit məhsulları'
+      ClientHeight = 524
+      ClientWidth = 760
+      object Panel4: TPanel
+        Left = 0
+        Height = 40
+        Top = 0
+        Width = 760
+        Align = alTop
+        ClientHeight = 40
+        ClientWidth = 760
+        TabOrder = 0
+        object btnShowCreditProds: TButton
+          Left = -4
+          Height = 25
+          Top = 0
+          Width = 208
+          Caption = 'Kredit məhsullarını göstər'
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = -16
+          Font.Name = 'Calibri'
+          Font.Pitch = fpVariable
+          Font.Quality = fqDraft
+          ParentFont = False
+          TabOrder = 0
+        end
+      end
+      object StringGrid2: TStringGrid
+        Left = 0
+        Height = 484
+        Top = 40
+        Width = 760
+        Align = alClient
         TabOrder = 1
       end
     end

@@ -12,6 +12,8 @@ FUNCTION upd RETURN CLOB;
 FUNCTION del RETURN CLOB;
 FUNCTION groups_list RETURN tt_component_obj;
 FUNCTION groups_list_for_questions RETURN tt_component_obj;
+FUNCTION groups_list_for_users RETURN tt_component_obj;
+FUNCTION getParentRoot(p_id scr_groups.id%TYPE) RETURN scr_groups.root_id%TYPE;
 end scr_groups_pkg;
 /
 create or replace package body scr_groups_pkg is
@@ -140,6 +142,37 @@ BEGIN
   SELECT t_component_obj(id,NAME,'') BULK COLLECT INTO v_res  FROM scr_groups WHERE scr_groups.isactive='Y';
   RETURN v_res;
 END groups_list_for_questions;  
+
+FUNCTION groups_list_for_users RETURN tt_component_obj IS
+BEGIN
+  SELECT t_component_obj(id,NAME,'') BULK COLLECT INTO v_res  FROM scr_groups WHERE scr_groups.root_id IS NULL;
+  RETURN v_res;
+END;  
+
+FUNCTION getParentRoot(p_id scr_groups.id%TYPE) RETURN scr_groups.root_id%TYPE IS
+ TYPE rcoll
+  IS RECORD(
+   id NUMBER,
+   root_id NUMBER
+   );
+ TYPE tcoll 
+  IS TABLE OF rcoll;
+ coll  tcoll := tcoll();
+ v_id  NUMBER DEFAULT p_id;   
+BEGIN
+  SELECT id,root_id BULK COLLECT INTO coll FROM scr_groups ORDER BY scr_groups.id,scr_groups.root_id;
+  FOR i IN coll.first..coll.last LOOP
+    FOR j IN coll.first..coll.last LOOP
+      IF coll(j).id=v_id THEN 
+        v_id := coll(j).root_id;
+        IF coll(j).root_id IS NULL THEN 
+          RETURN coll(j).id;
+        END IF;
+      END IF;
+    END LOOP;
+  END LOOP;
+  RETURN -1;
+END getParentRoot;  
 
 begin
   NULL;

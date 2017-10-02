@@ -57,7 +57,7 @@ BEGIN
                              from (select id,root_id,caption,form_name,form_caption,schema_name,crud,external_form
   from ui_menu 
   start with root_id is null
-  connect by prior ID = root_id AND  ui_menu.id IN (SELECT ui_menu_id FROM rl_groups_menu a, users b where a.rl_groups_id=b.rl_groups_id and b.session_=hub.getSession)  ) a'); --AND  ui_menu.id IN (SELECT ui_menu_id FROM rl_groups_menu)
+  connect by prior ID = root_id AND  ui_menu.id IN (SELECT ui_menu_id FROM rl_groups_menu a, users b where a.rl_groups_id=b.rl_groups_id and b.session_=:1)  ) a',bind1 => hub.getSession); --AND  ui_menu.id IN (SELECT ui_menu_id FROM rl_groups_menu)
   json_kernel.append_as_text(']}'); 
   RETURN api_component.exec(p_json_part=>json_kernel.response);   
  EXCEPTION
