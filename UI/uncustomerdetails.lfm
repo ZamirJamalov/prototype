@@ -1,7 +1,7 @@
 object frmcustomerdetails: Tfrmcustomerdetails
-  Left = 396
+  Left = 397
   Height = 552
-  Top = 143
+  Top = 144
   Width = 768
   Caption = 'Əlavə məlumat'
   ClientHeight = 552
@@ -12,9 +12,9 @@ object frmcustomerdetails: Tfrmcustomerdetails
     Height = 552
     Top = 0
     Width = 768
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object TabSheet2: TTabSheet
       Caption = 'Skoringin təstiqi'

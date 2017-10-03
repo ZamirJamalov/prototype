@@ -1,4 +1,4 @@
-create or replace package cs_scoring_pkg is
+﻿create or replace package cs_scoring_pkg is
 
   -- Author  : USER
   -- Created : 9/30/2017 11:48:10 PM
@@ -41,7 +41,19 @@ END;
 FUNCTION  scroring_result_approved_click RETURN CLOB IS
  v_customers_row         customers%ROWTYPE DEFAULT customers_pkg.READ(api_component.getvalue('client_id'));
  v_scr_groups_id         cs_scoring.scr_groups_id%TYPE DEFAULT zamir.users_pkg.READ(p_session => hub.getSession).scr_groups_id;
+ v_cnt1                  NUMBER DEFAULT 0;
+ v_cnt2                  NUMBER DEFAULT 0;
+ v_questions_groups_id   NUMBER DEFAULT scr_groups_pkg.getActiveGroupId(v_scr_groups_id);
 BEGIN
+  SELECT COUNT(*) INTO v_cnt1 FROM questions_answers a ,questions b WHERE a.questions_id=b.id AND b.scr_groups_id=v_questions_groups_id AND a.client_id=v_customers_row.code;
+  SELECT COUNT(*) INTO v_cnt2 FROM questions a WHERE a.scr_groups_id=v_questions_groups_id;
+  --zamir.utils_pkg.log_point(v_cnt1||' '||v_cnt2||' '||v_questions_groups_id);
+  IF v_cnt2>v_cnt1 THEN 
+    RETURN uiresp('message','ERROR','Bütün suallara cavab verildikdən sonra bu mümkündür');
+  ELSIF v_cnt2=0 THEN 
+    RETURN uiresp('message','ERROR','Suallar tapılmadı.');
+  END IF;
+  
   DELETE FROM cs_scoring a WHERE a.customers_id=v_customers_row.id;
   IF SQL%NOTFOUND THEN 
     INSERT INTO cs_scoring(customers_id,

@@ -151,7 +151,6 @@ begin
  //s := ujs_.runHub('scoring.questions_pkg.questions_list_clob','"TFORM":"'+self.name+'"');
  s := ujs_1.runHub('scoring.questions_pkg.onchange','"form":"frmscoring","crud":["add"],"id":[""],'+'"schema_name":["scoring"],"questions":["'+ujs_.getIdByIndex('questions',index)+'"]'+',"client_id":["'+usession.customer_code+'"]'+',"checked":["'+ch+'"]');
  if (ujs_1.jsonError<>'') then begin
-   if (ujs_1.jsonError<>'editable_activate')  then begin
        Showmessage(ujs_1.jsonError);
        if  ch='N' then begin
          questions.Checked[index]:=true;
@@ -160,7 +159,6 @@ begin
          questions.Checked[index]:=false;
        end;
       EXIT;
-    end;
  end;
 
   v_question_index:=index;
@@ -230,6 +228,7 @@ begin
   ujs_1.existsform(self,s,frmScoring as TWinControl);
   questions.Checked[questions.ItemIndex]:=true;
   questions.OnItemClick(sender,questions.ItemIndex);
+  questions_params.Enabled:=false;
 
 end;
 

@@ -148,7 +148,7 @@ BEGIN
      END LOOP;
   END IF; 
   IF v_interval_found = FALSE AND questions_pkg.READ(v_questions_id).answer_as_list='N' THEN 
-     RETURN uiresp('message','ERROR','Daxil edilən məlumat interval aralığlarına düşmür.');
+     RETURN uiresp('message','ERROR','Heçbir məlumat daxil edilməyib və ya daxil edilən məlumat interval aralığlarında deyildir.');
   END IF;
   --Eger el ile melumat daxil edilmeyibse onda bu haqda melumat qaytar
   IF v_questions_params_id IS NULL THEN 
@@ -182,10 +182,10 @@ END onchange;
 
 FUNCTION showScore RETURN CLOB IS
  v_client_id NUMBER DEFAULT api_component.getvalue('client_id');
- v_res NUMBER(22,2);
+ v_res NUMBER(22,2) DEFAULT 0;
 BEGIN
   SELECT SUM(sb) INTO v_res FROM questions_answers WHERE client_id=v_client_id;  
-  api_component.setvalue(p_component=>'frmcustomerdetails.edscore',p_value => v_res);
+  api_component.setvalue(p_component=>'frmcustomerdetails.edscore',p_value => nvl(v_res,0));
   RETURN api_component.exec;
 END showScore;  
 begin

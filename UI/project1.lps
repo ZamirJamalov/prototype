@@ -105,10 +105,9 @@
         <ComponentName Value="frmScoring"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="218"/>
-        <CursorPos X="25" Y="232"/>
+        <TopLine Value="148"/>
+        <CursorPos X="20" Y="161"/>
         <UsageCount Value="209"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -155,8 +154,10 @@
         <ComponentName Value="frmcustomerdetails"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="9"/>
-        <CursorPos X="19" Y="76"/>
+        <TopLine Value="74"/>
+        <CursorPos X="2" Y="78"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -167,7 +168,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="167"/>
         <CursorPos X="46" Y="185"/>
-        <UsageCount Value="69"/>
+        <UsageCount Value="102"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -183,7 +184,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="158"/>
+        <UsageCount Value="155"/>
       </Unit15>
       <Unit16>
         <Filename Value="uforms.pas"/>
@@ -192,7 +193,7 @@
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="55" Y="18"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="16"/>
       </Unit16>
       <Unit17>
         <Filename Value="uselfdialogbox.pas"/>
@@ -202,7 +203,7 @@
         <UnitName Value="uSelfDialogBox"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="39" Y="16"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="35"/>
       </Unit17>
       <Unit18>
         <Filename Value="C:\lazarus\lcl\graphics.pp"/>
@@ -218,14 +219,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1846"/>
         <CursorPos X="14" Y="1863"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="2"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\geckoport_v1\Components\GeckoBrowser.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2294"/>
         <CursorPos Y="2349"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="3"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit20>
       <Unit21>
@@ -234,7 +235,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1227"/>
         <CursorPos X="46" Y="1259"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="3"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit21>
       <Unit22>
@@ -243,133 +244,137 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1227"/>
         <CursorPos X="46" Y="1259"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="3"/>
       </Unit22>
       <Unit23>
         <Filename Value="..\..\..\..\Desktop\bgracontrols-master\bgrabitmap-master\bgrabitmap\bgrabitmappack.pas"/>
         <UnitName Value="BGRABitmapPack"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="11"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="7"/>
       </Unit23>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="ucomponents.pas"/>
-        <Caret Line="113" Column="48" TopLine="92"/>
+        <Caret Line="23" Column="38"/>
       </Position1>
       <Position2>
         <Filename Value="ucomponents.pas"/>
-        <Caret Line="102" Column="41" TopLine="85"/>
+        <Caret Line="112" Column="36" TopLine="84"/>
       </Position2>
       <Position3>
-        <Filename Value="ucomponents.pas"/>
-        <Caret Line="125" Column="2" TopLine="118"/>
-      </Position3>
-      <Position4>
-        <Filename Value="ucomponents.pas"/>
-        <Caret Line="23" Column="38"/>
-      </Position4>
-      <Position5>
-        <Filename Value="ucomponents.pas"/>
-        <Caret Line="112" Column="36" TopLine="84"/>
-      </Position5>
-      <Position6>
         <Filename Value="umain.pas"/>
         <Caret Line="762" Column="26" TopLine="762"/>
-      </Position6>
-      <Position7>
+      </Position3>
+      <Position4>
         <Filename Value="umain.pas"/>
         <Caret Line="99" Column="17" TopLine="81"/>
-      </Position7>
-      <Position8>
+      </Position4>
+      <Position5>
         <Filename Value="uncustomerdetails.pas"/>
         <Caret Line="41" Column="74" TopLine="32"/>
-      </Position8>
-      <Position9>
+      </Position5>
+      <Position6>
         <Filename Value="uncustomerdetails.pas"/>
         <Caret Line="43" Column="74" TopLine="33"/>
+      </Position6>
+      <Position7>
+        <Filename Value="uncustomerdetails.pas"/>
+        <Caret Line="74" Column="43" TopLine="63"/>
+      </Position7>
+      <Position8>
+        <Filename Value="ucomponents.pas"/>
+        <Caret Line="20" Column="25" TopLine="7"/>
+      </Position8>
+      <Position9>
+        <Filename Value="ucomponents.pas"/>
+        <Caret Line="134" Column="2" TopLine="114"/>
       </Position9>
       <Position10>
         <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="74" Column="43" TopLine="63"/>
+        <Caret Line="78" Column="70" TopLine="65"/>
       </Position10>
       <Position11>
-        <Filename Value="ucomponents.pas"/>
-        <Caret Line="20" Column="25" TopLine="7"/>
+        <Filename Value="uncustomerdetails.pas"/>
+        <Caret Line="77" Column="67" TopLine="54"/>
       </Position11>
       <Position12>
-        <Filename Value="ucomponents.pas"/>
-        <Caret Line="134" Column="2" TopLine="114"/>
+        <Filename Value="uncustomerdetails.pas"/>
+        <Caret Line="61" Column="46" TopLine="52"/>
       </Position12>
       <Position13>
         <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="78" Column="70" TopLine="65"/>
+        <Caret Line="77" Column="71" TopLine="51"/>
       </Position13>
       <Position14>
         <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="77" Column="67" TopLine="54"/>
+        <Caret Line="80" Column="3" TopLine="54"/>
       </Position14>
       <Position15>
-        <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="61" Column="46" TopLine="52"/>
-      </Position15>
-      <Position16>
-        <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="77" Column="71" TopLine="51"/>
-      </Position16>
-      <Position17>
-        <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="80" Column="3" TopLine="54"/>
-      </Position17>
-      <Position18>
         <Filename Value="ucomponents.pas"/>
         <Caret Line="28" Column="24"/>
+      </Position15>
+      <Position16>
+        <Filename Value="ucomponents.pas"/>
+        <Caret Line="94" Column="56" TopLine="82"/>
+      </Position16>
+      <Position17>
+        <Filename Value="ucomponents.pas"/>
+        <Caret Line="142" Column="72" TopLine="123"/>
+      </Position17>
+      <Position18>
+        <Filename Value="uncustomerdetails.pas"/>
+        <Caret Line="77" Column="40" TopLine="66"/>
       </Position18>
       <Position19>
         <Filename Value="ucomponents.pas"/>
-        <Caret Line="94" Column="56" TopLine="82"/>
+        <Caret Line="163" Column="15" TopLine="145"/>
       </Position19>
       <Position20>
         <Filename Value="ucomponents.pas"/>
-        <Caret Line="142" Column="72" TopLine="123"/>
+        <Caret Line="185" Column="46" TopLine="167"/>
       </Position20>
       <Position21>
         <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="77" Column="40" TopLine="66"/>
+        <Caret Line="78" Column="39" TopLine="59"/>
       </Position21>
       <Position22>
-        <Filename Value="ucomponents.pas"/>
-        <Caret Line="163" Column="15" TopLine="145"/>
+        <Filename Value="uncustomerdetails.pas"/>
+        <Caret Line="63" Column="35" TopLine="41"/>
       </Position22>
       <Position23>
-        <Filename Value="ucomponents.pas"/>
-        <Caret Line="185" Column="46" TopLine="167"/>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="187" Column="36" TopLine="167"/>
       </Position23>
       <Position24>
         <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="78" Column="39" TopLine="59"/>
+        <Caret Line="58" Column="55" TopLine="50"/>
       </Position24>
       <Position25>
         <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="63" Column="35" TopLine="41"/>
+        <Caret Line="57" Column="55" TopLine="49"/>
       </Position25>
       <Position26>
         <Filename Value="uscoring.pas"/>
-        <Caret Line="187" Column="36" TopLine="167"/>
+        <Caret Line="124" Column="20" TopLine="118"/>
       </Position26>
       <Position27>
         <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="58" Column="55" TopLine="50"/>
+        <Caret Line="9" Column="51"/>
       </Position27>
       <Position28>
-        <Filename Value="uncustomerdetails.pas"/>
-        <Caret Line="57" Column="55" TopLine="49"/>
+        <Filename Value="uscoring.pas"/>
+        <Caret Line="179" Column="16" TopLine="172"/>
       </Position28>
       <Position29>
-        <Filename Value="uscoring.pas"/>
-        <Caret Line="124" Column="20" TopLine="118"/>
+        <Filename Value="uncustomerdetails.pas"/>
+        <Caret Line="81" Column="58" TopLine="74"/>
       </Position29>
+      <Position30>
+        <Filename Value="uncustomerdetails.pas"/>
+        <Caret Line="55" Column="3" TopLine="51"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

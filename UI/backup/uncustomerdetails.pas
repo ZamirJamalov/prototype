@@ -78,6 +78,7 @@ begin
  s:=  ujs_.runHub('scoring.cs_scoring_pkg.scroring_result_approved_click','"form":"frmscoring",'+'"client_id":["'+usession.customer_code+'"]');
  if ujs_.jsonError<>'' then begin
     showmessage(ujs_.jsonerror);
+    exit;
  end;
 
  gridScoreResult.ColumnClickSorts:=true;

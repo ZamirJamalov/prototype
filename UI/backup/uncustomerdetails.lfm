@@ -1,7 +1,7 @@
 object frmcustomerdetails: Tfrmcustomerdetails
-  Left = 396
+  Left = 397
   Height = 552
-  Top = 143
+  Top = 144
   Width = 768
   Caption = 'Əlavə məlumat'
   ClientHeight = 552
@@ -128,7 +128,6 @@ object frmcustomerdetails: Tfrmcustomerdetails
         Top = 40
         Width = 760
         Align = alClient
-        Caption = 'Panel2'
         TabOrder = 1
       end
     end

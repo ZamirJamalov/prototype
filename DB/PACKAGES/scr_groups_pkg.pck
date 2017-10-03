@@ -14,6 +14,7 @@ FUNCTION groups_list RETURN tt_component_obj;
 FUNCTION groups_list_for_questions RETURN tt_component_obj;
 FUNCTION groups_list_for_users RETURN tt_component_obj;
 FUNCTION getParentRoot(p_id scr_groups.id%TYPE) RETURN scr_groups.root_id%TYPE;
+FUNCTION getActiveGroupId(p_root_id scr_groups.id%TYPE) RETURN scr_groups.id%TYPE;
 end scr_groups_pkg;
 /
 create or replace package body scr_groups_pkg is
@@ -98,12 +99,19 @@ BEGIN
 END add;  
 
 FUNCTION upd RETURN CLOB IS
+  v_id NUMBER DEFAULT api_component.getvalue('id');
+  v_group_id NUMBER DEFAULT getActiveGroupId(zamir.users_pkg.READ(hub.getSession).scr_groups_id);
 BEGIN
   IF api_component.getvalue('root_id')=api_component.getvalue('id') THEN 
      RETURN uiresp('message','ERROR','Root grup adı digər grup adından fərqli olmalıdır');
   END IF;
   IF isrootid(api_component.getvalue('id'))=TRUE AND api_component.getvalue('isactive')='Y' THEN 
      RETURN uiresp('message','ERROR','Bu qrupa alt qruplar bağlı olduğundan aktiv etməq mümkün deyildir.');
+  END IF;
+  IF api_component.getvalue('isactive')='Y' THEN 
+     INSERT INTO questions_answers_archive SELECT a.* FROM questions_answers a WHERE a.questions_id IN (SELECT id FROM questions b WHERE b.scr_groups_id=v_group_id);
+     DELETE FROM questions_answers a WHERE a.questions_id IN (SELECT id FROM questions WHERE questions.scr_groups_id=v_group_id);
+     UPDATE scr_groups a SET a.isactive='N' WHERE a.id=v_group_id;
   END IF;
   UPDATE scr_groups a SET 
                           a.name=api_component.getvalue('name'),
@@ -112,6 +120,7 @@ BEGIN
                           a.description=api_component.getvalue('description'),
                           a.isactive=api_component.getvalue('isactive')
                WHERE      a.id=api_component.getvalue('id');
+               
   COMMIT;
   RETURN uiresp('message','OK');
  EXCEPTION
@@ -173,6 +182,13 @@ BEGIN
   END LOOP;
   RETURN -1;
 END getParentRoot;  
+
+FUNCTION getActiveGroupId(p_root_id scr_groups.id%TYPE) RETURN scr_groups.id%TYPE IS
+ v_res scr_groups.id%TYPE;
+BEGIN
+  SELECT id INTO v_res FROM scr_groups WHERE scr_groups.isactive='Y';
+  RETURN v_res;
+END getActiveGroupId;  
 
 begin
   NULL;

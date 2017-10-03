@@ -103,7 +103,15 @@ BEGIN
 END add;  
 
 FUNCTION upd RETURN CLOB IS 
+  v_id NUMBER DEFAULT api_component.getvalue('id');
 BEGIN
+  IF api_component.getvalue('answer_as_list')='N' THEN 
+   FOR i IN (SELECT a.questions_id,a.name FROM questions_params a WHERE a.questions_id=v_id) LOOP
+    IF zamir.utils_pkg.is_num_interval(i.name)=FALSE THEN 
+     RETURN uiresp('message','ERROR','Sualın cavabı və ya cavabları interval tipinə uyğun deyil.');
+    END IF;
+   END LOOP; 
+  END IF; 
   UPDATE questions a SET a.sections_id=api_component.getvalue('sections_id'),
                          a.name=api_component.getvalue('name'),
                          a.spec_w=api_component.getvalue('spec_w'),
@@ -143,10 +151,17 @@ END questions_list;
 
 FUNCTION questions_list_clob RETURN CLOB IS
  v_client_id NUMBER DEFAULT api_component.getvalue('client_id');
-  v_clob CLOB;
+ v_clob CLOB;
+ v_active_group_id NUMBER DEFAULT scr_groups_pkg.getActiveGroupId(zamir.users_pkg.READ(hub.getSession).scr_groups_id);
 BEGIN
  -- RETURN api_component.exec(p_ds_proc=>'scoring.questions_pkg.questions_list',p_value=>'');
- SELECT t_component_obj(a.id,a.NAME,CASE WHEN b.client_id IS NOT NULL THEN rownum ELSE NULL END) BULK COLLECT INTO v_res FROM questions a LEFT JOIN questions_answers b ON a.id=b.questions_id  AND b.client_id=v_client_id  WHERE EXISTS (SELECT 1 FROM questions_params b WHERE a.id=b.questions_id);
+ SELECT t_component_obj(a.id,a.NAME,CASE WHEN b.client_id IS NOT NULL THEN rownum ELSE NULL END) BULK COLLECT INTO v_res 
+   FROM questions a LEFT JOIN questions_answers b
+     ON a.id=b.questions_id  
+     AND b.client_id=v_client_id
+      WHERE EXISTS (SELECT 1 FROM questions_params b WHERE a.id=b.questions_id)
+      AND a.scr_groups_id=v_active_group_id;
+      
   api_component.setvalue(p_component=>'frmscoring.questions', p_values=>api_component.component_values_to_json(v_res));  
   RETURN api_component.exec;  
 END questions_list_clob;  
@@ -165,13 +180,16 @@ BEGIN
             WHERE a.customers_id=b.id 
              AND b.code=v_client_id AND a.scr_groups_id=scr_groups_pkg.getParentRoot(v_questions_row.scr_groups_id); 
     IF v_cnt>0 THEN 
-       RETURN uiresp('message','ERROR','Neticeler testiqlenmishdir. Deyishmek mumkun deyil');
+       RETURN uiresp('message','ERROR','Nəticələr təstiqlənmişdir. Dəyişmək mümkün deyildir');
     END IF;
      DELETE FROM questions_answers a WHERE a.client_id=v_client_id AND a.questions_id=v_questions_id;
      COMMIT;
   END IF;
   IF READ(v_questions_id).answer_as_list='Y' THEN
-     SELECT t_component_obj(nvl(a.ID,0),a.NAME,CASE WHEN b.questions_params_id IS NOT NULL THEN rownum ELSE NULL END) BULK COLLECT INTO v_res FROM questions_params a LEFT JOIN questions_answers b ON a.questions_id=b.questions_id AND a.id=b.questions_params_id AND b.client_id=v_client_id WHERE a.questions_id=v_questions_id; --questions_id=(SELECT id FROM questions WHERE name=api_component.getvalue('questions'));
+     SELECT t_component_obj(nvl(a.ID,0),a.NAME,CASE WHEN b.questions_params_id IS NOT NULL THEN rownum ELSE NULL END) 
+        BULK COLLECT INTO v_res FROM questions_params a LEFT JOIN questions_answers b 
+          ON a.questions_id=b.questions_id AND a.id=b.questions_params_id AND b.client_id=v_client_id
+              WHERE a.questions_id=v_questions_id; 
      api_component.setvalue(p_component=>'frmscoring.questions_params',p_values=>api_component.component_values_to_json(v_res),p_visible => 'Y',p_enabled => CASE WHEN v_checked='N' THEN 'Y' ELSE 'N' END);
      api_component.setvalue(p_component=>'frmscoring.edquestions_params',p_visible=>'N');
      api_component.setvalue(p_component=>'frmscoring.label2',p_value=>'Cavabı seçiniz');
@@ -183,6 +201,7 @@ BEGIN
          v_append_value := NULL;
     END; 
      api_component.setvalue(p_component=>'frmscoring.edquestions_params',p_value=>v_append_value,p_visible => 'Y',p_enabled => CASE WHEN v_checked='N' THEN 'Y' ELSE 'N' END);
+     api_component.setvalue(p_component=>'frmscoring.questions_params',p_visible => 'N');
      api_component.setvalue(p_component=>'frmscoring.label2',p_value=>'Cavabı daxil ediniz');
   END IF;   
   

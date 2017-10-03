@@ -151,16 +151,15 @@ begin
  //s := ujs_.runHub('scoring.questions_pkg.questions_list_clob','"TFORM":"'+self.name+'"');
  s := ujs_1.runHub('scoring.questions_pkg.onchange','"form":"frmscoring","crud":["add"],"id":[""],'+'"schema_name":["scoring"],"questions":["'+ujs_.getIdByIndex('questions',index)+'"]'+',"client_id":["'+usession.customer_code+'"]'+',"checked":["'+ch+'"]');
  if (ujs_1.jsonError<>'') then begin
-   if (ujs_1.jsonError<>'editable_activate')  then begin
-       Showmessage(ujs_1.jsonError);
+
        if  ch='N' then begin
          questions.Checked[index]:=true;
        end
        else  begin
          questions.Checked[index]:=false;
        end;
+      Showmessage(ujs_1.jsonError);
       EXIT;
-    end;
  end;
 
   v_question_index:=index;

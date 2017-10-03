@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 706
+  Left = 337
   Height = 706
-  Top = 254
+  Top = 0
   Width = 1020
   AlphaBlendValue = 200
   Caption = 'Scoring'
