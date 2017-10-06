@@ -31,20 +31,33 @@ public class NewServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
     String x;
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, ClassNotFoundException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-           String paramName = "myparam";
-           String paramValue = request.getParameter(paramName);
+        //response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
 
-           OraDataGet oraDataGet=new OraDataGet();
-           out.println(oraDataGet.postGet(paramValue));//request.getContextPath()
+        String paramName = "myparam";
+        String paramValue = request.getParameter(paramName);
 
-        }
+        OraDataGet oraDataGet = new OraDataGet();
+        
+        String result="handleLoginResult("+oraDataGet.postGet(paramValue)+")";
+        response.getWriter().write(result);
+        
+        
+
+//        try (PrintWriter out = response.getWriter()) {
+//            /* TODO output your page here. You may use following sample code. */
+//           String paramName = "myparam";
+//           String paramValue = request.getParameter(paramName);
+//           //System.out.println(paramValue);
+//           OraDataGet oraDataGet=new OraDataGet();
+//           out.println(oraDataGet.postGet(paramValue));//request.getContextPath()
+//           //System.out.println(oraDataGet.postGet(paramValue));
+// // Logger.getLogger(NewServlet.class.getName()).log(Level.INFO, oraDataGet.postGet(paramValue));
+//        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

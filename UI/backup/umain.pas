@@ -21,12 +21,23 @@ type
     crud:string;
     external_form:string;
   end;
+
  type
    Rform=record
      form_name:string;
      form_caption:widestring;
    end;
 
+ type
+   RFilter=record
+     grid_name:String;
+     grid_colCount:integer;
+     grid_rowCount:integer;
+     grid_cell :array of string;
+     active:boolean;
+   end;
+ type
+   func_res_array_string=array of string;
 
 type
 
@@ -46,6 +57,8 @@ type
     edcustomer_name: TEdit;
     Label1: TLabel;
     MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
@@ -55,6 +68,7 @@ type
     Panel6: TPanel;
     Panel7: TPanel;
     PopupMenu1: TPopupMenu;
+    PopupMenu2: TPopupMenu;
     Splitter1: TSplitter;
     Timer1: TTimer;
     TreeView1: TTreeView;
@@ -72,6 +86,8 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MenuItem1Click(Sender: TObject);
+    procedure MenuItem2Click(Sender: TObject);
+    procedure MenuItem3Click(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure Panel5Click(Sender: TObject);
     function showform(p_schema_name:String;p_form_name:String;p_crud:string;p_id:string;p_width,p_height:integer):string;
@@ -87,7 +103,7 @@ type
     procedure TreeView1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
 
-
+     procedure gridFilter_cmbOnChange(sender:tobject);
 
   private
     { private declarations }
@@ -98,6 +114,9 @@ type
     function getRmenuByActiveTab:Rmenu;
     function addcomma(p_val :integer):string;
     procedure setLoginName(p_loginname :string);
+    function gridFilterStatus(p_grid :TStringGrid):integer;
+    function gridFilter(p_grid:TStringGrid):RFilter;
+    procedure gridFilterSetStatus(p_grid:TStringGrid;p_active:boolean);
   public
     { public declarations }
     property LoginName: string write setLoginName;
@@ -124,6 +143,7 @@ var
 
    ora_package_name:string;
    arr_menu:array of rmenu;
+   arr_filter:array of RFilter;
    form:Rform;
    frm:TForm;
    schema_name :string;
@@ -298,6 +318,42 @@ begin
   end;
 end;
 
+procedure TfrmMain.gridFilter_cmbOnChange(sender: tobject);
+ Var
+   v_col,i,j,n :integer;
+   grid:TStringGrid;
+   lcgrid:TStringGrid;
+   test:TStringGrid;
+   r_filter:RFilter;
+begin
+   n:=0;
+   lcgrid :=TStringGrid.Create(nil);
+   lcgrid.Name:='grid_filter_'+copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name));
+   lcgrid := (PageControl1.ActivePage.FindComponent('grid_'+copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)))  as TStringGrid);
+   v_col := strtoint(copy((sender as TComponent).Name,5,length((sender as TComponent).Name)));
+   lcgrid.Columns[v_col].Title.Font.Style:=[fsItalic];
+
+
+   gridFilterSetStatus(lcgrid,true);
+   r_filter:=gridFilter(lcgrid);
+   showmessage('rw_count ' +inttostr(r_filter.grid_rowCount));
+   showmessage('col_count ' +inttostr(r_filter.grid_colCount));
+   showmessage('cell_count ' +inttostr(length(r_filter.grid_cell)));
+   lcgrid.RowCount:=1;
+
+   for j:=0 to r_filter.grid_colCount-1 do begin
+    for i := 0 to r_filter.grid_rowCount-1 do begin
+       showmessage(r_filter.grid_cell[i]);
+       if r_filter.grid_cell[i]=(sender as TComboBox).Items[(sender as TComboBox).ItemIndex] then begin
+          showmessage('cell i '+r_filter.grid_cell[i]);
+          lcgrid.RowCount:= lcgrid.RowCount+1;
+          lcgrid.Cells[j,i+1]:=r_filter.grid_cell[i];
+       end;
+     end;
+   end;
+  end;
+
+
 function TfrmMain.getFormCaptionByActiveTab: String;
 var
   i:integer;
@@ -340,6 +396,71 @@ end;
 procedure TfrmMain.setLoginName(p_loginname: string);
 begin
    v_login_name:=p_loginname;
+end;
+
+function TfrmMain.gridFilterStatus(p_grid: TStringGrid): integer;
+ var
+   i,n:integer;
+begin
+  n:=0;
+  for i:=0 to length(arr_filter)-1 do begin
+     if arr_filter[i].grid_name=p_grid.Name then begin
+        n:=1;
+        if arr_filter[i].active=true then begin
+           n:=2;
+           break;
+         end;
+     end;
+  end;
+ result:=n;
+end;
+
+function TfrmMain.gridFilter(p_grid: TStringGrid): RFilter;
+ var
+   i,j,n,arr_idx:integer;
+   f:boolean;
+begin
+ f:=false;
+ for i:=0 to length(arr_filter)-1 do begin
+   if arr_filter[i].grid_Name=p_grid.Name then begin
+     showmessage('matched');
+     f:=true;
+     result := arr_filter[i];
+     break;
+   end;
+ end;
+
+  if not f then begin
+   showmessage('not matched');
+   setlength(arr_filter,length(arr_filter)+1);
+   arr_idx := length(arr_filter)-1;
+
+   arr_filter[arr_idx].grid_name:=p_grid.Name;
+   arr_filter[arr_idx].grid_colCount:=p_grid.ColCount;
+   arr_filter[arr_idx].grid_rowCount:=p_grid.RowCount;
+
+   setlength(arr_filter[arr_idx].grid_cell,p_grid.RowCount);
+
+   for j := 0 to p_grid.ColCount-1 do begin
+     for n := 0 to p_grid.RowCount-1 do  begin
+       arr_filter[arr_idx].grid_cell[n]:=p_grid.Cells[j,n];
+     end;
+   end;
+   result := arr_filter[arr_idx];
+ end;
+
+end;
+
+procedure TfrmMain.gridFilterSetStatus(p_grid: TStringGrid; p_active: boolean);
+ var
+   i:integer;
+begin
+   for i:=0 to length(arr_filter)-1 do begin
+     if arr_filter[i].grid_Name=p_grid.Name then begin
+        arr_filter[i].active:=p_active;
+        break;
+     end;
+   end;
 end;
 
 procedure TfrmMain.loadMenu;
@@ -557,6 +678,7 @@ begin
    stringGrid.FixedCols:=0;
    stringGrid.RowCount:=1;
    stringGrid.ColumnClickSorts:=true;
+   stringGrid.PopupMenu:=PopupMenu1;
    stringGrid.OnSelectCell:=@onSelectCell;
    stringGrid.OnClick:=@onGridClick;
    stringGrid.OnPrepareCanvas:=@OnPrepareCanvas;
@@ -846,7 +968,7 @@ begin
     for i:=0 to  jdata.FindPath('Response.Components[0].columns').Count-1  do   begin
           //Columns.Add;
           //Columns[i].Title.Alignment:=taCenter;
-         // Columns[i].Title.Font.Style:=[fsBold];
+          Columns[i].Title.Font.Style:=[fsBold];
          // Columns[i].Title.Caption := jdata.FindPath('Response.Components[0].columns['+inttostr(i)+']').AsString;
          // Columns[i].Width:=round(tab.Width/jdata.FindPath('Response.Components[0].columns').Count);
          // Columns[i].Title.Font.Color:=clwhite;
@@ -982,6 +1104,86 @@ begin
 end;
 
 procedure TfrmMain.MenuItem1Click(Sender: TObject);
+begin
+  PageControl1.ActivePage.Free;
+  if PageControl1.PageCount=0 then
+     Panel2.Visible:=false;
+end;
+
+procedure TfrmMain.MenuItem2Click(Sender: TObject);
+ var
+    frm:TForm;
+    i,j,n,k,v_top:integer;
+    lbl:TLabel;
+    cmb:TComboBox;
+    btn:TButton;
+    f:boolean;
+begin
+  v_top :=10;
+  if PageControl1.ActivePage.FindComponent('grid_'+copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)))  is TStringGrid then
+    frm := TForm.Create(nil);
+    with frm do begin
+      Width:=450;
+      Height:=400;
+      Caption:='Filtr';
+      Position:=poDesktopCenter;
+      AutoScroll:=true;
+      //ShowModal;
+    end;
+
+    with (PageControl1.ActivePage.FindComponent('grid_'+copy(PageControl1.ActivePage.Name,5,length(PageControl1.ActivePage.Name)))  as TStringGrid) do begin
+       for i:= 0 to ColCount-1  do begin
+           lbl:= TLabel.Create(frm);
+           lbl.Parent:=frm;
+           lbl.Name:='lbl_'+inttostr(i);
+           lbl.Caption:=Columns[i].DisplayName;
+           lbl.Top:=v_top;
+           lbl.Left:=0;
+           cmb := TComboBox.create(frm);
+           cmb.Parent:=frm;
+           cmb.Name:='cmb_'+inttostr(i);
+           cmb.Style:=csDropDownList;
+           cmb.Top:=lbl.top;
+           cmb.Left:=150;
+           cmb.Width:=250;
+           cmb.Items.Add('');
+           for j:=0 to rowcount-1 do begin
+              f:=false;
+              if trim(cells[i,j])='' then begin
+                 Continue;
+              end;
+              for n:=1 to cmb.Items.Count-1 do begin
+                 if cells[i,j]=cmb.Items[n] then begin
+                     f:=true;
+                     Break;
+                  end;
+              end;
+              if not f then begin
+                 cmb.Items.Add(cells[i,j]);
+               end;
+           end;
+           cmb.ItemIndex:=0;
+           cmb.OnChange:=@gridFilter_cmbOnChange;
+           lbl.Visible:=true;
+           cmb.Visible:=true;
+           v_top:=lbl.top+30;
+          //showmessage(Columns[i].DisplayName);
+       end;
+        btn := TButton.Create(frm);
+        btn.Parent:=frm;
+        btn.Name:='btn_rmFilter';
+        btn.Caption:='Filteri təmizlə';
+        btn.Width:=100;
+        btn.Left:=0;
+        btn.Top:=v_top;
+        v_top := v_top+30;
+    end;
+    with frm do begin
+      ShowModal;
+    end;
+end;
+
+procedure TfrmMain.MenuItem3Click(Sender: TObject);
 begin
   PageControl1.ActivePage.Free;
   if PageControl1.PageCount=0 then

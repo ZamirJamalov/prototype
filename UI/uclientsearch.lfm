@@ -1,7 +1,7 @@
 object frmclientsearch: Tfrmclientsearch
-  Left = 746
+  Left = 37
   Height = 532
-  Top = 40
+  Top = 0
   Width = 457
   AlphaBlendValue = 200
   BorderStyle = bsToolWindow
