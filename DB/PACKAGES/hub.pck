@@ -52,23 +52,25 @@ BEGIN
   v_method_name := json_ext.get_string(v_json,'method_name');
   
   --check session is null
-  IF v_session_key IS NULL AND v_method_name<>'zamir.users_pkg.login' THEN 
-     RETURN object_pkg.GetResponseTop(p_message_type=>object_pkg.response_message_type_error,p_message_text =>  'session_key is null')||object_pkg.getResponseBottom; 
-  END IF;
+  --IF v_session_key IS NULL AND v_method_name<>'zamir.users_pkg.login' THEN 
+   --  return '{"Response":{"Message" :{"Status":"ERROR","Text":"session_key is null"}}}'; 
+     --RETURN object_pkg.GetResponseTop(p_message_type=>object_pkg.response_message_type_error,p_message_text =>  'session_key is null')||object_pkg.getResponseBottom; 
+  --END IF;
   --check session is expired  
-  IF v_session_key IS NOT NULL THEN 
-    IF session_pkg.isExpired(v_session_key) THEN 
-      RETURN object_pkg.GetResponseTop(p_message_type=>object_pkg.response_message_type_error,p_message_text =>  'session_key expired')||object_pkg.getResponseBottom; 
-    END IF;  
-  END IF;
+ -- IF v_session_key IS NOT NULL THEN 
+   -- IF session_pkg.isExpired(v_session_key) THEN 
+    --  return '{"Response":{"Message" :{"Status":"ERROR","Text":"session_key expired"}}}';
+      --RETURN object_pkg.GetResponseTop(p_message_type=>object_pkg.response_message_type_error,p_message_text =>  'session_key expired')||object_pkg.getResponseBottom; 
+   -- END IF;  
+ -- END IF;
   --check permission
-  BEGIN
-    SELECT COUNT(*) INTO v_cnt FROM users a, rl_groups_actions b,rl_actions c WHERE a.rl_groups_id=b.rl_groups_id AND b.rl_actions_id=c.id AND a.session_=v_session_key AND c.name=v_method_name;
-  END;
-    IF nvl(v_cnt,0)=0 THEN 
-      NULL;
+  --BEGIN
+   -- SELECT COUNT(*) INTO v_cnt FROM users a, rl_groups_actions b,rl_actions c WHERE a.rl_groups_id=b.rl_groups_id AND b.rl_actions_id=c.id AND a.session_=v_session_key AND c.name=v_method_name;
+ -- END;
+   -- IF nvl(v_cnt,0)=0 THEN 
+    --  NULL;
        --RETURN object_pkg.GetResponseTop(p_message_type=>object_pkg.response_message_type_error,p_message_text =>  'Permission denied')||object_pkg.getResponseBottom; 
-    END IF;
+   -- END IF;
   
   
   --EXECUTE IMMEDIATE 'begin :1 :='||v_method_name||'(:2); end;' USING OUT v_res,p_json_in;
@@ -87,10 +89,8 @@ BEGIN
      log_pkg.add(p_log_type    => log_pkg.RESPONSE,
               p_method_name => CASE WHEN v_method_name IS NULL THEN 'hub.run' ELSE v_method_name END,
               p_log_text    => SQLERRM,
-              p_log_clob    => object_pkg.GetResponseTop(p_message_type => object_pkg.response_message_type_error,
-                      p_message_text =>  Sqlerrm)||object_pkg.getResponseBottom);   
-      RETURN  object_pkg.GetResponseTop(p_message_type => object_pkg.response_message_type_error,
-                      p_message_text =>  Sqlerrm)||object_pkg.getResponseBottom;      
+              p_log_clob    => '{"Response":{"Message" :{"Status":"ERROR","Text":"'||sqlerrm||'"}}}');   
+      RETURN  '{"Response":{"Message" :{"Status":"ERROR","Text":"'||sqlerrm||'"}}}';      
 END run;    
 
 
