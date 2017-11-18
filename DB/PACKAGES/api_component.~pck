@@ -364,7 +364,8 @@ END;
 PROCEDURE setModifyCmbChecked(p_coll IN OUT tt_component_obj,p_id VARCHAR2,p_checked VARCHAR2 DEFAULT '1') IS
  idx INTEGER DEFAULT 0;
 BEGIN
-  IF p_id IS NOT NULL THEN 
+  
+  IF p_id IS NOT NULL AND p_coll.count>0 THEN 
   FOR i IN p_coll.first..p_coll.last LOOP
     idx := idx + 1;
     IF upper(p_coll(i).id)=upper(p_id) THEN 
